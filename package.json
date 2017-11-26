@@ -13,6 +13,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:latex",
     "onCommand:extension.sayHello"
   ],
   "main": "./out/extension",
@@ -21,6 +22,28 @@
       {
         "command": "extension.sayHello",
         "title": "Hello World"
+      }
+    ],
+    "languages": [
+      {
+        "id": "latex",
+        "aliases": [
+          "LaTeX",
+          "latex"
+        ],
+        "extensions": [
+          ".tex",
+          ".sty",
+          ".cls"
+        ],
+        "configuration": "./latex-language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "latex",
+        "scopeName": "source.latex",
+        "path": "./syntaxes/latex.tmLanguage"
       }
     ]
   },
