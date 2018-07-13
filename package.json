@@ -45,6 +45,12 @@
         "scopeName": "source.latex",
         "path": "./syntaxes/latex.tmLanguage"
       }
+    ],
+    "snippets": [
+      {
+        "language": "latex",
+        "path": "./snippets/latex.json"
+      }
     ]
   },
   "scripts": {
