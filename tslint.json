@@ -1,9 +1,6 @@
 {
-  "extends": "tslint:recommended",
+  "extends": ["tslint:latest", "tslint-config-prettier"],
   "rules": {
-    "quotemark": [
-      true,
-      "single"
-    ]
+    "no-implicit-dependencies": false
   }
 }
