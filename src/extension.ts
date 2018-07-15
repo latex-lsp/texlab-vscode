@@ -1,5 +1,5 @@
-import { tmpdir } from 'os';
-import { join } from 'path';
+import * as os from 'os';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import {
   createClientPipeTransport,
@@ -9,30 +9,14 @@ import {
   MessageTransports,
   ServerOptions,
 } from 'vscode-languageclient';
-
-declare var v8debug: any;
-const DEBUG = typeof v8debug === 'object' || startedInDebugMode();
-
-function startedInDebugMode(): boolean {
-  const args: string[] = (process as any).execArgv;
-  if (args) {
-    return args.some(
-      arg =>
-        /^--debug=?/.test(arg) ||
-        /^--debug-brk=?/.test(arg) ||
-        /^--inspect=?/.test(arg) ||
-        /^--inspect-brk=?/.test(arg),
-    );
-  }
-
-  return false;
-}
+import * as latex from './latex';
+import { DEBUG } from './util';
 
 function generatePipeName(): string {
   if (DEBUG) {
     return process.platform === 'win32'
       ? '\\\\.\\pipe\\texlab'
-      : join(tmpdir(), `texlab.sock`);
+      : path.join(os.tmpdir(), `texlab.sock`);
   }
 
   return generateRandomPipeName();
@@ -45,18 +29,46 @@ async function createServerStream(): Promise<MessageTransports> {
   return Promise.resolve({ reader: streams[0], writer: streams[1] });
 }
 
-export function activate(context: vscode.ExtensionContext) {
+function createLanguageClient(
+  outputChannel: vscode.OutputChannel,
+): LanguageClient {
   const serverOptions: ServerOptions = createServerStream;
-
   const clientOptions: LanguageClientOptions = {
-    documentSelector: ['latex', 'tex'],
+    documentSelector: ['latex'],
+    outputChannel,
   };
 
-  const client = new LanguageClient(
-    'texlab',
-    'TexLab',
-    serverOptions,
-    clientOptions,
-  );
+  return new LanguageClient('texlab', serverOptions, clientOptions);
+}
+
+export function activate(context: vscode.ExtensionContext) {
+  const outputChannel = vscode.window.createOutputChannel('LaTeX');
+  const client = createLanguageClient(outputChannel);
+
+  context.subscriptions.push(outputChannel);
   context.subscriptions.push(client.start());
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand('latex.build', editor => {
+      vscode.window.withProgress(
+        {
+          cancellable: false,
+          location: vscode.ProgressLocation.Window,
+          title: 'Building...',
+        },
+        async () => {
+          try {
+            if (await latex.build(editor.document, outputChannel)) {
+              vscode.window.setStatusBarMessage('Build succeeded', 5000);
+            } else {
+              vscode.window.setStatusBarMessage('Build failed', 5000);
+            }
+          } catch {
+            vscode.window.showErrorMessage(
+              'Could not start the configured LaTeX build tool.',
+            );
+          }
+        },
+      );
+    }),
+  );
 }

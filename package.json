@@ -10,19 +10,48 @@
     "vscode": "^1.25.1"
   },
   "categories": [
+    "Programming Languages",
+    "Snippets",
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:latex",
-    "onCommand:extension.sayHello"
+    "onLanguage:latex"
   ],
   "main": "./out/extension",
   "contributes": {
+    "configuration": [
+      {
+        "title": "LaTeX configuration",
+        "properties": {
+          "latex.build.executable": {
+            "type": "string",
+            "default": "latexmk",
+            "description": "Path to a LaTeX build tool."
+          },
+          "latex.build.arguments": {
+            "type": "array",
+            "default": [
+              "-pdf",
+              "-interaction=nonstopmode",
+              "-synctex=1"
+            ],
+            "description": "Additional arguments that are passed to the build tool."
+          }
+        }
+      }
+    ],
     "commands": [
       {
         "command": "latex.build",
         "title": "LaTeX: Build File",
         "description": "Builds the current file."
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "latex.build",
+        "key": "ctrl+f5",
+        "mac": "cmd+f5"
       }
     ],
     "languages": [
