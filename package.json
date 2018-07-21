@@ -76,12 +76,7 @@
         "path": "./syntaxes/latex.tmLanguage"
       }
     ],
-    "snippets": [
-      {
-        "language": "latex",
-        "path": "./snippets/latex.json"
-      }
-    ]
+    "snippets": []
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

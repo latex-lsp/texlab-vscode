@@ -1,7 +1,0 @@
-{
-  "Begin": {
-    "prefix": "\\begin",
-    "body": ["\\begin{${1:}}", "\t$0", "\\end{${1:}}"],
-    "description": "Environment"
-  }
-}
