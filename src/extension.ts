@@ -36,6 +36,10 @@ function createLanguageClient(
   const clientOptions: LanguageClientOptions = {
     documentSelector: ['latex'],
     outputChannel,
+    uriConverters: {
+      code2Protocol: uri => uri.toString(true),
+      protocol2Code: path => vscode.Uri.file(path),
+    },
   };
 
   return new LanguageClient('texlab', serverOptions, clientOptions);
