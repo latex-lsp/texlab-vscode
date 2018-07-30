@@ -11,6 +11,12 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(client);
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand('latex.build', editor => {
+      if (!isLatexFile(editor.document)) {
+        return;
+      }
+
+      // TODO: Resolve master file.
+
       vscode.window.withProgress(
         {
           cancellable: false,

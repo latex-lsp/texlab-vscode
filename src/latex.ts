@@ -9,10 +9,7 @@ export async function build(
   outputChannel: vscode.OutputChannel,
 ): Promise<boolean> {
   async function run() {
-    if (
-      document.uri.scheme !== 'file' ||
-      (document.isDirty && !(await document.save()))
-    ) {
+    if (document.isDirty && !(await document.save())) {
       return;
     }
 
