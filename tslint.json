@@ -1,6 +1,17 @@
 {
   "extends": ["tslint:latest", "tslint-config-prettier"],
   "rules": {
-    "no-implicit-dependencies": false
+    "no-implicit-dependencies": false,
+    "interface-name": false,
+    "max-classes-per-file": false,
+    "object-literal-sort-keys": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ],
+    "no-empty": false,
+    "no-bitwise": false
   }
 }

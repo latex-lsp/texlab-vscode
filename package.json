@@ -97,6 +97,7 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
+    "funfix-core": "^7.0.1",
     "vscode-languageclient": "^4.3.0"
   }
 }

@@ -463,6 +463,16 @@ fstream@^1.0.2:
     mkdirp ">=0.5 0"
     rimraf "2"
 
+funfix-core@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/funfix-core/-/funfix-core-7.0.1.tgz#894a9f39ef582c5d6dcc9ef384381d12819e8094"
+  dependencies:
+    funland "^0.1.4"
+
+funland@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/funland/-/funland-0.1.4.tgz#b2b6df1ce691a0c811304c03310341aa3175ad05"
+
 getpass@^0.1.1:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/getpass/-/getpass-0.1.7.tgz#5eff8e3e684d569ae4cb2b1282604e8ba62149fa"
