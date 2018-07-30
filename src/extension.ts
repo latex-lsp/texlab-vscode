@@ -1,44 +1,50 @@
 import * as vscode from 'vscode';
-import * as latex from './latex';
+import { BuildResult, BuildTool } from './latex';
 import { ProtocolClient } from './protocol';
 import { isLatexFile } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
   const outputChannel = vscode.window.createOutputChannel('LaTeX');
+  const buildTool = new BuildTool(outputChannel);
   const client = new ProtocolClient(outputChannel);
 
   context.subscriptions.push(outputChannel);
   context.subscriptions.push(client);
   context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand('latex.build', editor => {
-      if (!isLatexFile(editor.document)) {
-        return;
-      }
-
-      // TODO: Resolve master file.
-
-      vscode.window.withProgress(
-        {
-          cancellable: false,
-          location: vscode.ProgressLocation.Window,
-          title: 'Building...',
-        },
-        async () => {
-          try {
-            if (await latex.build(editor.document, outputChannel)) {
-              vscode.window.setStatusBarMessage('Build succeeded', 5000);
-            } else {
-              vscode.window.setStatusBarMessage('Build failed', 5000);
-            }
-          } catch {
-            vscode.window.showErrorMessage(
-              'Could not start the configured LaTeX build tool.',
-            );
-          }
-        },
-      );
-    }),
+    vscode.commands.registerTextEditorCommand('latex.build', editor =>
+      buildDocument(buildTool, editor.document),
+    ),
   );
 
   await client.start();
+}
+
+function buildDocument(buildTool: BuildTool, document: vscode.TextDocument) {
+  if (!isLatexFile(document) || buildTool.isBuilding) {
+    return;
+  }
+
+  // TODO: Resolve master file.
+
+  vscode.window.withProgress(
+    {
+      cancellable: false,
+      location: vscode.ProgressLocation.Window,
+      title: 'Building...',
+    },
+    async () => {
+      switch (await buildTool.build(document)) {
+        case BuildResult.Success:
+          vscode.window.setStatusBarMessage('Build succeeded', 5000);
+          break;
+        case BuildResult.Error:
+          vscode.window.setStatusBarMessage('Build failed', 5000);
+        case BuildResult.Failure:
+          vscode.window.showErrorMessage(
+            'Could not start the configured LaTeX build tool.',
+          );
+          break;
+      }
+    },
+  );
 }

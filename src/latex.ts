@@ -2,46 +2,61 @@ import * as cp from 'child_process';
 import * as path from 'path';
 import * as vscode from 'vscode';
 
-let isBuilding: boolean = false;
+export enum BuildResult {
+  Success,
+  Error,
+  Failure,
+}
 
-export async function build(
-  document: vscode.TextDocument,
-  outputChannel: vscode.OutputChannel,
-): Promise<boolean> {
-  async function run() {
-    if (document.isDirty && !(await document.save())) {
-      return;
-    }
+export class BuildTool {
+  private _isBuilding: boolean;
+  private executable: string;
+  private args: string[];
+
+  public get isBuilding() {
+    return this._isBuilding;
+  }
+
+  constructor(private outputChannel: vscode.OutputChannel) {
+    this._isBuilding = false;
 
     const config = vscode.workspace.getConfiguration('latex.build');
-    const executable = config.get<string>('executable');
-    const args = config.get<string[]>('arguments').concat(document.fileName);
+    this.executable = config.get<string>('executable')!;
+    this.args = config.get<string[]>('arguments')!;
+  }
 
-    const process = cp.spawn(executable, args, {
+  public async build(document: vscode.TextDocument): Promise<BuildResult> {
+    if (this.isBuilding || (document.isDirty && !(await document.save()))) {
+      return BuildResult.Error;
+    }
+
+    this._isBuilding = true;
+
+    const args = this.args.concat(document.fileName);
+    const process = cp.spawn(this.executable, args, {
       cwd: path.dirname(document.fileName),
     });
 
-    outputChannel.clear();
-    outputChannel.show();
-    const appendOutput = (chunk: string | Buffer) =>
-      outputChannel.append(chunk.toString());
-    process.stdout.on('data', appendOutput);
-    process.stderr.on('data', appendOutput);
+    this.outputChannel.clear();
+    this.outputChannel.show();
+    process.stdout.on('data', this.appendOutput.bind(this));
+    process.stderr.on('data', this.appendOutput.bind(this));
 
-    return new Promise<boolean>((resolve, reject) => {
-      process.addListener('error', reject);
-      process.on('exit', exitCode => {
-        resolve(exitCode === 0);
-      });
-    });
+    const result = await this.waitForExit(process);
+    this._isBuilding = false;
+    return result;
   }
 
-  if (!isBuilding) {
-    isBuilding = true;
-    try {
-      return await run();
-    } finally {
-      isBuilding = false;
-    }
+  private appendOutput(chunk: string | Buffer) {
+    this.outputChannel.append(chunk.toString());
+  }
+
+  private waitForExit(process: cp.ChildProcess): Promise<BuildResult> {
+    return new Promise(resolve => {
+      process.on('error', () => resolve(BuildResult.Failure));
+      process.on('exit', exitCode =>
+        resolve(exitCode === 0 ? BuildResult.Success : BuildResult.Error),
+      );
+    });
   }
 }
