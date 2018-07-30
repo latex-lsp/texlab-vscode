@@ -86,7 +86,7 @@ class BufferReader {
   }
 
   private readLEB128(): Option<number> {
-    const highestBitSet = x => (x & 0x80) === 0x80;
+    const highestBitSet = (x: number) => (x & 0x80) === 0x80;
 
     let result = Option.some(0);
     let currentByte: Option<number>;
@@ -118,7 +118,7 @@ class BufferReader {
 
 class PdfPageStream {
   private readonly emitter: vscode.EventEmitter<RenderedPdfPage>;
-  private stream: Readable;
+  private stream: Readable | undefined;
   private buffer: Buffer;
 
   public get onRendered(): vscode.Event<RenderedPdfPage> {
@@ -137,7 +137,10 @@ class PdfPageStream {
 
   public dispose() {
     this.emitter.dispose();
-    this.stream.removeAllListeners();
+
+    if (this.stream) {
+      this.stream.removeAllListeners();
+    }
   }
 
   private onDataReceived(data: Buffer) {
@@ -192,7 +195,7 @@ class PdfPageStream {
 export class ProtocolClient {
   private readonly client: LanguageClient;
   private stream: PdfPageStream;
-  private disposable: vscode.Disposable;
+  private disposable: vscode.Disposable | undefined;
 
   public get onPdfPageRendered(): vscode.Event<RenderedPdfPage> {
     return this.stream.onRendered;
@@ -273,6 +276,9 @@ export class ProtocolClient {
 
   public dispose() {
     this.stream.dispose();
-    this.disposable.dispose();
+
+    if (this.disposable) {
+      this.disposable.dispose();
+    }
   }
 }

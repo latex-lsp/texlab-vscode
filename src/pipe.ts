@@ -27,7 +27,7 @@ interface ReadablePipeTransport {
 }
 
 function createReadablePipe(name: string): Promise<ReadablePipeTransport> {
-  let connectResolve;
+  let connectResolve: any;
   const connected = new Promise<Readable>(resolve => {
     connectResolve = resolve;
   });
