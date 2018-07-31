@@ -39,6 +39,7 @@ function buildDocument(buildTool: BuildTool, document: vscode.TextDocument) {
           break;
         case BuildResult.Error:
           vscode.window.setStatusBarMessage('Build failed', 5000);
+          break;
         case BuildResult.Failure:
           vscode.window.showErrorMessage(
             'Could not start the configured LaTeX build tool.',
