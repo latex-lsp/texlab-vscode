@@ -5,6 +5,7 @@ import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
+  TextDocumentIdentifier,
 } from 'vscode-languageclient';
 import { createPdfPipe, createRpcPipe } from './pipe';
 
@@ -49,6 +50,14 @@ export interface RenderPdfPageParams {
   width: number;
   height: number;
   viewport: PdfViewport;
+}
+
+interface AncestorParams {
+  textDocument: TextDocumentIdentifier;
+}
+
+interface AncestorResult {
+  textDocument: TextDocumentIdentifier;
 }
 
 class BufferReader {
@@ -253,6 +262,19 @@ export class ProtocolClient {
     };
 
     this.client.sendNotification('pdfDocument/renderPage', params);
+  }
+
+  public async getAncestor(uri: vscode.Uri): Promise<vscode.Uri> {
+    const params: AncestorParams = {
+      textDocument: { uri: this.client.code2ProtocolConverter.asUri(uri) },
+    };
+
+    const result = await this.client.sendRequest<AncestorResult>(
+      'textDocument/getAncestor',
+      params,
+    );
+
+    return this.client.protocol2CodeConverter.asUri(result.textDocument.uri);
   }
 
   public dispose() {
