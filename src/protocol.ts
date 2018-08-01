@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 import {
   LanguageClient,
   LanguageClientOptions,
-  Protocol2CodeConverter,
   ServerOptions,
 } from 'vscode-languageclient';
 import { createPdfPipe, createRpcPipe } from './pipe';
@@ -16,12 +15,12 @@ export interface PdfPageItem {
 }
 
 export interface PdfDocumentItem {
-  uri: vscode.Uri;
+  file: string;
   pages: PdfPageItem[];
 }
 
 export interface PdfViewport {
-  uri: vscode.Uri;
+  file: string;
   zoom: number;
   firstPage: number;
   lastPage: number;
@@ -33,23 +32,23 @@ export interface RenderedPdfPage {
   bitmap: Uint8ClampedArray;
 }
 
-interface DidOpenPdfDocumentParams {
-  uri: string;
+export interface DidOpenPdfDocumentParams {
+  file: string;
 }
 
-interface DidClosePdfDocumentParams {
-  uri: string;
+export interface DidClosePdfDocumentParams {
+  file: string;
 }
 
-interface DidChangePdfViewportParams {
-  viewport: any;
+export interface DidChangePdfViewportParams {
+  viewport: PdfViewport;
 }
 
-interface RenderPdfPageParams {
+export interface RenderPdfPageParams {
   index: number;
   width: number;
   height: number;
-  viewport: any;
+  viewport: PdfViewport;
 }
 
 class BufferReader {
@@ -125,7 +124,7 @@ class PdfPageStream {
     return this.emitter.event;
   }
 
-  constructor(private protocol2Code: Protocol2CodeConverter) {
+  constructor() {
     this.emitter = new vscode.EventEmitter<RenderedPdfPage>();
     this.buffer = Buffer.from([]);
   }
@@ -175,8 +174,8 @@ class PdfPageStream {
       reader.readDouble(),
       reader.readInt32(),
       reader.readInt32(),
-      (uri, zoom, firstPage, lastPage) => ({
-        uri: this.protocol2Code.asUri(uri),
+      (file, zoom, firstPage, lastPage) => ({
+        file,
         zoom,
         firstPage,
         lastPage,
@@ -213,7 +212,7 @@ export class ProtocolClient {
     };
 
     this.client = new LanguageClient('texlab', serverOptions, clientOptions);
-    this.stream = new PdfPageStream(this.client.protocol2CodeConverter);
+    this.stream = new PdfPageStream();
   }
 
   public async start(): Promise<void> {
@@ -221,37 +220,22 @@ export class ProtocolClient {
     await Promise.all([this.client.onReady(), this.stream.listen()]);
   }
 
-  public async openPdfDocument(uri: vscode.Uri): Promise<PdfDocumentItem> {
-    const params: DidOpenPdfDocumentParams = {
-      uri: this.client.code2ProtocolConverter.asUri(uri),
-    };
+  public openPdfDocument(file: string): Thenable<PdfDocumentItem> {
+    const params: DidOpenPdfDocumentParams = { file };
 
-    const document = await this.client.sendRequest<any>(
+    return this.client.sendRequest<PdfDocumentItem>(
       'pdfDocument/didOpen',
       params,
     );
-    return {
-      ...document,
-      uri: this.client.protocol2CodeConverter.asUri(document.uri),
-    };
   }
 
-  public closePdfDocument(uri: vscode.Uri) {
-    const params: DidClosePdfDocumentParams = {
-      uri: this.client.code2ProtocolConverter.asUri(uri),
-    };
-
+  public closePdfDocument(file: string) {
+    const params: DidClosePdfDocumentParams = { file };
     this.client.sendNotification('pdfDocument/didClose', params);
   }
 
   public changePdfViewport(viewport: PdfViewport) {
-    const params: DidChangePdfViewportParams = {
-      viewport: {
-        ...viewport,
-        uri: this.client.code2ProtocolConverter.asUri(viewport.uri),
-      },
-    };
-
+    const params: DidChangePdfViewportParams = { viewport };
     this.client.sendNotification('pdfDocument/didChangeViewport', params);
   }
 
@@ -265,10 +249,7 @@ export class ProtocolClient {
       index,
       width,
       height,
-      viewport: {
-        ...viewport,
-        uri: this.client.code2ProtocolConverter.asUri(viewport.uri),
-      },
+      viewport,
     };
 
     this.client.sendNotification('pdfDocument/renderPage', params);
