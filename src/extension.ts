@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { BuildResult, BuildTool } from './latex';
+import { BuildResult, BuildTool } from './build';
 import { ProtocolClient } from './protocol';
-import { isLatexFile } from './util';
 
 export async function activate(context: vscode.ExtensionContext) {
   const outputChannel = vscode.window.createOutputChannel('LaTeX');
@@ -12,33 +11,45 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(client);
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand('latex.build', editor =>
-      buildDocument(buildTool, editor.document),
+      buildDocument(client, buildTool, editor.document),
     ),
   );
 
   await client.start();
 }
 
-function buildDocument(buildTool: BuildTool, document: vscode.TextDocument) {
-  if (!isLatexFile(document) || buildTool.isBuilding) {
+const HIDE_AFTER_TIMEOUT = 5000;
+
+async function buildDocument(
+  client: ProtocolClient,
+  buildTool: BuildTool,
+  document: vscode.TextDocument,
+): Promise<void> {
+  if (buildTool.isBuilding) {
     return;
   }
 
-  // TODO: Resolve master file.
+  const ancestor = await client.getAncestor(document.uri);
+  if (ancestor.scheme !== 'file') {
+    return;
+  }
 
-  vscode.window.withProgress(
+  return vscode.window.withProgress(
     {
       cancellable: false,
       location: vscode.ProgressLocation.Window,
       title: 'Building...',
     },
     async () => {
-      switch (await buildTool.build(document)) {
+      switch (await buildTool.build(ancestor)) {
         case BuildResult.Success:
-          vscode.window.setStatusBarMessage('Build succeeded', 5000);
+          vscode.window.setStatusBarMessage(
+            'Build succeeded',
+            HIDE_AFTER_TIMEOUT,
+          );
           break;
         case BuildResult.Error:
-          vscode.window.setStatusBarMessage('Build failed', 5000);
+          vscode.window.setStatusBarMessage('Build failed', HIDE_AFTER_TIMEOUT);
           break;
         case BuildResult.Failure:
           vscode.window.showErrorMessage(

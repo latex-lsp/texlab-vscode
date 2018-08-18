@@ -25,16 +25,15 @@ export class BuildTool {
     this.args = config.get<string[]>('arguments')!;
   }
 
-  public async build(document: vscode.TextDocument): Promise<BuildResult> {
-    if (this.isBuilding || (document.isDirty && !(await document.save()))) {
+  public async build(uri: vscode.Uri): Promise<BuildResult> {
+    if (this.isBuilding) {
       return BuildResult.Error;
     }
-
     this._isBuilding = true;
 
-    const args = this.args.concat(document.fileName);
+    const args = this.args.concat(uri.fsPath);
     const process = cp.spawn(this.executable, args, {
-      cwd: path.dirname(document.fileName),
+      cwd: path.dirname(uri.fsPath),
     });
 
     this.outputChannel.clear();
