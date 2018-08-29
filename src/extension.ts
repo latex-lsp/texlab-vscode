@@ -7,9 +7,9 @@ export async function activate(context: vscode.ExtensionContext) {
   const buildTool = new BuildTool(outputChannel);
   const client = new ProtocolClient(outputChannel);
 
-  context.subscriptions.push(outputChannel);
-  context.subscriptions.push(client);
   context.subscriptions.push(
+    outputChannel,
+    client,
     vscode.commands.registerTextEditorCommand('latex.build', editor =>
       buildDocument(client, buildTool, editor.document),
     ),
