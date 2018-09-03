@@ -10,8 +10,6 @@ export enum BuildResult {
 
 export class BuildTool {
   private _isBuilding: boolean;
-  private executable: string;
-  private args: string[];
 
   public get isBuilding() {
     return this._isBuilding;
@@ -19,10 +17,6 @@ export class BuildTool {
 
   constructor(private outputChannel: vscode.OutputChannel) {
     this._isBuilding = false;
-
-    const config = vscode.workspace.getConfiguration('latex.build');
-    this.executable = config.get<string>('executable')!;
-    this.args = config.get<string[]>('arguments')!;
   }
 
   public async build(uri: vscode.Uri): Promise<BuildResult> {
@@ -31,8 +25,10 @@ export class BuildTool {
     }
     this._isBuilding = true;
 
-    const args = this.args.concat(uri.fsPath);
-    const process = cp.spawn(this.executable, args, {
+    const config = vscode.workspace.getConfiguration('latex.build');
+    const executable = config.get<string>('executable')!;
+    const args = config.get<string[]>('arguments')!;
+    const process = cp.spawn(executable, args.concat(uri.fsPath), {
       cwd: path.dirname(uri.fsPath),
     });
 

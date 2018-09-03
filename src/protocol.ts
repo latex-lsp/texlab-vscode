@@ -1,16 +1,16 @@
+import * as os from 'os';
+import * as path from 'path';
 import * as vscode from 'vscode';
 import {
+  createClientPipeTransport,
+  generateRandomPipeName,
   LanguageClient,
   LanguageClientOptions,
+  MessageTransports,
   ServerOptions,
   TextDocumentIdentifier,
-  generateRandomPipeName,
-  MessageTransports,
-  createClientPipeTransport,
 } from 'vscode-languageclient';
 import DEBUG from './debug';
-import * as path from 'path';
-import * as os from 'os';
 
 const RPC_DEBUG_NAME = 'texlab';
 
