@@ -41,7 +41,8 @@ async function buildDocument(
       title: 'Building...',
     },
     async () => {
-      switch (await buildTool.build(ancestor)) {
+      const result = await buildTool.build(ancestor);
+      switch (result) {
         case BuildResult.Success:
           vscode.window.setStatusBarMessage(
             'Build succeeded',
@@ -56,6 +57,10 @@ async function buildDocument(
             'Could not start the configured LaTeX build tool.',
           );
           break;
+      }
+
+      if (result !== BuildResult.Failure) {
+        client.didBuild(ancestor);
       }
     },
   );

@@ -22,6 +22,10 @@ interface AncestorResult {
   textDocument: TextDocumentIdentifier;
 }
 
+interface DidBuildTextDocumentParams {
+  textDocument: TextDocumentIdentifier;
+}
+
 export class ProtocolClient {
   private readonly client: LanguageClient;
   private subscription: vscode.Disposable | undefined;
@@ -56,6 +60,14 @@ export class ProtocolClient {
     );
 
     return this.client.protocol2CodeConverter.asUri(result.textDocument.uri);
+  }
+
+  public didBuild(uri: vscode.Uri) {
+    const params: DidBuildTextDocumentParams = {
+      textDocument: { uri: this.client.code2ProtocolConverter.asUri(uri) },
+    };
+
+    this.client.sendNotification('textDocument/didBuild', params);
   }
 
   public dispose() {
