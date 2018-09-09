@@ -27,7 +27,7 @@ interface DidBuildTextDocumentParams {
 }
 
 export class ProtocolClient {
-  private readonly client: LanguageClient;
+  public readonly languageClient: LanguageClient;
   private subscription: vscode.Disposable | undefined;
 
   constructor(outputChannel: vscode.OutputChannel) {
@@ -41,33 +41,43 @@ export class ProtocolClient {
       },
     };
 
-    this.client = new LanguageClient('texlab', serverOptions, clientOptions);
+    this.languageClient = new LanguageClient(
+      'texlab',
+      serverOptions,
+      clientOptions,
+    );
   }
 
   public async start(): Promise<void> {
-    this.subscription = this.client.start();
-    await this.client.onReady();
+    this.subscription = this.languageClient.start();
+    await this.languageClient.onReady();
   }
 
   public async getAncestor(uri: vscode.Uri): Promise<vscode.Uri> {
     const params: AncestorParams = {
-      textDocument: { uri: this.client.code2ProtocolConverter.asUri(uri) },
+      textDocument: {
+        uri: this.languageClient.code2ProtocolConverter.asUri(uri),
+      },
     };
 
-    const result = await this.client.sendRequest<AncestorResult>(
+    const result = await this.languageClient.sendRequest<AncestorResult>(
       'textDocument/getAncestor',
       params,
     );
 
-    return this.client.protocol2CodeConverter.asUri(result.textDocument.uri);
+    return this.languageClient.protocol2CodeConverter.asUri(
+      result.textDocument.uri,
+    );
   }
 
   public didBuild(uri: vscode.Uri) {
     const params: DidBuildTextDocumentParams = {
-      textDocument: { uri: this.client.code2ProtocolConverter.asUri(uri) },
+      textDocument: {
+        uri: this.languageClient.code2ProtocolConverter.asUri(uri),
+      },
     };
 
-    this.client.sendNotification('textDocument/didBuild', params);
+    this.languageClient.sendNotification('textDocument/didBuild', params);
   }
 
   public dispose() {

@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
 import { BuildResult, BuildTool } from './build';
 import { ProtocolClient } from './protocol';
+import { ServerIcon } from './status';
 
 export async function activate(context: vscode.ExtensionContext) {
   const outputChannel = vscode.window.createOutputChannel('LaTeX');
   const buildTool = new BuildTool(outputChannel);
   const client = new ProtocolClient(outputChannel);
+  const icon = new ServerIcon(client.languageClient);
 
   context.subscriptions.push(
     outputChannel,
@@ -13,9 +15,11 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerTextEditorCommand('latex.build', editor =>
       buildDocument(client, buildTool, editor.document),
     ),
+    icon,
   );
 
   await client.start();
+  icon.show();
 }
 
 const HIDE_AFTER_TIMEOUT = 5000;
