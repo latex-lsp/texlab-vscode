@@ -1,57 +1,95 @@
-import * as cp from 'child_process';
-import * as path from 'path';
 import * as vscode from 'vscode';
+import {
+  ClientCapabilities,
+  DocumentSelector,
+  LanguageClient,
+  ServerCapabilities,
+  StaticFeature,
+} from 'vscode-languageclient';
+import {
+  BuildResult,
+  BuildTextDocumentParams,
+  BuildTextDocumentRequest,
+} from './protocol';
 
-export enum BuildResult {
-  Success,
-  Error,
-  Failure,
-}
+const HIDE_AFTER_TIMEOUT = 5000;
 
-export class BuildTool {
-  private _isBuilding: boolean;
+export class BuildFeature implements StaticFeature {
+  private subscription: vscode.Disposable | undefined;
 
-  public get isBuilding() {
-    return this._isBuilding;
-  }
+  constructor(private client: LanguageClient) {}
 
-  constructor(private outputChannel: vscode.OutputChannel) {
-    this._isBuilding = false;
-  }
+  public fillClientCapabilities(_capabilities: ClientCapabilities) {}
 
-  public async build(uri: vscode.Uri): Promise<BuildResult> {
-    if (this.isBuilding) {
-      return BuildResult.Error;
+  public initialize(
+    _capabilities: ServerCapabilities,
+    documentSelector: DocumentSelector,
+  ) {
+    if (this.subscription !== undefined) {
+      return;
     }
-    this._isBuilding = true;
 
-    const config = vscode.workspace.getConfiguration('latex.build');
-    const executable = config.get<string>('executable')!;
-    const args = config.get<string[]>('arguments')!;
-    const process = cp.spawn(executable, args.concat(uri.fsPath), {
-      cwd: path.dirname(uri.fsPath),
-    });
-
-    this.outputChannel.clear();
-    this.outputChannel.show();
-    process.stdout.on('data', this.appendOutput.bind(this));
-    process.stderr.on('data', this.appendOutput.bind(this));
-
-    const result = await this.waitForExit(process);
-    this._isBuilding = false;
-    return result;
+    this.subscription = vscode.commands.registerTextEditorCommand(
+      'latex.build',
+      async editor => this.build(editor, documentSelector),
+    );
   }
 
-  private appendOutput(chunk: string | Buffer) {
-    this.outputChannel.append(chunk.toString());
+  public dispose() {
+    if (this.subscription) {
+      this.subscription.dispose();
+      this.subscription = undefined;
+    }
   }
 
-  private waitForExit(process: cp.ChildProcess): Promise<BuildResult> {
-    return new Promise(resolve => {
-      process.on('error', () => resolve(BuildResult.Failure));
-      process.on('exit', exitCode =>
-        resolve(exitCode === 0 ? BuildResult.Success : BuildResult.Error),
-      );
-    });
+  private async build(
+    editor: vscode.TextEditor,
+    documentSelector: DocumentSelector,
+  ) {
+    if (
+      !vscode.languages.match(documentSelector, editor.document) ||
+      editor.document.uri.scheme !== 'file'
+    ) {
+      return;
+    }
+
+    await vscode.window.withProgress(
+      {
+        cancellable: false,
+        location: vscode.ProgressLocation.Window,
+        title: 'Building...',
+      },
+      async () => {
+        const params: BuildTextDocumentParams = {
+          textDocument: this.client.code2ProtocolConverter.asTextDocumentIdentifier(
+            editor.document,
+          ),
+        };
+        const result = await this.client.sendRequest(
+          BuildTextDocumentRequest.type,
+          params,
+        );
+
+        switch (result) {
+          case BuildResult.Success:
+            vscode.window.setStatusBarMessage(
+              'Build succeeded',
+              HIDE_AFTER_TIMEOUT,
+            );
+            break;
+          case BuildResult.Error:
+            vscode.window.setStatusBarMessage(
+              'Build failed',
+              HIDE_AFTER_TIMEOUT,
+            );
+            break;
+          case BuildResult.Failure:
+            vscode.window.showErrorMessage(
+              'Could not start the configured LaTeX build tool.',
+            );
+            break;
+        }
+      },
+    );
   }
 }

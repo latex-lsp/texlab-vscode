@@ -1,71 +1,54 @@
+import * as os from 'os';
+import * as path from 'path';
 import * as vscode from 'vscode';
-import { BuildResult, BuildTool } from './build';
-import { ProtocolClient } from './protocol';
+import {
+  createClientPipeTransport,
+  generateRandomPipeName,
+  LanguageClient,
+  LanguageClientOptions,
+  MessageTransports,
+  ServerOptions,
+  State,
+} from 'vscode-languageclient';
+import { BuildFeature } from './build';
+import DEBUG from './debug';
 import { ServerIcon } from './status';
 
 export async function activate(context: vscode.ExtensionContext) {
-  const outputChannel = vscode.window.createOutputChannel('LaTeX');
-  const buildTool = new BuildTool(outputChannel);
-  const client = new ProtocolClient(outputChannel);
-  const icon = new ServerIcon(client.languageClient);
+  const serverOptions: ServerOptions = createRpcPipe;
+  const clientOptions: LanguageClientOptions = {
+    documentSelector: ['latex'],
+    outputChannelName: 'LaTeX',
+    uriConverters: {
+      code2Protocol: uri => uri.toString(true),
+      protocol2Code: value => vscode.Uri.parse(value),
+    },
+  };
+  const client = new LanguageClient('texlab', serverOptions, clientOptions);
+  const icon = new ServerIcon(client);
+  const buildFeature = new BuildFeature(client);
 
-  context.subscriptions.push(
-    outputChannel,
-    client,
-    vscode.commands.registerTextEditorCommand('latex.build', editor =>
-      buildDocument(client, buildTool, editor.document),
-    ),
-    icon,
-  );
-
-  await client.start();
+  client.registerFeature(buildFeature);
+  context.subscriptions.push(client.start(), buildFeature, icon);
+  await client.onReady();
   icon.show();
 }
 
-const HIDE_AFTER_TIMEOUT = 5000;
+const RPC_DEBUG_NAME = 'texlab';
 
-async function buildDocument(
-  client: ProtocolClient,
-  buildTool: BuildTool,
-  document: vscode.TextDocument,
-): Promise<void> {
-  if (buildTool.isBuilding) {
-    return;
+function generatePipeName(debugName: string): string {
+  if (DEBUG) {
+    return process.platform === 'win32'
+      ? `\\\\.\\pipe\\${debugName}`
+      : path.join(os.tmpdir(), `${debugName}.sock`);
   }
 
-  const ancestor = await client.getAncestor(document.uri);
-  if (ancestor.scheme !== 'file') {
-    return;
-  }
+  return generateRandomPipeName();
+}
 
-  return vscode.window.withProgress(
-    {
-      cancellable: false,
-      location: vscode.ProgressLocation.Window,
-      title: 'Building...',
-    },
-    async () => {
-      const result = await buildTool.build(ancestor);
-      switch (result) {
-        case BuildResult.Success:
-          vscode.window.setStatusBarMessage(
-            'Build succeeded',
-            HIDE_AFTER_TIMEOUT,
-          );
-          break;
-        case BuildResult.Error:
-          vscode.window.setStatusBarMessage('Build failed', HIDE_AFTER_TIMEOUT);
-          break;
-        case BuildResult.Failure:
-          vscode.window.showErrorMessage(
-            'Could not start the configured LaTeX build tool.',
-          );
-          break;
-      }
-
-      if (result !== BuildResult.Failure) {
-        client.didBuild(ancestor);
-      }
-    },
-  );
+async function createRpcPipe(): Promise<MessageTransports> {
+  const name = generatePipeName(RPC_DEBUG_NAME);
+  const transport = await createClientPipeTransport(name);
+  const streams = await transport.onConnected();
+  return { reader: streams[0], writer: streams[1] };
 }
