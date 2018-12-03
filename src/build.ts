@@ -43,13 +43,18 @@ export class BuildFeature implements StaticFeature {
   }
 
   private async build(
-    editor: vscode.TextEditor,
+    { document }: vscode.TextEditor,
     documentSelector: DocumentSelector,
   ) {
     if (
-      !vscode.languages.match(documentSelector, editor.document) ||
-      editor.document.uri.scheme !== 'file'
+      !vscode.languages.match(documentSelector, document) ||
+      document.uri.scheme !== 'file'
     ) {
+      return;
+    }
+
+    if (document.isDirty && (await !document.save())) {
+      vscode.window.showErrorMessage('Could not save the current document.');
       return;
     }
 
@@ -62,7 +67,7 @@ export class BuildFeature implements StaticFeature {
       async () => {
         const params: BuildTextDocumentParams = {
           textDocument: this.client.code2ProtocolConverter.asTextDocumentIdentifier(
-            editor.document,
+            document,
           ),
         };
         const result = await this.client.sendRequest(
