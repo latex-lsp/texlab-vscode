@@ -10,16 +10,9 @@ import { BuildFeature } from './build';
 import { ServerIcon } from './status';
 
 export async function activate(context: vscode.ExtensionContext) {
-  const serverModule = context.asAbsolutePath(
-    path.join('node_modules', 'texlab', 'out', 'main.js'),
-  );
   const serverOptions: ServerOptions = {
-    run: { module: serverModule, transport: TransportKind.ipc },
-    debug: {
-      module: serverModule,
-      transport: TransportKind.ipc,
-      options: { execArgv: ['--nolazy', '--inspect=6009'] },
-    },
+    command: 'java',
+    args: ['-jar', context.asAbsolutePath('server/texlab.jar')],
   };
   const clientOptions: LanguageClientOptions = {
     documentSelector: ['latex'],
