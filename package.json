@@ -67,7 +67,7 @@
           ".sty",
           ".cls"
         ],
-        "configuration": "./latex-language-configuration.json"
+        "configuration": "./languages/latex.json"
       },
       {
         "id": "bibtex",
@@ -78,14 +78,14 @@
         "extensions": [
           ".bib"
         ],
-        "configuration": "./bibtex-language-configuration.json"
+        "configuration": "./languages/bibtex.json"
       }
     ],
     "grammars": [
       {
         "language": "latex",
         "scopeName": "source.latex",
-        "path": "./syntaxes/latex.tmLanguage.json"
+        "path": "./grammars/latex.tmLanguage.json"
       }
     ]
   },
@@ -95,7 +95,7 @@
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "lint": "tslint --project .",
-    "format": "prettier --write \"src/**/*.{ts,json}\" \"snippets/**/*.json\" \"syntaxes/**/*.json\" \"*.{json,md}\" "
+    "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{json,md}\" "
   },
   "devDependencies": {
     "@types/node": "^10.5.2",
