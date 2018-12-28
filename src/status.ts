@@ -3,17 +3,13 @@ import {
   ClientCapabilities,
   DocumentSelector,
   LanguageClient,
+  NotificationType,
   ServerCapabilities,
   State,
   StateChangeEvent,
   StaticFeature,
 } from 'vscode-languageclient';
-import {
-  BuildStatus,
-  ServerStatus,
-  SetStatusNotification,
-  StatusParams,
-} from './protocol';
+import { BuildStatus } from './build';
 
 const HIDE_AFTER_TIMEOUT = 5000;
 const NORMAL_COLOR = new vscode.ThemeColor('statusBar.foreground');
@@ -26,6 +22,23 @@ const BUILD_FAILURE_MESSAGE =
   'An error occured while executing the configured LaTeX build tool.';
 const IDLE_STATUS_MESSAGE = 'TexLab is running...';
 const ERROR_STATUS_MESSAGE = 'TexLab has stopped working!';
+
+interface StatusParams {
+  status: ServerStatus;
+  uri?: string;
+}
+
+abstract class SetStatusNotification {
+  public static type = new NotificationType<StatusParams, void>(
+    'window/setStatus',
+  );
+}
+
+export enum ServerStatus {
+  Idle,
+  Building,
+  Indexing,
+}
 
 export class StatusFeature implements StaticFeature {
   private statusBarItem: vscode.StatusBarItem;

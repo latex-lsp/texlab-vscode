@@ -3,11 +3,31 @@ import {
   ClientCapabilities,
   DocumentSelector,
   LanguageClient,
+  RequestType,
   ServerCapabilities,
   StaticFeature,
+  TextDocumentIdentifier,
 } from 'vscode-languageclient';
-import { BuildTextDocumentParams, BuildTextDocumentRequest } from './protocol';
 import { StatusFeature } from './status';
+
+interface BuildTextDocumentParams {
+  textDocument: TextDocumentIdentifier;
+}
+
+abstract class BuildTextDocumentRequest {
+  public static type = new RequestType<
+    BuildTextDocumentParams,
+    BuildStatus,
+    void,
+    void
+  >('textDocument/build');
+}
+
+export enum BuildStatus {
+  Success,
+  Error,
+  Failure,
+}
 
 export class BuildFeature implements StaticFeature {
   private subscription: vscode.Disposable | undefined;
