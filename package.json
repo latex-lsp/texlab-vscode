@@ -15,7 +15,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:latex"
+    "onLanguage:latex",
+    "onLanguage:bibtex"
   ],
   "main": "./out/main",
   "contributes": {
@@ -67,6 +68,17 @@
           ".cls"
         ],
         "configuration": "./latex-language-configuration.json"
+      },
+      {
+        "id": "bibtex",
+        "aliases": [
+          "BibTeX",
+          "bibtex"
+        ],
+        "extensions": [
+          ".bib"
+        ],
+        "configuration": "./bibtex-language-configuration.json"
       }
     ],
     "grammars": [

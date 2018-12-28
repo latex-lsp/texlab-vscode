@@ -13,7 +13,7 @@ export async function activate(context: vscode.ExtensionContext) {
     args: ['-jar', context.asAbsolutePath('server/texlab.jar')],
   };
   const clientOptions: LanguageClientOptions = {
-    documentSelector: ['latex'],
+    documentSelector: ['latex', 'bibtex'],
     outputChannelName: 'LaTeX',
     uriConverters: {
       code2Protocol: uri => uri.toString(true),
