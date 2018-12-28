@@ -1,13 +1,11 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
-  TransportKind,
 } from 'vscode-languageclient';
 import { BuildFeature } from './build';
-import { ServerIcon } from './status';
+import { StatusFeature } from './status';
 
 export async function activate(context: vscode.ExtensionContext) {
   const serverOptions: ServerOptions = {
@@ -23,11 +21,12 @@ export async function activate(context: vscode.ExtensionContext) {
     },
   };
   const client = new LanguageClient('texlab', serverOptions, clientOptions);
-  const icon = new ServerIcon(client);
-  const buildFeature = new BuildFeature(client);
+  const statusFeature = new StatusFeature(client);
+  const buildFeature = new BuildFeature(client, statusFeature);
 
+  client.registerFeature(statusFeature);
   client.registerFeature(buildFeature);
-  context.subscriptions.push(client.start(), buildFeature, icon);
+
+  context.subscriptions.push(client.start(), statusFeature, buildFeature);
   await client.onReady();
-  icon.show();
 }
