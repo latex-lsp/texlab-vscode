@@ -2,10 +2,17 @@
   "name": "texlab",
   "displayName": "TexLab",
   "description": "LaTeX for Visual Studio Code",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "efoerster",
   "license": "MIT",
-  "repository": "https://github.com/efoerster/texlab",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/efoerster/texlab-vscode"
+  },
+  "homepage": "https://github.com/efoerster/texlab-vscode/blob/master/README.md",
+  "bugs": {
+    "url": "https://github.com/efoerster/texlab-vscode/issues"
+  },
   "engines": {
     "vscode": "^1.25.1"
   },
@@ -14,6 +21,17 @@
     "Snippets",
     "Other"
   ],
+  "keywords": [
+    "latex",
+    "tex",
+    "bibtex"
+  ],
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#F5F5F5",
+    "theme": "dark"
+  },
+  "preview": true,
   "activationEvents": [
     "onLanguage:latex",
     "onLanguage:bibtex"
