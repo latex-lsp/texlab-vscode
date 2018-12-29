@@ -47,7 +47,7 @@
             "default": "latexmk",
             "description": "Path to a LaTeX build tool."
           },
-          "latex.build.arguments": {
+          "latex.build.args": {
             "type": "array",
             "default": [
               "-pdf",

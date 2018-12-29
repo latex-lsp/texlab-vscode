@@ -23,7 +23,7 @@ For example if there is an image subfolder under your extension project workspac
 
 ### Build
 
-The default build system is `latexmk`. You can customize this by changing the `latex.build.executable` and `latex.build.arguments` settings.
+The default build system is `latexmk`. You can customize this by changing the `latex.build.executable` and `latex.build.args` settings.
 
 ## Release Notes
 
