@@ -31,6 +31,10 @@ export enum BuildStatus {
 
 export class BuildFeature implements StaticFeature {
   private subscription: vscode.Disposable | undefined;
+  private documentSelector: DocumentSelector = [
+    { language: 'latex', scheme: 'file' },
+    { language: 'bibtex', scheme: 'file' },
+  ];
 
   constructor(
     private client: LanguageClient,
@@ -41,7 +45,7 @@ export class BuildFeature implements StaticFeature {
 
   public initialize(
     _capabilities: ServerCapabilities,
-    documentSelector: DocumentSelector,
+    _documentSelector: DocumentSelector,
   ) {
     if (this.subscription !== undefined) {
       return;
@@ -49,7 +53,7 @@ export class BuildFeature implements StaticFeature {
 
     this.subscription = vscode.commands.registerTextEditorCommand(
       'latex.build',
-      async editor => this.build(editor, documentSelector),
+      async editor => this.build(editor),
     );
   }
 
@@ -60,15 +64,8 @@ export class BuildFeature implements StaticFeature {
     }
   }
 
-  private async build(
-    { document }: vscode.TextEditor,
-    documentSelector: DocumentSelector,
-  ) {
-    if (!vscode.languages.match(documentSelector, document)) {
-      return;
-    }
-
-    if (document.uri.scheme !== 'file') {
+  private async build({ document }: vscode.TextEditor) {
+    if (!vscode.languages.match(this.documentSelector, document)) {
       return;
     }
 
