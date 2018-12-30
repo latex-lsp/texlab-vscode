@@ -71,7 +71,6 @@
         {
           "begin": "(\")",
           "end": "(\")",
-          "name": "string.bibtex",
           "patterns": [
             {
               "include": "#content"
@@ -81,7 +80,6 @@
         {
           "begin": "{",
           "end": "}",
-          "name": "string.bibtex",
           "patterns": [
             {
               "include": "#content"
