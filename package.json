@@ -63,15 +63,25 @@
     "commands": [
       {
         "command": "latex.build",
-        "title": "LaTeX: Build File",
-        "description": "Builds the current file."
+        "title": "Build File",
+        "description": "Builds the current file.",
+        "category": "LaTeX"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "latex.build",
+          "when": "editorLangId =~ /(latex|bibtex)/"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "latex.build",
         "key": "ctrl+f5",
-        "mac": "cmd+f5"
+        "mac": "cmd+f5",
+        "when": "editorLangId =~ /(latex|bibtex)/"
       }
     ],
     "languages": [
