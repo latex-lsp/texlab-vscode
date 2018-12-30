@@ -34,7 +34,8 @@
   "preview": true,
   "activationEvents": [
     "onLanguage:latex",
-    "onLanguage:bibtex"
+    "onLanguage:bibtex",
+    "workspaceContains:**/*.{bib,tex}"
   ],
   "main": "./out/main",
   "contributes": {
