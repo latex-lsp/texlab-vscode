@@ -87,27 +87,10 @@
           ]
         },
         {
-          "match": "\\w+",
-          "name": "text.bibtex"
+          "match": "%.*$"
         },
         {
-          "include": "#command"
-        },
-        {
-          "match": "#",
-          "name": "constant.character.escape.bibtex"
-        }
-      ]
-    },
-    "command": {
-      "patterns": [
-        {
-          "name": "constant.character.escape.bibtex",
-          "match": "\\\\[#\\$%&_{}~\\\\,\"']"
-        },
-        {
-          "name": "entity.name.function.command.bibtex",
-          "match": "\\\\[a-zA-Z@]+(\\*)?"
+          "include": "source.latex"
         }
       ]
     },
