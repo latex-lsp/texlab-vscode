@@ -87,7 +87,7 @@
           ]
         },
         {
-          "match": "%.*$"
+          "match": "%"
         },
         {
           "include": "source.latex"
