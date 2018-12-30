@@ -120,7 +120,7 @@
         },
         {
           "name": "constant.character.escape.latex",
-          "match": "\\\\[#\\$%&_{}~\\\\,]"
+          "match": "\\\\[#\\$%&_{}~\\\\, \"`'\\^=\\.]"
         },
         {
           "name": "entity.name.function.command.latex",
