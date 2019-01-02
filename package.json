@@ -60,6 +60,16 @@
         }
       }
     ],
+    "configurationDefaults": {
+      "[latex]": {
+        "editor.wordBasedSuggestions": false,
+        "editor.suggest.snippetsPreventQuickSuggestions": false
+      },
+      "[bibtex]": {
+        "editor.wordBasedSuggestions": false,
+        "editor.suggest.snippetsPreventQuickSuggestions": false
+      }
+    },
     "commands": [
       {
         "command": "latex.build",
