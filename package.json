@@ -58,6 +58,16 @@
             "description": "Additional arguments that are passed to the build tool."
           }
         }
+      },
+      {
+        "title": "BibTeX configuration",
+        "properties": {
+          "bibtex.formatting.lineLength": {
+            "type": "integer",
+            "default": 120,
+            "description": "Maximum amount of characters per line (0 = disable)."
+          }
+        }
       }
     ],
     "configurationDefaults": {
