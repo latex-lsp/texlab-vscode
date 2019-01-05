@@ -101,8 +101,13 @@ export class StatusFeature implements StaticFeature {
   }
 
   private onServerStateChanged({ newState }: StateChangeEvent) {
-    if (newState === State.Stopped) {
-      this.drawStatusBarItem('', ERROR_STATUS_MESSAGE, ERROR_COLOR);
+    switch (newState) {
+      case State.Running:
+        this.onServerStatusChanged({ status: ServerStatus.Idle });
+        break;
+      case State.Stopped:
+        this.drawStatusBarItem('', ERROR_STATUS_MESSAGE, ERROR_COLOR);
+        break;
     }
   }
 
