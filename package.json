@@ -56,6 +56,19 @@
               "-synctex=1"
             ],
             "description": "Additional arguments that are passed to the build tool."
+          },
+          "latex.forwardSearch.executable": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Path to a PDF previewer that supports SyncTeX."
+          },
+          "latex.forwardSearch.args": {
+            "type": "array",
+            "default": [],
+            "description": "Additional arguments that are passed to the previewer."
           }
         }
       },
@@ -86,6 +99,12 @@
         "title": "Build File",
         "description": "Builds the current file.",
         "category": "LaTeX"
+      },
+      {
+        "command": "latex.forwardSearch",
+        "title": "Forward search",
+        "description": "Performs a forward search from the current file.",
+        "category": "LaTeX"
       }
     ],
     "menus": {
@@ -93,6 +112,16 @@
         {
           "command": "latex.build",
           "when": "editorLangId =~ /(latex|bibtex)/"
+        },
+        {
+          "command": "latex.forwardSearch",
+          "when": "editorLangId == latex"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "latex.forwardSearch",
+          "when": "editorLangId == latex"
         }
       ]
     },
@@ -102,6 +131,12 @@
         "key": "ctrl+f5",
         "mac": "cmd+f5",
         "when": "editorLangId =~ /(latex|bibtex)/"
+      },
+      {
+        "command": "latex.forwardSearch",
+        "key": "ctrl+alt+f",
+        "mac": "ctrl+alt+f",
+        "when": "editorLangId == latex"
       }
     ],
     "languages": [

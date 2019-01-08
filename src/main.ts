@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
 import { BuildFeature } from './build';
+import { ForwardSearchFeature } from './forwardSearch';
 import { ServerStatusFeature } from './serverStatus';
 import { ExtensionView } from './view';
 
@@ -28,13 +29,24 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const buildFeature = new BuildFeature(client);
   const serverStatusFeature = new ServerStatusFeature(client);
-  const view = new ExtensionView(client, buildFeature, serverStatusFeature);
+  const forwardSearchFeature = new ForwardSearchFeature(client);
+  const view = new ExtensionView(
+    client,
+    buildFeature,
+    serverStatusFeature,
+    forwardSearchFeature,
+  );
 
-  client.registerFeatures([buildFeature, serverStatusFeature]);
+  client.registerFeatures([
+    buildFeature,
+    serverStatusFeature,
+    forwardSearchFeature,
+  ]);
   context.subscriptions.push(
     client.start(),
     buildFeature,
     serverStatusFeature,
+    forwardSearchFeature,
     view,
   );
 

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { LanguageClient, State, StateChangeEvent } from 'vscode-languageclient';
 import { BuildFeature, BuildStatus } from './build';
+import { ForwardSearchFeature, ForwardSearchStatus } from './forwardSearch';
 import {
   ServerStatus,
   ServerStatusFeature,
@@ -18,6 +19,10 @@ const BUILD_FAILURE_MESSAGE =
   'An error occured while executing the configured LaTeX build tool.';
 const IDLE_STATUS_MESSAGE = 'TexLab is running...';
 const ERROR_STATUS_MESSAGE = 'TexLab has stopped working!';
+const FORWARD_SEARCH_ERROR_MESSAGE =
+  'An error occured while executing the configured PDF viewer. Please see the README of this extension and the PDF viewer for further information.';
+const FORWARD_SEARCH_UNCONFIGURED_MESSAGE =
+  'The forward search feature is not configured. Please see the README for instructions.';
 
 export class ExtensionView {
   private readonly subscriptions: vscode.Disposable[];
@@ -27,6 +32,7 @@ export class ExtensionView {
     client: LanguageClient,
     buildFeature: BuildFeature,
     serverStatusFeature: ServerStatusFeature,
+    forwardSearchFeature: ForwardSearchFeature,
   ) {
     this.subscriptions = [];
     this.statusBarItem = vscode.window.createStatusBarItem(
@@ -47,6 +53,12 @@ export class ExtensionView {
 
     serverStatusFeature.onStatusChanged(
       this.onServerStatusChanged,
+      this,
+      this.subscriptions,
+    );
+
+    forwardSearchFeature.onSearchPerformed(
+      this.onSearchPerformed,
       this,
       this.subscriptions,
     );
@@ -87,6 +99,21 @@ export class ExtensionView {
         break;
       case BuildStatus.Failure:
         vscode.window.showErrorMessage(BUILD_FAILURE_MESSAGE);
+        break;
+    }
+  }
+
+  private onSearchPerformed(status: ForwardSearchStatus) {
+    switch (status) {
+      case ForwardSearchStatus.Success:
+        break;
+      case ForwardSearchStatus.Error:
+        vscode.window.showErrorMessage(FORWARD_SEARCH_ERROR_MESSAGE);
+        break;
+      case ForwardSearchStatus.Unconfigured:
+        vscode.window.showInformationMessage(
+          FORWARD_SEARCH_UNCONFIGURED_MESSAGE,
+        );
         break;
     }
   }
