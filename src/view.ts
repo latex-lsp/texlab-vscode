@@ -1,15 +1,11 @@
 import * as vscode from 'vscode';
+import { LanguageClient, State, StateChangeEvent } from 'vscode-languageclient';
+import { BuildFeature, BuildStatus } from './build';
 import {
-  ClientCapabilities,
-  DocumentSelector,
-  LanguageClient,
-  NotificationType,
-  ServerCapabilities,
-  State,
-  StateChangeEvent,
-  StaticFeature,
-} from 'vscode-languageclient';
-import { BuildStatus } from './build';
+  ServerStatus,
+  ServerStatusFeature,
+  StatusParams,
+} from './serverStatus';
 
 const HIDE_AFTER_TIMEOUT = 5000;
 const NORMAL_COLOR = new vscode.ThemeColor('statusBar.foreground');
@@ -23,65 +19,60 @@ const BUILD_FAILURE_MESSAGE =
 const IDLE_STATUS_MESSAGE = 'TexLab is running...';
 const ERROR_STATUS_MESSAGE = 'TexLab has stopped working!';
 
-interface StatusParams {
-  status: ServerStatus;
-  uri?: string;
-}
-
-abstract class SetStatusNotification {
-  public static type = new NotificationType<StatusParams, void>(
-    'window/setStatus',
-  );
-}
-
-export enum ServerStatus {
-  Idle,
-  Building,
-  Indexing,
-}
-
-export class StatusFeature implements StaticFeature {
+export class ExtensionView {
+  private readonly subscriptions: vscode.Disposable[];
   private statusBarItem: vscode.StatusBarItem;
-  private subscription: vscode.Disposable | undefined;
 
-  constructor(private client: LanguageClient) {
+  constructor(
+    client: LanguageClient,
+    buildFeature: BuildFeature,
+    serverStatusFeature: ServerStatusFeature,
+  ) {
+    this.subscriptions = [];
     this.statusBarItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
     );
-  }
 
-  public fillClientCapabilities(_capabilities: ClientCapabilities) {}
-
-  public initialize(
-    _capabilities: ServerCapabilities,
-    _documentSelector: DocumentSelector,
-  ) {
-    if (this.subscription !== undefined) {
-      return;
-    }
-
-    this.subscription = this.client.onDidChangeState(
+    client.onDidChangeState(
       this.onServerStateChanged,
       this,
-    );
-    this.client.onNotification(
-      SetStatusNotification.type,
-      this.onServerStatusChanged.bind(this),
+      this.subscriptions,
     );
 
+    buildFeature.onBuildFinished(
+      this.onBuildFinished,
+      this,
+      this.subscriptions,
+    );
+
+    serverStatusFeature.onStatusChanged(
+      this.onServerStatusChanged,
+      this,
+      this.subscriptions,
+    );
+  }
+
+  public show() {
     this.statusBarItem.show();
   }
 
   public dispose() {
+    this.subscriptions.forEach(x => x.dispose());
     this.statusBarItem.dispose();
+  }
 
-    if (this.subscription) {
-      this.subscription.dispose();
-      this.subscription = undefined;
+  private onServerStateChanged({ newState }: StateChangeEvent) {
+    switch (newState) {
+      case State.Running:
+        this.onServerStatusChanged({ status: ServerStatus.Idle });
+        break;
+      case State.Stopped:
+        this.drawStatusBarItem('', ERROR_STATUS_MESSAGE, ERROR_COLOR);
+        break;
     }
   }
 
-  public setBuildStatus(status: BuildStatus) {
+  private onBuildFinished(status: BuildStatus) {
     switch (status) {
       case BuildStatus.Success:
         this.drawStatusBarItem(
@@ -96,17 +87,6 @@ export class StatusFeature implements StaticFeature {
         break;
       case BuildStatus.Failure:
         vscode.window.showErrorMessage(BUILD_FAILURE_MESSAGE);
-        break;
-    }
-  }
-
-  private onServerStateChanged({ newState }: StateChangeEvent) {
-    switch (newState) {
-      case State.Running:
-        this.onServerStatusChanged({ status: ServerStatus.Idle });
-        break;
-      case State.Stopped:
-        this.drawStatusBarItem('', ERROR_STATUS_MESSAGE, ERROR_COLOR);
         break;
     }
   }

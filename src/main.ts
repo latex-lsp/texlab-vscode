@@ -1,37 +1,43 @@
 import * as vscode from 'vscode';
-import {
-  LanguageClient,
-  LanguageClientOptions,
-  ServerOptions,
-} from 'vscode-languageclient';
+import { LanguageClient } from 'vscode-languageclient';
 import { BuildFeature } from './build';
-import { StatusFeature } from './status';
+import { ServerStatusFeature } from './serverStatus';
+import { ExtensionView } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
-  const serverOptions: ServerOptions = {
-    command: 'java',
-    args: ['-jar', context.asAbsolutePath('server/texlab.jar')],
-  };
-  const clientOptions: LanguageClientOptions = {
-    documentSelector: [
-      { language: 'latex', scheme: 'file' },
-      { language: 'bibtex', scheme: 'file' },
-      { language: 'latex', scheme: 'untitled' },
-      { language: 'bibtex', scheme: 'untitled' },
-    ],
-    outputChannelName: 'LaTeX',
-    uriConverters: {
-      code2Protocol: uri => uri.toString(true),
-      protocol2Code: value => vscode.Uri.parse(value),
+  const client = new LanguageClient(
+    'texlab',
+    {
+      command: 'java',
+      args: ['-jar', context.asAbsolutePath('server/texlab.jar')],
     },
-  };
-  const client = new LanguageClient('texlab', serverOptions, clientOptions);
-  const statusFeature = new StatusFeature(client);
-  const buildFeature = new BuildFeature(client, statusFeature);
+    {
+      documentSelector: [
+        { language: 'latex', scheme: 'file' },
+        { language: 'bibtex', scheme: 'file' },
+        { language: 'latex', scheme: 'untitled' },
+        { language: 'bibtex', scheme: 'untitled' },
+      ],
+      outputChannelName: 'LaTeX',
+      uriConverters: {
+        code2Protocol: uri => uri.toString(true),
+        protocol2Code: value => vscode.Uri.parse(value),
+      },
+    },
+  );
 
-  client.registerFeature(statusFeature);
-  client.registerFeature(buildFeature);
+  const buildFeature = new BuildFeature(client);
+  const serverStatusFeature = new ServerStatusFeature(client);
+  const view = new ExtensionView(client, buildFeature, serverStatusFeature);
 
-  context.subscriptions.push(client.start(), statusFeature, buildFeature);
+  client.registerFeatures([buildFeature, serverStatusFeature]);
+  context.subscriptions.push(
+    client.start(),
+    buildFeature,
+    serverStatusFeature,
+    view,
+  );
+
+  view.show();
   await client.onReady();
 }

@@ -8,7 +8,6 @@ import {
   StaticFeature,
   TextDocumentIdentifier,
 } from 'vscode-languageclient';
-import { StatusFeature } from './status';
 
 interface BuildTextDocumentParams {
   textDocument: TextDocumentIdentifier;
@@ -30,16 +29,20 @@ export enum BuildStatus {
 }
 
 export class BuildFeature implements StaticFeature {
+  private readonly emitter: vscode.EventEmitter<BuildStatus>;
   private subscription: vscode.Disposable | undefined;
   private documentSelector: DocumentSelector = [
     { language: 'latex', scheme: 'file' },
     { language: 'bibtex', scheme: 'file' },
   ];
 
-  constructor(
-    private client: LanguageClient,
-    private statusFeature: StatusFeature,
-  ) {}
+  public get onBuildFinished(): vscode.Event<BuildStatus> {
+    return this.emitter.event;
+  }
+
+  constructor(private client: LanguageClient) {
+    this.emitter = new vscode.EventEmitter();
+  }
 
   public fillClientCapabilities(_capabilities: ClientCapabilities) {}
 
@@ -58,6 +61,8 @@ export class BuildFeature implements StaticFeature {
   }
 
   public dispose() {
+    this.emitter.dispose();
+
     if (this.subscription) {
       this.subscription.dispose();
       this.subscription = undefined;
@@ -84,6 +89,6 @@ export class BuildFeature implements StaticFeature {
       params,
     );
 
-    this.statusFeature.setBuildStatus(status);
+    this.emitter.fire(status);
   }
 }
