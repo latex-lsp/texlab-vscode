@@ -1,12 +1,6 @@
 import * as vscode from 'vscode';
-import {
-  ClientCapabilities,
-  DocumentSelector,
-  LanguageClient,
-  NotificationType,
-  ServerCapabilities,
-  StaticFeature,
-} from 'vscode-languageclient';
+import { LanguageClient, NotificationType } from 'vscode-languageclient';
+import { EventFeature } from './eventFeature';
 
 export interface StatusParams {
   status: ServerStatus;
@@ -25,29 +19,18 @@ export enum ServerStatus {
   Indexing,
 }
 
-export class ServerStatusFeature implements StaticFeature {
-  private readonly emitter: vscode.EventEmitter<StatusParams>;
-
+export class ServerStatusFeature extends EventFeature<StatusParams> {
   public get onStatusChanged(): vscode.Event<StatusParams> {
     return this.emitter.event;
   }
 
   constructor(private client: LanguageClient) {
-    this.emitter = new vscode.EventEmitter();
+    super();
   }
 
-  public fillClientCapabilities(_capabilities: ClientCapabilities) {}
-
-  public initialize(
-    _capabilities: ServerCapabilities,
-    _documentSelector: DocumentSelector,
-  ) {
+  protected register() {
     this.client.onNotification(SetStatusNotification.type, params =>
       this.emitter.fire(params),
     );
-  }
-
-  public dispose() {
-    this.emitter.dispose();
   }
 }

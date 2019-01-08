@@ -1,13 +1,11 @@
 import * as vscode from 'vscode';
 import {
-  ClientCapabilities,
   DocumentSelector,
   LanguageClient,
   RequestType,
-  ServerCapabilities,
-  StaticFeature,
   TextDocumentIdentifier,
 } from 'vscode-languageclient';
+import { EventFeature } from './eventFeature';
 
 interface BuildTextDocumentParams {
   textDocument: TextDocumentIdentifier;
@@ -28,9 +26,7 @@ export enum BuildStatus {
   Failure,
 }
 
-export class BuildFeature implements StaticFeature {
-  private readonly emitter: vscode.EventEmitter<BuildStatus>;
-  private subscription: vscode.Disposable | undefined;
+export class BuildFeature extends EventFeature<BuildStatus> {
   private documentSelector: DocumentSelector = [
     { language: 'latex', scheme: 'file' },
     { language: 'bibtex', scheme: 'file' },
@@ -41,32 +37,14 @@ export class BuildFeature implements StaticFeature {
   }
 
   constructor(private client: LanguageClient) {
-    this.emitter = new vscode.EventEmitter();
+    super();
   }
 
-  public fillClientCapabilities(_capabilities: ClientCapabilities) {}
-
-  public initialize(
-    _capabilities: ServerCapabilities,
-    _documentSelector: DocumentSelector,
-  ) {
-    if (this.subscription !== undefined) {
-      return;
-    }
-
-    this.subscription = vscode.commands.registerTextEditorCommand(
+  protected register(): vscode.Disposable | undefined {
+    return vscode.commands.registerTextEditorCommand(
       'latex.build',
       async editor => this.build(editor),
     );
-  }
-
-  public dispose() {
-    this.emitter.dispose();
-
-    if (this.subscription) {
-      this.subscription.dispose();
-      this.subscription = undefined;
-    }
   }
 
   private async build({ document }: vscode.TextEditor) {
