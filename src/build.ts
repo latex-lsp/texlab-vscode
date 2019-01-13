@@ -5,13 +5,13 @@ import {
   RequestType,
   TextDocumentIdentifier,
 } from 'vscode-languageclient';
-import { EventFeature } from './eventFeature';
+import { ObservableFeature, Subscriber } from './observableFeature';
 
-interface BuildTextDocumentParams {
+export interface BuildTextDocumentParams {
   textDocument: TextDocumentIdentifier;
 }
 
-abstract class BuildTextDocumentRequest {
+export abstract class BuildTextDocumentRequest {
   public static type = new RequestType<
     BuildTextDocumentParams,
     BuildStatus,
@@ -26,35 +26,29 @@ export enum BuildStatus {
   Failure,
 }
 
-export class BuildFeature extends EventFeature<BuildStatus> {
+export class BuildFeature extends ObservableFeature<BuildStatus> {
+  private isBuilding = false;
   private documentSelector: DocumentSelector = [
     { language: 'latex', scheme: 'file' },
     { language: 'bibtex', scheme: 'file' },
   ];
 
-  public get onBuildFinished(): vscode.Event<BuildStatus> {
-    return this.emitter.event;
+  constructor(private client: LanguageClient, subscriber: Subscriber) {
+    super(subscriber);
   }
 
-  constructor(private client: LanguageClient) {
-    super();
-  }
-
-  protected register(): vscode.Disposable | undefined {
-    return vscode.commands.registerTextEditorCommand(
-      'latex.build',
-      async editor => this.build(editor),
+  protected canExecute({ document }: vscode.TextEditor): boolean {
+    return (
+      !this.isBuilding &&
+      vscode.languages.match(this.documentSelector, document) > 0
     );
   }
 
-  private async build({ document }: vscode.TextEditor) {
-    if (!vscode.languages.match(this.documentSelector, document)) {
-      return;
-    }
-
-    if (document.isDirty && (await !document.save())) {
-      return;
-    }
+  protected async execute({
+    document,
+  }: vscode.TextEditor): Promise<BuildStatus> {
+    this.isBuilding = true;
+    await document.save();
 
     const params: BuildTextDocumentParams = {
       textDocument: this.client.code2ProtocolConverter.asTextDocumentIdentifier(
@@ -67,6 +61,7 @@ export class BuildFeature extends EventFeature<BuildStatus> {
       params,
     );
 
-    this.emitter.fire(status);
+    this.isBuilding = false;
+    return status;
   }
 }

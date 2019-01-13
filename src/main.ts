@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
 import { BuildFeature } from './build';
 import { ForwardSearchFeature } from './forwardSearch';
-import { ServerStatusFeature } from './serverStatus';
+import { ServerStatusFeature, SetStatusNotification } from './serverStatus';
 import { ExtensionView } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -23,26 +23,42 @@ export async function activate(context: vscode.ExtensionContext) {
     },
   );
 
-  const buildFeature = new BuildFeature(client);
-  const serverStatusFeature = new ServerStatusFeature(client);
-  const forwardSearchFeature = new ForwardSearchFeature(client);
+  const buildFeature = new BuildFeature(client, {
+    register: callback =>
+      vscode.commands.registerTextEditorCommand('latex.build', callback),
+  });
+
+  const forwardSearchFeature = new ForwardSearchFeature(client, {
+    register: callback =>
+      vscode.commands.registerTextEditorCommand(
+        'latex.forwardSearch',
+        callback,
+      ),
+  });
+
+  const serverStatusFeature = new ServerStatusFeature({
+    register: callback =>
+      client.onNotification(SetStatusNotification.type, callback),
+  });
+
   const view = new ExtensionView(
     client,
     buildFeature,
-    serverStatusFeature,
     forwardSearchFeature,
+    serverStatusFeature,
   );
 
   client.registerFeatures([
     buildFeature,
-    serverStatusFeature,
     forwardSearchFeature,
+    serverStatusFeature,
   ]);
+
   context.subscriptions.push(
     client.start(),
     buildFeature,
-    serverStatusFeature,
     forwardSearchFeature,
+    serverStatusFeature,
     view,
   );
 

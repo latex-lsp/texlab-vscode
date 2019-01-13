@@ -31,8 +31,8 @@ export class ExtensionView {
   constructor(
     client: LanguageClient,
     buildFeature: BuildFeature,
-    serverStatusFeature: ServerStatusFeature,
     forwardSearchFeature: ForwardSearchFeature,
+    serverStatusFeature: ServerStatusFeature,
   ) {
     this.subscriptions = [];
     this.statusBarItem = vscode.window.createStatusBarItem(
@@ -45,20 +45,16 @@ export class ExtensionView {
       this.subscriptions,
     );
 
-    buildFeature.onBuildFinished(
-      this.onBuildFinished,
-      this,
-      this.subscriptions,
-    );
+    buildFeature.onValueChanged(this.onBuildFinished, this, this.subscriptions);
 
-    serverStatusFeature.onStatusChanged(
-      this.onServerStatusChanged,
-      this,
-      this.subscriptions,
-    );
-
-    forwardSearchFeature.onSearchPerformed(
+    forwardSearchFeature.onValueChanged(
       this.onSearchPerformed,
+      this,
+      this.subscriptions,
+    );
+
+    serverStatusFeature.onValueChanged(
+      this.onServerStatusChanged,
       this,
       this.subscriptions,
     );

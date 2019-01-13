@@ -1,13 +1,12 @@
-import * as vscode from 'vscode';
 import { LanguageClient, NotificationType } from 'vscode-languageclient';
-import { EventFeature } from './eventFeature';
+import { ObservableFeature, Subscriber } from './observableFeature';
 
 export interface StatusParams {
   status: ServerStatus;
   uri?: string;
 }
 
-abstract class SetStatusNotification {
+export abstract class SetStatusNotification {
   public static type = new NotificationType<StatusParams, void>(
     'window/setStatus',
   );
@@ -19,18 +18,16 @@ export enum ServerStatus {
   Indexing,
 }
 
-export class ServerStatusFeature extends EventFeature<StatusParams> {
-  public get onStatusChanged(): vscode.Event<StatusParams> {
-    return this.emitter.event;
+export class ServerStatusFeature extends ObservableFeature<StatusParams> {
+  constructor(subscriber: Subscriber) {
+    super(subscriber);
   }
 
-  constructor(private client: LanguageClient) {
-    super();
+  protected canExecute(): boolean {
+    return true;
   }
 
-  protected register() {
-    this.client.onNotification(SetStatusNotification.type, params =>
-      this.emitter.fire(params),
-    );
+  protected execute(params: StatusParams): Promise<StatusParams> {
+    return Promise.resolve(params);
   }
 }

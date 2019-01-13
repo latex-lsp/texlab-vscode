@@ -5,9 +5,9 @@ import {
   RequestType,
   TextDocumentPositionParams,
 } from 'vscode-languageclient';
-import { EventFeature } from './eventFeature';
+import { ObservableFeature, Subscriber } from './observableFeature';
 
-abstract class ForwardSearchRequest {
+export abstract class ForwardSearchRequest {
   public static type = new RequestType<
     TextDocumentPositionParams,
     ForwardSearchStatus,
@@ -22,41 +22,41 @@ export enum ForwardSearchStatus {
   Unconfigured,
 }
 
-export class ForwardSearchFeature extends EventFeature<ForwardSearchStatus> {
+export class ForwardSearchFeature extends ObservableFeature<
+  ForwardSearchStatus
+> {
+  private isSearching = false;
   private documentSelector: DocumentSelector = [
     { language: 'latex', scheme: 'file' },
   ];
 
-  public get onSearchPerformed(): vscode.Event<ForwardSearchStatus> {
-    return this.emitter.event;
+  constructor(private client: LanguageClient, subscriber: Subscriber) {
+    super(subscriber);
   }
 
-  constructor(private client: LanguageClient) {
-    super();
-  }
-
-  protected register(): void | vscode.Disposable {
-    return vscode.commands.registerTextEditorCommand(
-      'latex.forwardSearch',
-      async editor => this.forwardSearch(editor),
+  protected canExecute({ document }: vscode.TextEditor): boolean {
+    return (
+      !this.isSearching &&
+      vscode.languages.match(this.documentSelector, document) > 0
     );
   }
 
-  private async forwardSearch({ document, selection }: vscode.TextEditor) {
-    if (!vscode.languages.match(this.documentSelector, document)) {
-      return;
-    }
-
+  protected async execute({
+    document,
+    selection,
+  }: vscode.TextEditor): Promise<ForwardSearchStatus> {
+    this.isSearching = true;
     const params = this.client.code2ProtocolConverter.asTextDocumentPositionParams(
       document,
       selection.start,
     );
 
-    const status = await this.client.sendRequest(
+    const result = await this.client.sendRequest(
       ForwardSearchRequest.type,
       params,
     );
 
-    this.emitter.fire(status);
+    this.isSearching = false;
+    return result;
   }
 }
