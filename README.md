@@ -70,7 +70,7 @@ Add the following lines to your Visual Studio Code config:
 Add the following line to your SumatraPDF settings file (Menu -> Settings -> Advanced Options):
 
 ```ini
-InverseSearchCmdLine = "C:\Users\{User}\AppData\Local\Programs\Microsoft VS Code\Code.exe" "C:\Users\{User}\AppData\Local\Programs\Microsoft VS Code\resources\app\out\cli.js" -g "%f":%l
+InverseSearchCmdLine = "C:\Users\{User}\AppData\Local\Programs\Microsoft VS Code\Code.exe" -g "%f":%l
 ```
 
 Make sure to replace `{User}` with your Windows username.

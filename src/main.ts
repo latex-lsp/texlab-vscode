@@ -6,11 +6,15 @@ import { ServerStatusFeature, SetStatusNotification } from './serverStatus';
 import { ExtensionView } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
+  const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   const client = new LanguageClient(
     'texlab',
     {
       command: 'java',
       args: ['-jar', context.asAbsolutePath('server/texlab.jar')],
+      options: {
+        env,
+      },
     },
     {
       documentSelector: [
