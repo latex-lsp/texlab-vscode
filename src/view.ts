@@ -27,6 +27,7 @@ const FORWARD_SEARCH_UNCONFIGURED_MESSAGE =
 export class ExtensionView {
   private readonly subscriptions: vscode.Disposable[];
   private statusBarItem: vscode.StatusBarItem;
+  private drawNumber = 0;
 
   constructor(
     client: LanguageClient,
@@ -134,7 +135,10 @@ export class ExtensionView {
     color: vscode.ThemeColor,
     duration?: number,
   ) {
+    this.drawNumber++;
+
     if (duration) {
+      const oldDrawNumber = this.drawNumber;
       const {
         text: oldText,
         tooltip: oldTooltip,
@@ -142,9 +146,11 @@ export class ExtensionView {
       } = this.statusBarItem;
 
       setTimeout(() => {
-        this.statusBarItem.text = oldText;
-        this.statusBarItem.tooltip = oldTooltip;
-        this.statusBarItem.color = oldColor;
+        if (this.drawNumber === oldDrawNumber) {
+          this.statusBarItem.text = oldText;
+          this.statusBarItem.tooltip = oldTooltip;
+          this.statusBarItem.color = oldColor;
+        }
       }, duration);
     }
 
