@@ -24,6 +24,10 @@ export async function activate(context: vscode.ExtensionContext) {
         { language: 'bibtex', scheme: 'untitled' },
       ],
       outputChannelName: 'LaTeX',
+      uriConverters: {	
+        code2Protocol: uri => uri.toString(true),	
+        protocol2Code: value => vscode.Uri.parse(value),	
+      },
     },
   );
 
