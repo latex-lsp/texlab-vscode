@@ -57,6 +57,11 @@
             ],
             "description": "Additional arguments that are passed to the build tool."
           },
+          "latex.build.onSave": {
+            "type": "boolean",
+            "default": false,
+            "description": "Build after saving a file"
+          },
           "latex.forwardSearch.executable": {
             "type": [
               "string",
