@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import {
+  CancellationTokenSource,
   DocumentSelector,
   LanguageClient,
   RequestType,
@@ -24,14 +25,24 @@ export enum BuildStatus {
   Success,
   Error,
   Failure,
+  Cancelled,
+}
+
+const DOCUMENT_SELECTOR: DocumentSelector = [
+  { language: 'latex', scheme: 'file' },
+  { language: 'bibtex', scheme: 'file' },
+];
+
+export interface BuildState {
+  isBuilding: boolean;
+  cancellationTokenSource?: CancellationTokenSource;
 }
 
 export class BuildFeature extends ObservableFeature<BuildStatus> {
-  private isBuilding = false;
-  private documentSelector: DocumentSelector = [
-    { language: 'latex', scheme: 'file' },
-    { language: 'bibtex', scheme: 'file' },
-  ];
+  public state: BuildState = {
+    isBuilding: false,
+    cancellationTokenSource: undefined,
+  };
 
   constructor(private client: LanguageClient, subscriber: Subscriber) {
     super(subscriber);
@@ -39,15 +50,15 @@ export class BuildFeature extends ObservableFeature<BuildStatus> {
 
   protected canExecute({ document }: vscode.TextEditor): boolean {
     return (
-      !this.isBuilding &&
-      vscode.languages.match(this.documentSelector, document) > 0
+      !this.state.isBuilding &&
+      vscode.languages.match(DOCUMENT_SELECTOR, document) > 0
     );
   }
 
   protected async execute({
     document,
   }: vscode.TextEditor): Promise<BuildStatus> {
-    this.isBuilding = true;
+    this.state.isBuilding = true;
     await document.save();
 
     const params: BuildTextDocumentParams = {
@@ -56,12 +67,35 @@ export class BuildFeature extends ObservableFeature<BuildStatus> {
       ),
     };
 
-    const status = await this.client.sendRequest(
-      BuildTextDocumentRequest.type,
-      params,
-    );
+    try {
+      this.state.cancellationTokenSource = new CancellationTokenSource();
+      return await this.client.sendRequest(
+        BuildTextDocumentRequest.type,
+        params,
+        this.state.cancellationTokenSource.token,
+      );
+    } catch {
+      return BuildStatus.Cancelled;
+    } finally {
+      this.state.isBuilding = false;
+    }
+  }
+}
 
-    this.isBuilding = false;
-    return status;
+export class CancelBuildFeature extends ObservableFeature<{}> {
+  constructor(subscriber: Subscriber, private state: BuildState) {
+    super(subscriber);
+  }
+
+  protected canExecute(): boolean {
+    return this.state.isBuilding;
+  }
+
+  protected async execute(): Promise<{}> {
+    if (this.state.cancellationTokenSource) {
+      this.state.cancellationTokenSource.cancel();
+      this.state.cancellationTokenSource = undefined;
+    }
+    return {};
   }
 }

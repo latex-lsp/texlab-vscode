@@ -17,6 +17,7 @@ const BUILD_ERROR_MESSAGE =
   'A build error occured. Please check the problems tab and the build log for further information.';
 const BUILD_FAILURE_MESSAGE =
   'An error occured while executing the configured LaTeX build tool.';
+const BUILD_CANCELLED_MESSAGE = 'Build cancelled';
 const IDLE_STATUS_MESSAGE = 'TexLab is running...';
 const ERROR_STATUS_MESSAGE = 'TexLab has stopped working!';
 const FORWARD_SEARCH_ERROR_MESSAGE =
@@ -27,7 +28,6 @@ const FORWARD_SEARCH_UNCONFIGURED_MESSAGE =
 export class ExtensionView {
   private readonly subscriptions: vscode.Disposable[];
   private statusBarItem: vscode.StatusBarItem;
-  private drawNumber = 0;
 
   constructor(
     client: LanguageClient,
@@ -97,6 +97,13 @@ export class ExtensionView {
       case BuildStatus.Failure:
         vscode.window.showErrorMessage(BUILD_FAILURE_MESSAGE);
         break;
+      case BuildStatus.Cancelled:
+        this.drawStatusBarItem(
+          BUILD_CANCELLED_MESSAGE,
+          '',
+          NORMAL_COLOR,
+          HIDE_AFTER_TIMEOUT,
+        );
     }
   }
 
@@ -135,22 +142,9 @@ export class ExtensionView {
     color: vscode.ThemeColor,
     duration?: number,
   ) {
-    this.drawNumber++;
-
     if (duration) {
-      const oldDrawNumber = this.drawNumber;
-      const {
-        text: oldText,
-        tooltip: oldTooltip,
-        color: oldColor,
-      } = this.statusBarItem;
-
       setTimeout(() => {
-        if (this.drawNumber === oldDrawNumber) {
-          this.statusBarItem.text = oldText;
-          this.statusBarItem.tooltip = oldTooltip;
-          this.statusBarItem.color = oldColor;
-        }
+        this.drawStatusBarItem('', IDLE_STATUS_MESSAGE, NORMAL_COLOR);
       }, duration);
     }
 

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
-import { BuildFeature } from './build';
+import { BuildFeature, CancelBuildFeature } from './build';
 import { ForwardSearchFeature } from './forwardSearch';
 import { ServerStatusFeature, SetStatusNotification } from './serverStatus';
 import { ExtensionView } from './view';
@@ -24,9 +24,9 @@ export async function activate(context: vscode.ExtensionContext) {
         { language: 'bibtex', scheme: 'untitled' },
       ],
       outputChannelName: 'LaTeX',
-      uriConverters: {	
-        code2Protocol: uri => uri.toString(true),	
-        protocol2Code: value => vscode.Uri.parse(value),	
+      uriConverters: {
+        code2Protocol: uri => uri.toString(true),
+        protocol2Code: value => vscode.Uri.parse(value),
       },
     },
   );
@@ -35,6 +35,14 @@ export async function activate(context: vscode.ExtensionContext) {
     register: callback =>
       vscode.commands.registerTextEditorCommand('latex.build', callback),
   });
+
+  const cancelBuildFeature = new CancelBuildFeature(
+    {
+      register: callback =>
+        vscode.commands.registerCommand('latex.build.cancel', callback),
+    },
+    buildFeature.state,
+  );
 
   const forwardSearchFeature = new ForwardSearchFeature(client, {
     register: callback =>
@@ -58,6 +66,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   client.registerFeatures([
     buildFeature,
+    cancelBuildFeature,
     forwardSearchFeature,
     serverStatusFeature,
   ]);
@@ -65,6 +74,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     client.start(),
     buildFeature,
+    cancelBuildFeature,
     forwardSearchFeature,
     serverStatusFeature,
     view,

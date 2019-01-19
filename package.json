@@ -101,8 +101,14 @@
         "category": "LaTeX"
       },
       {
+        "command": "latex.build.cancel",
+        "title": "Cancel Build",
+        "description": "Cancels the current build.",
+        "category": "LaTeX"
+      },
+      {
         "command": "latex.forwardSearch",
-        "title": "Forward search",
+        "title": "Forward Search",
         "description": "Performs a forward search from the current file.",
         "category": "LaTeX"
       }
@@ -111,6 +117,10 @@
       "commandPalette": [
         {
           "command": "latex.build",
+          "when": "editorLangId =~ /(latex|bibtex)/"
+        },
+        {
+          "command": "latex.build.cancel",
           "when": "editorLangId =~ /(latex|bibtex)/"
         },
         {
