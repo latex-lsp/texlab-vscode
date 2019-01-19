@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
-import { BuildFeature, CancelBuildFeature } from './build';
-import { ForwardSearchFeature } from './forwardSearch';
-import { ServerStatusFeature, SetStatusNotification } from './serverStatus';
+import { BuildCommand, CancelBuildCommand } from './build';
+import { ForwardSearchCommand } from './forwardSearch';
+import { ServerStatusCommand, SetStatusNotification } from './serverStatus';
 import { ExtensionView } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -31,20 +31,20 @@ export async function activate(context: vscode.ExtensionContext) {
     },
   );
 
-  const buildFeature = new BuildFeature(client, {
+  const buildCommand = new BuildCommand(client, {
     register: callback =>
       vscode.commands.registerTextEditorCommand('latex.build', callback),
   });
 
-  const cancelBuildFeature = new CancelBuildFeature(
+  const cancelBuildCommand = new CancelBuildCommand(
     {
       register: callback =>
         vscode.commands.registerCommand('latex.build.cancel', callback),
     },
-    buildFeature.state,
+    buildCommand.state,
   );
 
-  const forwardSearchFeature = new ForwardSearchFeature(client, {
+  const forwardSearchCommand = new ForwardSearchCommand(client, {
     register: callback =>
       vscode.commands.registerTextEditorCommand(
         'latex.forwardSearch',
@@ -52,31 +52,31 @@ export async function activate(context: vscode.ExtensionContext) {
       ),
   });
 
-  const serverStatusFeature = new ServerStatusFeature({
+  const serverStatusCommand = new ServerStatusCommand({
     register: callback =>
       client.onNotification(SetStatusNotification.type, callback),
   });
 
   const view = new ExtensionView(
     client,
-    buildFeature,
-    forwardSearchFeature,
-    serverStatusFeature,
+    buildCommand,
+    forwardSearchCommand,
+    serverStatusCommand,
   );
 
   client.registerFeatures([
-    buildFeature,
-    cancelBuildFeature,
-    forwardSearchFeature,
-    serverStatusFeature,
+    buildCommand,
+    cancelBuildCommand,
+    forwardSearchCommand,
+    serverStatusCommand,
   ]);
 
   context.subscriptions.push(
     client.start(),
-    buildFeature,
-    cancelBuildFeature,
-    forwardSearchFeature,
-    serverStatusFeature,
+    buildCommand,
+    cancelBuildCommand,
+    forwardSearchCommand,
+    serverStatusCommand,
     view,
   );
 

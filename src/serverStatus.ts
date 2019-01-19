@@ -1,5 +1,5 @@
 import { LanguageClient, NotificationType } from 'vscode-languageclient';
-import { ObservableFeature, Subscriber } from './observableFeature';
+import { ObservableCommand, Subscriber } from './command';
 
 export interface StatusParams {
   status: ServerStatus;
@@ -18,7 +18,7 @@ export enum ServerStatus {
   Indexing,
 }
 
-export class ServerStatusFeature extends ObservableFeature<StatusParams> {
+export class ServerStatusCommand extends ObservableCommand<StatusParams> {
   constructor(subscriber: Subscriber) {
     super(subscriber);
   }

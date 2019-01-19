@@ -6,7 +6,7 @@ import {
   RequestType,
   TextDocumentIdentifier,
 } from 'vscode-languageclient';
-import { ObservableFeature, Subscriber } from './observableFeature';
+import { ObservableCommand, Subscriber } from './command';
 
 export interface BuildTextDocumentParams {
   textDocument: TextDocumentIdentifier;
@@ -38,7 +38,7 @@ export interface BuildState {
   cancellationTokenSource?: CancellationTokenSource;
 }
 
-export class BuildFeature extends ObservableFeature<BuildStatus> {
+export class BuildCommand extends ObservableCommand<BuildStatus> {
   public state: BuildState = {
     isBuilding: false,
     cancellationTokenSource: undefined,
@@ -82,7 +82,7 @@ export class BuildFeature extends ObservableFeature<BuildStatus> {
   }
 }
 
-export class CancelBuildFeature extends ObservableFeature<{}> {
+export class CancelBuildCommand extends ObservableCommand<{}> {
   constructor(subscriber: Subscriber, private state: BuildState) {
     super(subscriber);
   }

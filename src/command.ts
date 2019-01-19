@@ -10,7 +10,7 @@ export interface Subscriber {
   register(callback: (...args: any[]) => void): vscode.Disposable | void;
 }
 
-export abstract class ObservableFeature<T> implements StaticFeature {
+export abstract class ObservableCommand<T> implements StaticFeature {
   private readonly emitter = new vscode.EventEmitter<T>();
   private subscription: vscode.Disposable | undefined;
 

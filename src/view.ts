@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import { LanguageClient, State, StateChangeEvent } from 'vscode-languageclient';
-import { BuildFeature, BuildStatus } from './build';
-import { ForwardSearchFeature, ForwardSearchStatus } from './forwardSearch';
+import { BuildCommand, BuildStatus } from './build';
+import { ForwardSearchCommand, ForwardSearchStatus } from './forwardSearch';
 import {
   ServerStatus,
-  ServerStatusFeature,
+  ServerStatusCommand,
   StatusParams,
 } from './serverStatus';
 
@@ -31,9 +31,9 @@ export class ExtensionView {
 
   constructor(
     client: LanguageClient,
-    buildFeature: BuildFeature,
-    forwardSearchFeature: ForwardSearchFeature,
-    serverStatusFeature: ServerStatusFeature,
+    buildCommand: BuildCommand,
+    forwardSearchCommand: ForwardSearchCommand,
+    serverStatusCommand: ServerStatusCommand,
   ) {
     this.subscriptions = [];
     this.statusBarItem = vscode.window.createStatusBarItem(
@@ -46,15 +46,15 @@ export class ExtensionView {
       this.subscriptions,
     );
 
-    buildFeature.onValueChanged(this.onBuildFinished, this, this.subscriptions);
+    buildCommand.onValueChanged(this.onBuildFinished, this, this.subscriptions);
 
-    forwardSearchFeature.onValueChanged(
+    forwardSearchCommand.onValueChanged(
       this.onSearchPerformed,
       this,
       this.subscriptions,
     );
 
-    serverStatusFeature.onValueChanged(
+    serverStatusCommand.onValueChanged(
       this.onServerStatusChanged,
       this,
       this.subscriptions,

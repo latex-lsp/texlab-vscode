@@ -5,7 +5,7 @@ import {
   RequestType,
   TextDocumentPositionParams,
 } from 'vscode-languageclient';
-import { ObservableFeature, Subscriber } from './observableFeature';
+import { ObservableCommand, Subscriber } from './command';
 
 export abstract class ForwardSearchRequest {
   public static type = new RequestType<
@@ -22,7 +22,7 @@ export enum ForwardSearchStatus {
   Unconfigured,
 }
 
-export class ForwardSearchFeature extends ObservableFeature<
+export class ForwardSearchCommand extends ObservableCommand<
   ForwardSearchStatus
 > {
   private isSearching = false;
