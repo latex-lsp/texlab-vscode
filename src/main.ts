@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { LanguageClient } from 'vscode-languageclient';
 import { BuildCommand, CancelBuildCommand } from './build';
 import { ForwardSearchCommand } from './forwardSearch';
-import { ServerStatusCommand, SetStatusNotification } from './serverStatus';
+import { ProgressFeature } from './progress';
 import { ExtensionView } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -52,23 +52,13 @@ export async function activate(context: vscode.ExtensionContext) {
       ),
   });
 
-  const serverStatusCommand = new ServerStatusCommand({
-    register: callback =>
-      client.onNotification(SetStatusNotification.type, callback),
-  });
-
-  const view = new ExtensionView(
-    client,
-    buildCommand,
-    forwardSearchCommand,
-    serverStatusCommand,
-  );
+  const view = new ExtensionView(client, buildCommand, forwardSearchCommand);
 
   client.registerFeatures([
+    new ProgressFeature(client),
     buildCommand,
     cancelBuildCommand,
     forwardSearchCommand,
-    serverStatusCommand,
   ]);
 
   context.subscriptions.push(
@@ -76,7 +66,6 @@ export async function activate(context: vscode.ExtensionContext) {
     buildCommand,
     cancelBuildCommand,
     forwardSearchCommand,
-    serverStatusCommand,
     view,
   );
 
