@@ -1,7 +1,7 @@
 import { Observable, Subscription, Unsubscribable } from 'rxjs';
 import * as vscode from 'vscode';
 import { State } from 'vscode-languageclient';
-import { BuildStatus, ForwardSearchStatus } from './protocol';
+import { BuildStatus, ForwardSearchStatus } from './client';
 
 export type ViewStatus =
   | { type: 'build'; status: BuildStatus }

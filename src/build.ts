@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
-import { CancellationTokenSource, LanguageClient } from 'vscode-languageclient';
-import { build, BuildStatus } from './protocol';
+import { CancellationTokenSource } from 'vscode-languageclient';
+import { BuildStatus, CustomLanguageClient } from './client';
 
 export class BuildEngine {
   private isBuilding: boolean = false;
   private cancellationTokenSource?: CancellationTokenSource;
 
-  constructor(private client: LanguageClient) {}
+  constructor(private client: CustomLanguageClient) {}
 
   public dispose() {
     if (this.cancellationTokenSource) {
@@ -25,7 +25,7 @@ export class BuildEngine {
     this.cancellationTokenSource = new CancellationTokenSource();
 
     try {
-      return build(this.client, document, this.cancellationTokenSource.token);
+      return this.client.build(document, this.cancellationTokenSource.token);
     } catch {
       return undefined;
     } finally {

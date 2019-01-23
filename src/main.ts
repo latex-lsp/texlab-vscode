@@ -1,16 +1,19 @@
 import { merge, Observable } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import * as vscode from 'vscode';
-import { LanguageClient, State } from 'vscode-languageclient';
+import { State } from 'vscode-languageclient';
 import { BuildEngine } from './build';
+import {
+  BuildStatus,
+  CustomLanguageClient,
+  ForwardSearchStatus,
+} from './client';
 import {
   filterDocument,
   fromCommand,
   fromTextEditorCommand,
   skipNull,
 } from './observable';
-import { ProgressFeature } from './progress';
-import { BuildStatus, forwardSearch, ForwardSearchStatus } from './protocol';
 import {
   BIBTEX_FILE,
   BIBTEX_UNTITLED,
@@ -21,7 +24,7 @@ import { View, ViewStatus } from './view';
 
 export function activate(context: vscode.ExtensionContext) {
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
-  const client = new LanguageClient(
+  const client = new CustomLanguageClient(
     'texlab',
     {
       command: 'java',
@@ -44,7 +47,6 @@ export function activate(context: vscode.ExtensionContext) {
       },
     },
   );
-  client.registerFeature(new ProgressFeature(client));
 
   const buildEngine = new BuildEngine(client);
   const view = new View();
@@ -67,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function createStatusStream(
-  client: LanguageClient,
+  client: CustomLanguageClient,
   buildEngine: BuildEngine,
   subscriptions: vscode.Disposable[],
 ): Observable<ViewStatus> {
@@ -94,7 +96,7 @@ function createStatusStream(
   ).pipe(
     filterDocument(LATEX_FILE),
     flatMap(({ document, selection }) =>
-      forwardSearch(client, document, selection.start),
+      client.forwardSearch(document, selection.start),
     ),
     map<ForwardSearchStatus, ViewStatus>(status => ({
       type: 'search',
