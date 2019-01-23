@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  context.subscriptions.push(client.start(), view);
+  context.subscriptions.push(client.start(), buildEngine, view);
 }
 
 function createStatusStream(
