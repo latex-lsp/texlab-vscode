@@ -143,8 +143,8 @@
     "keybindings": [
       {
         "command": "latex.build",
-        "key": "ctrl+f5",
-        "mac": "cmd+f5",
+        "key": "f5",
+        "mac": "f5",
         "when": "editorLangId =~ /(latex|bibtex)/"
       },
       {
