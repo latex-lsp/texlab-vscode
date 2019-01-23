@@ -1,101 +1,65 @@
+import { Observable, Subscription } from 'rxjs';
+import { flatMap, map } from 'rxjs/operators';
 import * as vscode from 'vscode';
-import {
-  CancellationTokenSource,
-  DocumentSelector,
-  LanguageClient,
-  RequestType,
-  TextDocumentIdentifier,
-} from 'vscode-languageclient';
-import { ObservableCommand, Subscriber } from './command';
+import { CancellationTokenSource, LanguageClient } from 'vscode-languageclient';
+import { filterDocument, skipNull } from './observable';
+import { build, BuildStatus } from './protocol';
+import { BIBTEX_FILE, LATEX_FILE } from './selectors';
+import { ViewStatus } from './view';
 
-export interface BuildTextDocumentParams {
-  textDocument: TextDocumentIdentifier;
-}
+export class BuildEngine {
+  private isBuilding: boolean = false;
+  private cancellationTokenSource?: CancellationTokenSource;
+  private subscription: Subscription;
 
-export abstract class BuildTextDocumentRequest {
-  public static type = new RequestType<
-    BuildTextDocumentParams,
-    BuildStatus,
-    void,
-    void
-  >('textDocument/build');
-}
-
-export enum BuildStatus {
-  Success,
-  Error,
-  Failure,
-  Cancelled,
-}
-
-const DOCUMENT_SELECTOR: DocumentSelector = [
-  { language: 'latex', scheme: 'file' },
-  { language: 'bibtex', scheme: 'file' },
-];
-
-export interface BuildState {
-  isBuilding: boolean;
-  cancellationTokenSource?: CancellationTokenSource;
-}
-
-export class BuildCommand extends ObservableCommand<BuildStatus> {
-  public state: BuildState = {
-    isBuilding: false,
-    cancellationTokenSource: undefined,
-  };
-
-  constructor(private client: LanguageClient, subscriber: Subscriber) {
-    super(subscriber);
-  }
-
-  protected canExecute({ document }: vscode.TextEditor): boolean {
-    return (
-      !this.state.isBuilding &&
-      vscode.languages.match(DOCUMENT_SELECTOR, document) > 0
+  public get statusStream(): Observable<ViewStatus> {
+    return this.buildCommandStream.pipe(
+      filterDocument([LATEX_FILE, BIBTEX_FILE]),
+      flatMap(({ document }) => this.build(document)),
+      skipNull(),
+      map<BuildStatus, ViewStatus>(status => ({ type: 'build', status })),
     );
   }
 
-  protected async execute({
-    document,
-  }: vscode.TextEditor): Promise<BuildStatus> {
-    this.state.isBuilding = true;
-    await document.save();
+  constructor(
+    private client: LanguageClient,
+    private buildCommandStream: Observable<vscode.TextEditor>,
+    cancelCommandStream: Observable<any>,
+  ) {
+    this.subscription = cancelCommandStream.subscribe(() => this.cancel());
+  }
 
-    const params: BuildTextDocumentParams = {
-      textDocument: this.client.code2ProtocolConverter.asTextDocumentIdentifier(
-        document,
-      ),
-    };
+  public dispose() {
+    if (this.cancellationTokenSource) {
+      this.cancellationTokenSource.dispose();
+    }
+
+    this.subscription.unsubscribe();
+  }
+
+  private async build(
+    document: vscode.TextDocument,
+  ): Promise<BuildStatus | undefined> {
+    if (this.isBuilding || (document.isDirty && !(await document.save()))) {
+      return undefined;
+    }
+
+    this.isBuilding = true;
+    this.cancellationTokenSource = new CancellationTokenSource();
 
     try {
-      this.state.cancellationTokenSource = new CancellationTokenSource();
-      return await this.client.sendRequest(
-        BuildTextDocumentRequest.type,
-        params,
-        this.state.cancellationTokenSource.token,
-      );
+      return build(this.client, document, this.cancellationTokenSource.token);
     } catch {
-      return BuildStatus.Cancelled;
+      return undefined;
     } finally {
-      this.state.isBuilding = false;
+      this.isBuilding = false;
     }
   }
-}
 
-export class CancelBuildCommand extends ObservableCommand<{}> {
-  constructor(subscriber: Subscriber, private state: BuildState) {
-    super(subscriber);
-  }
-
-  protected canExecute(): boolean {
-    return this.state.isBuilding;
-  }
-
-  protected async execute(): Promise<{}> {
-    if (this.state.cancellationTokenSource) {
-      this.state.cancellationTokenSource.cancel();
-      this.state.cancellationTokenSource = undefined;
+  private cancel() {
+    if (this.isBuilding && this.cancellationTokenSource) {
+      this.cancellationTokenSource.cancel();
+      this.cancellationTokenSource = undefined;
     }
-    return {};
   }
 }

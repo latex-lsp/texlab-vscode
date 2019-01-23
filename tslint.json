@@ -12,6 +12,7 @@
       "allow-leading-underscore"
     ],
     "no-empty": false,
-    "no-bitwise": false
+    "no-bitwise": false,
+    "no-submodule-imports": [true, "rxjs"]
   }
 }
