@@ -1,16 +1,16 @@
-import { merge } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import * as vscode from 'vscode';
-import { LanguageClient, StateChangeEvent } from 'vscode-languageclient';
+import { LanguageClient, State } from 'vscode-languageclient';
 import { BuildEngine } from './build';
 import {
   filterDocument,
   fromCommand,
-  fromEvent,
   fromTextEditorCommand,
+  skipNull,
 } from './observable';
 import { ProgressFeature } from './progress';
-import { forwardSearch, ForwardSearchStatus } from './protocol';
+import { BuildStatus, forwardSearch, ForwardSearchStatus } from './protocol';
 import {
   BIBTEX_FILE,
   BIBTEX_UNTITLED,
@@ -19,8 +19,7 @@ import {
 } from './selectors';
 import { View, ViewStatus } from './view';
 
-export async function activate(context: vscode.ExtensionContext) {
-  const { subscriptions } = context;
+export function activate(context: vscode.ExtensionContext) {
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   const client = new LanguageClient(
     'texlab',
@@ -45,14 +44,49 @@ export async function activate(context: vscode.ExtensionContext) {
       },
     },
   );
-
   client.registerFeature(new ProgressFeature(client));
 
-  const buildEngine = new BuildEngine(
-    client,
-    fromTextEditorCommand('latex.build', subscriptions),
-    fromCommand('latex.build.cancel', subscriptions),
+  const buildEngine = new BuildEngine(client);
+  const view = new View();
+
+  let subscriptions: vscode.Disposable[] = [];
+  client.onDidChangeState(({ newState }) => {
+    switch (newState) {
+      case State.Running:
+        view.subscribe(createStatusStream(client, buildEngine, subscriptions));
+        break;
+      case State.Stopped:
+        view.unsubscribe();
+        subscriptions.forEach(x => x.dispose());
+        subscriptions = [];
+        break;
+    }
+  });
+
+  context.subscriptions.push(client.start(), view);
+}
+
+function createStatusStream(
+  client: LanguageClient,
+  buildEngine: BuildEngine,
+  subscriptions: vscode.Disposable[],
+): Observable<ViewStatus> {
+  const buildStatusStream = fromTextEditorCommand(
+    'latex.build',
+    subscriptions,
+  ).pipe(
+    filterDocument([LATEX_FILE, BIBTEX_FILE]),
+    flatMap(({ document }) => buildEngine.build(document)),
+    skipNull(),
+    map<BuildStatus, ViewStatus>(status => ({ type: 'build', status })),
   );
+
+  const subscription = fromCommand(
+    'latex.build.cancel',
+    subscriptions,
+  ).subscribe(() => buildEngine.cancel());
+
+  subscriptions.push(new vscode.Disposable(() => subscription.unsubscribe()));
 
   const forwardSearchStatusStream = fromTextEditorCommand(
     'latex.forwardSearch',
@@ -68,25 +102,5 @@ export async function activate(context: vscode.ExtensionContext) {
     })),
   );
 
-  const serverStateStream = fromEvent(
-    client.onDidChangeState,
-    subscriptions,
-  ).pipe(
-    map<StateChangeEvent, ViewStatus>(({ newState }) => ({
-      type: 'server',
-      status: newState,
-    })),
-  );
-
-  const viewStatusStream = merge(
-    buildEngine.statusStream,
-    forwardSearchStatusStream,
-    serverStateStream,
-  );
-
-  const view = new View(viewStatusStream);
-  subscriptions.push(client.start(), buildEngine, view);
-  view.show();
-
-  await client.onReady();
+  return merge(buildStatusStream, forwardSearchStatusStream);
 }

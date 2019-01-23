@@ -2,15 +2,6 @@ import { fromEventPattern, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import * as vscode from 'vscode';
 
-export function fromEvent<T>(
-  event: vscode.Event<T>,
-  subsciptions: vscode.Disposable[],
-): Observable<T> {
-  return fromEventPattern(handler => {
-    subsciptions.push(event(x => handler(x)));
-  });
-}
-
 export function fromTextEditorCommand(
   command: string,
   subscriptions: vscode.Disposable[],

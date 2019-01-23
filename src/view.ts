@@ -1,10 +1,9 @@
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Unsubscribable } from 'rxjs';
 import * as vscode from 'vscode';
 import { State } from 'vscode-languageclient';
 import { BuildStatus, ForwardSearchStatus } from './protocol';
 
 export type ViewStatus =
-  | { type: 'server'; status: State }
   | { type: 'build'; status: BuildStatus }
   | { type: 'search'; status: ForwardSearchStatus };
 
@@ -33,20 +32,26 @@ abstract class Messages {
     'The forward search feature is not configured. Please see the README for instructions.';
 }
 
-export class View {
+export class View implements Unsubscribable {
   private statusBarItem: vscode.StatusBarItem;
-  private subscription: Subscription;
+  private subscription?: Subscription;
 
-  constructor(statusStream: Observable<ViewStatus>) {
+  constructor() {
     this.statusBarItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
     );
 
+    this.statusBarItem.show();
+  }
+
+  public dispose() {
+    this.statusBarItem.dispose();
+    this.unsubscribe();
+  }
+
+  public subscribe(statusStream: Observable<ViewStatus>) {
     this.subscription = statusStream.subscribe(x => {
       switch (x.type) {
-        case 'server':
-          this.onServerStateChanged(x.status);
-          break;
         case 'build':
           this.onBuildFinished(x.status);
           break;
@@ -55,15 +60,16 @@ export class View {
           break;
       }
     });
+
+    this.onServerStateChanged(State.Running);
   }
 
-  public show() {
-    this.statusBarItem.show();
-  }
+  public unsubscribe() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
 
-  public dispose() {
-    this.statusBarItem.dispose();
-    this.subscription.unsubscribe();
+    this.onServerStateChanged(State.Stopped);
   }
 
   private onServerStateChanged(state: State) {
