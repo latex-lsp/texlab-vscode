@@ -25,7 +25,10 @@ export class BuildEngine {
     this.cancellationTokenSource = new CancellationTokenSource();
 
     try {
-      return this.client.build(document, this.cancellationTokenSource.token);
+      return await this.client.build(
+        document,
+        this.cancellationTokenSource.token,
+      );
     } catch {
       return undefined;
     } finally {
