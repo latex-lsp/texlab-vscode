@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { CancellationTokenSource } from 'vscode-languageclient';
-import { BuildStatus, CustomLanguageClient } from './client';
+import { BuildResult, CustomLanguageClient } from './client';
 
 export class BuildEngine {
   private isBuilding: boolean = false;
@@ -16,7 +16,7 @@ export class BuildEngine {
 
   public async build(
     document: vscode.TextDocument,
-  ): Promise<BuildStatus | undefined> {
+  ): Promise<BuildResult | undefined> {
     if (this.isBuilding || (document.isDirty && !(await document.save()))) {
       return undefined;
     }

@@ -4,9 +4,9 @@ import * as vscode from 'vscode';
 import { State } from 'vscode-languageclient';
 import { BuildEngine } from './build';
 import {
-  BuildStatus,
+  BuildResult,
   CustomLanguageClient,
-  ForwardSearchStatus,
+  ForwardSearchResult,
 } from './client';
 import {
   filterDocument,
@@ -80,7 +80,10 @@ function createStatusStream(
     filterDocument([LATEX_FILE, BIBTEX_FILE]),
     flatMap(({ document }) => buildEngine.build(document)),
     skipNull(),
-    map<BuildStatus, ViewStatus>(status => ({ type: 'build', status })),
+    map<BuildResult, ViewStatus>(result => ({
+      type: 'build',
+      status: result.status,
+    })),
   );
 
   const subscription = fromCommand(
@@ -98,9 +101,9 @@ function createStatusStream(
     flatMap(({ document, selection }) =>
       client.forwardSearch(document, selection.start),
     ),
-    map<ForwardSearchStatus, ViewStatus>(status => ({
+    map<ForwardSearchResult, ViewStatus>(result => ({
       type: 'search',
-      status,
+      status: result.status,
     })),
   );
 

@@ -15,10 +15,18 @@ export enum BuildStatus {
   Failure,
 }
 
+export interface BuildResult {
+  status: BuildStatus;
+}
+
 export enum ForwardSearchStatus {
   Success,
   Error,
   Unconfigured,
+}
+
+export interface ForwardSearchResult {
+  status: ForwardSearchStatus;
 }
 
 interface BuildTextDocumentParams {
@@ -28,7 +36,7 @@ interface BuildTextDocumentParams {
 abstract class BuildTextDocumentRequest {
   public static type = new RequestType<
     BuildTextDocumentParams,
-    BuildStatus,
+    BuildResult,
     void,
     void
   >('textDocument/build');
@@ -37,7 +45,7 @@ abstract class BuildTextDocumentRequest {
 abstract class ForwardSearchRequest {
   public static type = new RequestType<
     TextDocumentPositionParams,
-    ForwardSearchStatus,
+    ForwardSearchResult,
     void,
     void
   >('textDocument/forwardSearch');
@@ -56,7 +64,7 @@ export class CustomLanguageClient extends LanguageClient {
   public async build(
     document: vscode.TextDocument,
     cancellationToken: vscode.CancellationToken,
-  ): Promise<BuildStatus> {
+  ): Promise<BuildResult> {
     const params: BuildTextDocumentParams = {
       textDocument: this.code2ProtocolConverter.asTextDocumentIdentifier(
         document,
@@ -73,7 +81,7 @@ export class CustomLanguageClient extends LanguageClient {
   public async forwardSearch(
     document: vscode.TextDocument,
     position: vscode.Position,
-  ): Promise<ForwardSearchStatus> {
+  ): Promise<ForwardSearchResult> {
     const params = this.code2ProtocolConverter.asTextDocumentPositionParams(
       document,
       position,
