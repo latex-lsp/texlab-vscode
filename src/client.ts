@@ -10,27 +10,62 @@ import {
 import { ProgressFeature } from './progress';
 
 export enum BuildStatus {
-  Success,
-  Error,
-  Failure,
+  /**
+   * The build process terminated without any errors.
+   */
+  Success = 0,
+
+  /**
+   * The build process terminated with errors.
+   */
+  Error = 1,
+
+  /**
+   * The build process failed to start or crashed.
+   */
+  Failure = 2,
 }
 
 export interface BuildResult {
+  /**
+   * The status of the build process.
+   */
   status: BuildStatus;
 }
 
 export enum ForwardSearchStatus {
-  Success,
-  Error,
-  Failure,
-  Unconfigured,
+  /**
+   * The previewer process executed the command without any errors.
+   */
+  Success = 0,
+
+  /**
+   * The previewer process executed the command with errors.
+   */
+  Error = 1,
+
+  /**
+   * The previewer process failed to start or crashed.
+   */
+  Failure = 2,
+
+  /**
+   * The previewer command is not configured.
+   */
+  Unconfigured = 3,
 }
 
 export interface ForwardSearchResult {
+  /**
+   * The status of the previewer process.
+   */
   status: ForwardSearchStatus;
 }
 
 interface BuildTextDocumentParams {
+  /**
+   * The text document to build.
+   */
   textDocument: TextDocumentIdentifier;
 }
 
