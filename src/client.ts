@@ -22,6 +22,7 @@ export interface BuildResult {
 export enum ForwardSearchStatus {
   Success,
   Error,
+  Failure,
   Unconfigured,
 }
 

@@ -25,6 +25,10 @@ abstract class Messages {
     'An error occured while executing the configured LaTeX build tool.';
 
   public static SEARCH_ERROR =
+    'An error has occured after executing the configured previewer. \
+    Please see the documentation of your previewer for further information.';
+
+  public static SEARCH_FAILURE =
     'An error occured while executing the configured PDF viewer. \
     Please see the README of this extension and the PDF viewer for further information.';
 
@@ -101,7 +105,10 @@ export class View implements Unsubscribable {
       case ForwardSearchStatus.Success:
         break;
       case ForwardSearchStatus.Error:
-        vscode.window.showErrorMessage(Messages.SEARCH_ERROR);
+        vscode.window.showErrorMessage(Messages.SEARCH_FAILURE);
+        break;
+      case ForwardSearchStatus.Failure:
+        vscode.window.showErrorMessage(Messages.SEARCH_FAILURE);
         break;
       case ForwardSearchStatus.Unconfigured:
         vscode.window.showInformationMessage(Messages.SEARCH_UNCONFIGURED);
