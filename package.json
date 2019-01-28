@@ -148,6 +148,12 @@
         "when": "editorLangId =~ /(latex|bibtex)/"
       },
       {
+        "command": "latex.build.cancel",
+        "key": "ctrl+pausebreak",
+        "mac": "ctrl+pausebreak",
+        "when": "editorLangId =~ /(latex|bibtex)/"
+      },
+      {
         "command": "latex.forwardSearch",
         "key": "ctrl+alt+f",
         "mac": "ctrl+alt+f",
