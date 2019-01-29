@@ -72,7 +72,7 @@
               "include": "$self"
             },
             {
-              "name": "string.math.latex",
+              "name": "support.constant.math.latex",
               "match": "[^\\$%\\{\\}\\[\\]\\\\\\s]+"
             }
           ]
@@ -131,7 +131,7 @@
     "math": {
       "patterns": [
         {
-          "name": "string.math.latex",
+          "name": "support.constant.math.latex",
           "begin": "(\\$\\$|\\\\\\[)",
           "end": "(\\$\\$|\\\\\\])",
           "patterns": [
@@ -141,7 +141,7 @@
           ]
         },
         {
-          "name": "string.math.latex",
+          "name": "support.constant.math.latex",
           "begin": "(\\$|\\\\\\()",
           "end": "(\\$|\\\\\\))",
           "patterns": [
