@@ -29,7 +29,7 @@
   "icon": "images/icon.png",
   "galleryBanner": {
     "color": "#F5F5F5",
-    "theme": "dark"
+    "theme": "light"
   },
   "preview": true,
   "activationEvents": [
