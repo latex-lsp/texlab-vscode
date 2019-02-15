@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/efoerster/texlab-vscode"
   },
-  "homepage": "https://github.com/efoerster/texlab-vscode/blob/master/README.md",
+  "homepage": "https://texlab.netlify.com/",
   "bugs": {
     "url": "https://github.com/efoerster/texlab-vscode/issues"
   },
