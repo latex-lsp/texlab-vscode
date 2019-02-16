@@ -32,6 +32,13 @@
     "theme": "light"
   },
   "preview": true,
+  "badges": [
+    {
+      "url": "https://travis-ci.com/efoerster/texlab-vscode.svg?branch=master",
+      "href": "https://travis-ci.com/efoerster/texlab-vscode",
+      "description": "Continuous integration"
+    }
+  ],
   "activationEvents": [
     "onLanguage:latex",
     "onLanguage:bibtex",
