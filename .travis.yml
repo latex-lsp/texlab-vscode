@@ -9,12 +9,14 @@ script:
   - yarn compile
   - yarn lint
 before_deploy:
-  - >
-    curl -s https://api.github.com/repos/efoerster/texlab/releases/latest | 
-    sed -n 's/.*\(https:\/\/.*\/texlab.jar\).*/\1/p' | 
-    wget -qi -'
-  - npm install -g vsce
-  - vsce package
+  - |
+    if ! [ "$BEFORE_DEPLOY_RUN" ]; then
+      export BEFORE_DEPLOY_RUN=1
+      mkdir ./server
+      curl -s https://api.github.com/repos/efoerster/texlab/releases/latest | sed -n 's/.*\(https:\/\/.*\/texlab.jar\).*/\1/p' | wget -P ./server -qi -
+      npm install -g vsce
+      vsce package
+    fi
 deploy:
   - provider: releases
     api_key:
