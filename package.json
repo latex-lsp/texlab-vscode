@@ -14,7 +14,7 @@
     "url": "https://github.com/efoerster/texlab-vscode/issues"
   },
   "engines": {
-    "vscode": "^1.25.1"
+    "vscode": "^1.30.0"
   },
   "categories": [
     "Programming Languages",
