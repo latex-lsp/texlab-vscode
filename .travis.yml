@@ -17,6 +17,9 @@ before_deploy:
       npm install -g vsce
       vsce package
     fi
+    if ! [[ -e "./server/texlab.jar" ]]; then
+       exit 1
+    fi
 deploy:
   - provider: releases
     api_key:
