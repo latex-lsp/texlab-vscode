@@ -1,5 +1,6 @@
-out
-node_modules
+out/
+node_modules/
 .vscode-test/
 *.vsix
-server
+server/*
+!server/.gitkeep

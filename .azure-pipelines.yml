@@ -1,0 +1,65 @@
+trigger:
+  branches:
+    include:
+      - master
+  tags:
+    include:
+      - v*
+jobs:
+- job: Build
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '>=10.x'
+    displayName: 'Install Node.js'
+  - task: DownloadGitHubRelease@0
+    inputs:
+      connection: efoerster
+      userRepository: efoerster/texlab
+      itemPattern: 'texlab.jar'
+      downloadPath: '$(System.DefaultWorkingDirectory)/server'
+    displayName: 'Download Server'
+  - script: |
+      npm install
+      npm run lint
+      npm run build
+    displayName: 'Build'
+  - script: |
+      npm install -g vsce
+      vsce package -o '$(Build.ArtifactStagingDirectory)/texlab.vsix'
+    displayName: "Package"
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: Extension
+    condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'tags'))
+    displayName: 'Upload'
+- job: Publish
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.x'
+    displayName: 'Install Node.js'
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: Extension
+      downloadPath: $(System.DefaultWorkingDirectory)
+    displayName: 'Download extension'
+  - script: |
+      npm install -g vsce
+      vsce publish -p $VSCE_TOKEN --packagePath texlab.vsix
+    env:
+      VSCE_TOKEN: $(vsceToken)
+    displayName: 'Publish to marketplace'
+  - task: GitHubRelease@0
+    inputs:
+      gitHubConnection: efoerster
+      repositoryName: efoerster/texlab-vscode
+      assets: texlab.vsix
+    displayName: 'Publish to GitHub'
+  dependsOn: Build
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'tags'))
