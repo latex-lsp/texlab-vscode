@@ -81,6 +81,11 @@
             "type": "array",
             "default": [],
             "description": "Additional arguments that are passed to the previewer."
+          },
+          "latex.lint.onSave": {
+            "type": "boolean",
+            "default": true,
+            "description": "Lint after saving a file"
           }
         }
       },
