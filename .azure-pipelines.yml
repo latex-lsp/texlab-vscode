@@ -16,8 +16,8 @@ jobs:
     displayName: 'Install Node.js'
   - task: DownloadGitHubRelease@0
     inputs:
-      connection: efoerster
-      userRepository: efoerster/texlab
+      connection: latex-lsp
+      userRepository: latex-lsp/texlab
       itemPattern: 'texlab.jar'
       downloadPath: '$(System.DefaultWorkingDirectory)/server'
     displayName: 'Download Server'
@@ -57,8 +57,8 @@ jobs:
     displayName: 'Publish to marketplace'
   - task: GitHubRelease@0
     inputs:
-      gitHubConnection: efoerster
-      repositoryName: efoerster/texlab-vscode
+      gitHubConnection: latex-lsp
+      repositoryName: latex-lsp/texlab-vscode
       assets: texlab.vsix
     displayName: 'Publish to GitHub'
   dependsOn: Build

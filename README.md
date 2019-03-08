@@ -1,7 +1,7 @@
 # TexLab
 
 A [Visual Studio Code](https://code.visualstudio.com) extension that provides rich editing support for the
-[LaTeX](https://www.latex-project.org) typesetting system powered by the [TexLab](https://github.com/efoerster/texlab) language server.
+[LaTeX](https://www.latex-project.org) typesetting system powered by the [TexLab](https://github.com/latex-lsp/texlab) language server.
 It aims to produce high quality code completion results by indexing your used packages as you type.
 
 ![Demo](images/demo.gif)

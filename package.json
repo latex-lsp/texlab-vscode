@@ -7,11 +7,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/efoerster/texlab-vscode"
+    "url": "https://github.com/latex-lsp/texlab-vscode"
   },
   "homepage": "https://texlab.netlify.com/",
   "bugs": {
-    "url": "https://github.com/efoerster/texlab-vscode/issues"
+    "url": "https://github.com/latex-lsp/texlab-vscode/issues"
   },
   "engines": {
     "vscode": "^1.30.0"
@@ -34,8 +34,8 @@
   "preview": true,
   "badges": [
     {
-      "url": "https://dev.azure.com/ericfoerster/texlab/_apis/build/status/efoerster.texlab-vscode?branchName=master",
-      "href": "https://dev.azure.com/ericfoerster/texlab/_build/latest?definitionId=1&branchName=master",
+      "url": "https://dev.azure.com/latex-lsp/texlab/_apis/build/status/latex-lsp.texlab-vscode?branchName=master",
+      "href": "https://dev.azure.com/latex-lsp/texlab/_build/latest?definitionId=5&branchName=master",
       "description": "Continuous Integration"
     }
   ],
