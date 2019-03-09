@@ -47,11 +47,11 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: Extension
-      downloadPath: $(System.DefaultWorkingDirectory)
+      downloadPath: $(System.ArtifactsDirectory)
     displayName: 'Download extension'
   - script: |
       npm install -g vsce
-      vsce publish -p $VSCE_TOKEN --packagePath texlab.vsix
+      vsce publish -p $VSCE_TOKEN --packagePath "$(System.ArtifactsDirectory)/Extension/texlab.vsix"
     env:
       VSCE_TOKEN: $(vsceToken)
     displayName: 'Publish to marketplace'
@@ -59,7 +59,7 @@ jobs:
     inputs:
       gitHubConnection: latex-lsp
       repositoryName: latex-lsp/texlab-vscode
-      assets: texlab.vsix
+      assets: '$(System.ArtifactsDirectory)/Extension/texlab.vsix'
     displayName: 'Publish to GitHub'
   dependsOn: Build
   condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'tags'))
