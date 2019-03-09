@@ -217,10 +217,14 @@
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "lint": "tslint --project .",
-    "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{json,md}\" "
+    "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{json,md}\" ",
+    "test": "node scripts/test.js"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
     "@types/node": "^11.9.6",
+    "chai": "^4.2.0",
     "prettier": "^1.16.4",
     "tslint": "^5.13.1",
     "tslint-config-prettier": "^1.18.0",

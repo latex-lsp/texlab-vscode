@@ -13,6 +13,6 @@
     ],
     "no-empty": false,
     "no-bitwise": false,
-    "no-submodule-imports": [true, "rxjs"]
+    "no-submodule-imports": [true, "rxjs", "vscode"]
   }
 }

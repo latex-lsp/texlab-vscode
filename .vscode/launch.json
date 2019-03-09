@@ -7,30 +7,23 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceRoot}"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": [
-        "${workspaceRoot}/out/**/*.js"
-      ],
+      "outFiles": ["${workspaceRoot}/out/**/*.js"],
       "preLaunchTask": "npm: watch"
     },
     {
-      "name": "Extension Tests",
+      "name": "Language Server E2E Test",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceRoot}",
-        "--extensionTestsPath=${workspaceRoot}/out/test"
+        "--extensionTestsPath=${workspaceRoot}/out/test",
+        "${workspaceRoot}/src/test/workspace"
       ],
-      "stopOnEntry": false,
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceRoot}/out/test/**/*.js"
-      ],
+      "outFiles": ["${workspaceRoot}/out/test/**/*.js"],
       "preLaunchTask": "npm: watch"
     }
   ]

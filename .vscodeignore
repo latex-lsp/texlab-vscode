@@ -8,3 +8,4 @@ tsconfig.json
 server/components.json
 server/symbols/**
 server/.gitkeep
+scripts/**
