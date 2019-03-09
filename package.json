@@ -35,7 +35,7 @@
   "badges": [
     {
       "url": "https://dev.azure.com/latex-lsp/texlab/_apis/build/status/latex-lsp.texlab-vscode?branchName=master",
-      "href": "https://dev.azure.com/latex-lsp/texlab/_build/latest?definitionId=5&branchName=master",
+      "href": "https://dev.azure.com/latex-lsp/texlab/_build/latest?definitionId=9&branchName=master",
       "description": "Continuous Integration"
     }
   ],
