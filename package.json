@@ -2,7 +2,7 @@
   "name": "texlab",
   "displayName": "TexLab",
   "description": "LaTeX for Visual Studio Code",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "publisher": "efoerster",
   "license": "MIT",
   "repository": {
