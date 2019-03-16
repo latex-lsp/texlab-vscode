@@ -1,7 +1,7 @@
 import { merge, Observable } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import * as vscode from 'vscode';
-import { State, TransportKind, NodeModule } from 'vscode-languageclient';
+import { NodeModule, State, TransportKind } from 'vscode-languageclient';
 import { BuildEngine } from './build';
 import {
   BuildResult,
@@ -24,7 +24,7 @@ import { View, ViewStatus } from './view';
 
 export function activate(context: vscode.ExtensionContext) {
   const serverModule: NodeModule = {
-    module: context.asAbsolutePath('../texlab/out/main.js'),
+    module: context.asAbsolutePath('node_modules/texlab/dist/texlab.js'),
     transport: TransportKind.ipc,
   };
 
