@@ -13,6 +13,37 @@
   "bugs": {
     "url": "https://github.com/latex-lsp/texlab-vscode/issues"
   },
+  "main": "./dist/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run dist",
+    "dist": "webpack --mode production",
+    "watch": "webpack --mode none --watch",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "lint": "tslint --project .",
+    "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{ts,json,yml,md}\" ",
+    "test": "node scripts/test.js"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.9.6",
+    "@types/webpack": "^4.4.25",
+    "chai": "^4.2.0",
+    "prettier": "^1.16.4",
+    "ts-loader": "^5.3.3",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.13.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.3333",
+    "typescript-tslint-plugin": "^0.3.1",
+    "vscode": "^1.1.30",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  },
+  "dependencies": {
+    "rxjs": "^6.4.0",
+    "vscode-languageclient": "^5.2.1"
+  },
   "engines": {
     "vscode": "^1.30.0"
   },
@@ -44,7 +75,6 @@
     "onLanguage:bibtex",
     "workspaceContains:**/*.{bib,tex}"
   ],
-  "main": "./out/main",
   "contributes": {
     "configuration": [
       {
@@ -210,30 +240,5 @@
         "path": "./grammars/bibtex.tmLanguage.json"
       }
     ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run build",
-    "build": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "lint": "tslint --project .",
-    "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{json,md}\" ",
-    "test": "node scripts/test.js"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^11.9.6",
-    "chai": "^4.2.0",
-    "prettier": "^1.16.4",
-    "tslint": "^5.13.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.3333",
-    "typescript-tslint-plugin": "^0.3.1",
-    "vscode": "^1.1.30"
-  },
-  "dependencies": {
-    "rxjs": "^6.4.0",
-    "vscode-languageclient": "^5.3.0-next.1"
   }
 }
