@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 import { CancellationTokenSource } from 'vscode-languageclient';
-import { BuildResult, CustomLanguageClient } from './client';
+import { BuildResult, LatexLanguageClient } from './client';
 
 export class BuildEngine {
   private isBuilding: boolean = false;
   private cancellationTokenSource?: CancellationTokenSource;
 
-  constructor(private client: CustomLanguageClient) {}
+  constructor(private client: LatexLanguageClient) {}
 
   public dispose() {
     if (this.cancellationTokenSource) {

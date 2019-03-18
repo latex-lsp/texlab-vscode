@@ -5,8 +5,8 @@ import { NodeModule, State, TransportKind } from 'vscode-languageclient';
 import { BuildEngine } from './build';
 import {
   BuildResult,
-  CustomLanguageClient,
   ForwardSearchResult,
+  LatexLanguageClient,
 } from './client';
 import {
   filterDocument,
@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
     transport: TransportKind.ipc,
   };
 
-  const client = new CustomLanguageClient(
+  const client = new LatexLanguageClient(
     'texlab',
     {
       run: serverModule,
@@ -73,7 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function createStatusStream(
-  client: CustomLanguageClient,
+  client: LatexLanguageClient,
   buildEngine: BuildEngine,
   subscriptions: vscode.Disposable[],
 ): Observable<ViewStatus> {

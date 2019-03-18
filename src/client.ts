@@ -87,7 +87,7 @@ abstract class ForwardSearchRequest {
   >('textDocument/forwardSearch');
 }
 
-export class CustomLanguageClient extends LanguageClient {
+export class LatexLanguageClient extends LanguageClient {
   constructor(
     name: string,
     serverOptions: ServerOptions,
