@@ -1,9 +1,11 @@
+import CleanWebpackPlugin from 'clean-webpack-plugin';
 import * as path from 'path';
 import { Configuration } from 'webpack';
 
 const config: Configuration = {
   target: 'node',
-  entry: './src/main.ts',
+  entry: './src/extension.ts',
+  mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'extension.js',
@@ -17,6 +19,7 @@ const config: Configuration = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
+  plugins: [new CleanWebpackPlugin()],
   module: {
     rules: [
       {

@@ -1,4 +1,3 @@
-// A launch configuration that compiles the extension and then opens it inside a new window
 {
   "version": "0.1.0",
   "configurations": [
@@ -10,7 +9,8 @@
       "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/dist/**/*.js"]
+      "outFiles": ["${workspaceRoot}/dist/**/*.js"],
+      "preLaunchTask": "npm: watch"
     },
     {
       "name": "Language Server E2E Test",
@@ -19,10 +19,10 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceRoot}",
-        "--extensionTestsPath=${workspaceRoot}/out/test",
+        "--extensionTestsPath=${workspaceRoot}/dist/test",
         "${workspaceRoot}/src/test/workspace"
       ],
-      "outFiles": ["${workspaceRoot}/out/test/**/*.js"],
+      "outFiles": ["${workspaceRoot}/dist/test/**/*.js"],
       "preLaunchTask": "npm: watch"
     }
   ]
