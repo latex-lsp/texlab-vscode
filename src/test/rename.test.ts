@@ -50,8 +50,8 @@ describe('rename', () => {
       character: 5,
       newName: 'baz',
       expected: [
-        new vscode.TextEdit(new vscode.Range(2, 5, 2, 8), 'baz'),
         new vscode.TextEdit(new vscode.Range(0, 7, 0, 10), 'baz'),
+        new vscode.TextEdit(new vscode.Range(2, 5, 2, 8), 'baz'),
       ],
     });
   });
