@@ -9,5 +9,10 @@
     "strict": true,
     "plugins": [{ "name": "typescript-tslint-plugin" }]
   },
-  "exclude": ["node_modules", ".vscode-test", "webpack.config.ts"]
+  "exclude": [
+    "node_modules",
+    ".vscode-test",
+    "webpack.config.ts",
+    "scripts/test.ts"
+  ]
 }

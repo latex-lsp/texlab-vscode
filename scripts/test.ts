@@ -1,5 +1,5 @@
-const path = require('path');
-const cp = require('child_process');
+import * as cp from 'child_process';
+import * as path from 'path';
 
 const EXECUTABLE = path.join(
   __dirname,
@@ -9,7 +9,8 @@ const EXECUTABLE = path.join(
   'bin',
   'test',
 );
-const CODE_TESTS_PATH = path.join(__dirname, '..', 'out', 'test');
+
+const CODE_TESTS_PATH = path.join(__dirname, '..', 'dist', 'test');
 const CODE_TESTS_WORKSPACE = path.join(
   __dirname,
   '..',

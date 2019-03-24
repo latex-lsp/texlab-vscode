@@ -22,7 +22,7 @@
     "postinstall": "node ./node_modules/vscode/bin/install",
     "lint": "tslint --project .",
     "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{ts,json,yml,md}\" ",
-    "test": "node scripts/test.js"
+    "test": "ts-node scripts/test.ts"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

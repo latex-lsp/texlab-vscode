@@ -22,6 +22,18 @@ steps:
       yarn build
     displayName: 'Build'
   - script: |
+      sudo apt install texlive-latex-base latexmk
+      set -e
+      /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
+      disown -ar
+      yarn test
+    env:
+      DISPLAY: :10
+    displayName: 'E2E Tests'
+  - script: |
+      yarn dist
+    displayName: 'Bundle'
+  - script: |
       npm install -g vsce
       vsce package -o "texlab.vsix"
     displayName: 'Package'

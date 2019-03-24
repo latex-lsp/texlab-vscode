@@ -53,8 +53,13 @@ describe('completion', () => {
     await run({
       file: 'completion-package-command/main.tex',
       line: 5,
-      character: 4,
-      expected: ['lipsum', 'lipsumexp', 'ChangeLipsumPar', 'UnpackLipsum'],
+      character: 5,
+      expected: [
+        'xspace',
+        'xspaceaddexceptions',
+        'xspaceremoveexception',
+        'xspaceskip',
+      ],
     });
   });
 
