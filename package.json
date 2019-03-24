@@ -27,7 +27,7 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
-    "@types/node": "^11.9.6",
+    "@types/node": "^11.11.6",
     "@types/webpack": "^4.4.25",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^2.0.1",
