@@ -38,7 +38,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.3.4000",
     "typescript-tslint-plugin": "^0.3.1",
-    "vscode": "^1.1.30",
+    "vscode": "^1.1.33",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0"
   },
