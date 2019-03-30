@@ -1,7 +1,7 @@
 import { merge, Observable } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import * as vscode from 'vscode';
-import { NodeModule, State, TransportKind } from 'vscode-languageclient';
+import { State } from 'vscode-languageclient';
 import { BuildEngine } from './build';
 import {
   BuildResult,
@@ -23,18 +23,14 @@ import {
 import { View, ViewStatus } from './view';
 
 export function activate(context: vscode.ExtensionContext) {
-  const serverModule: NodeModule = {
-    module: context.asAbsolutePath('node_modules/texlab/dist/texlab.js'),
-    transport: TransportKind.ipc,
-  };
-
+  const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   const client = new LatexLanguageClient(
     'texlab',
     {
-      run: serverModule,
-      debug: {
-        ...serverModule,
-        options: { execArgv: ['--nolazy', '--inspect=6009'] },
+      command: 'java',
+      args: ['-jar', context.asAbsolutePath('server/texlab.jar')],
+      options: {
+        env,
       },
     },
     {
