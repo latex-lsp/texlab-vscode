@@ -22,9 +22,9 @@ jobs:
       downloadPath: '$(System.DefaultWorkingDirectory)/server'
     displayName: 'Download Server'
   - script: |
-      npm install
-      npm run lint
-      npm run build
+      yarn install
+      yarn lint
+      yarn build
     displayName: 'Build'
   - script: |
       yarn dist
