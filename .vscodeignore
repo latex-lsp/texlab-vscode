@@ -2,7 +2,6 @@
 .vscode-test/**
 dist/*.map
 node_modules/**
-!node_modules/texlab
 out/**
 scripts/**
 src/**
