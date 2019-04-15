@@ -1,7 +1,8 @@
+import * as os from 'os';
 import { merge, Observable } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import * as vscode from 'vscode';
-import { State } from 'vscode-languageclient';
+import { Executable, State } from 'vscode-languageclient';
 import { BuildEngine } from './build';
 import {
   BuildResult,
@@ -24,13 +25,20 @@ import { View, ViewStatus } from './view';
 
 export function activate(context: vscode.ExtensionContext) {
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
+  const executable: Executable = {
+    command: context.asAbsolutePath(`./server/${getExecutableName()}`),
+    options: {
+      env,
+    },
+  };
+
   const client = new LatexLanguageClient(
     'texlab',
     {
-      command: 'java',
-      args: ['-jar', context.asAbsolutePath('server/texlab.jar')],
-      options: {
-        env,
+      run: executable,
+      debug: {
+        ...executable,
+        args: ['-vvvv'],
       },
     },
     {
@@ -108,4 +116,19 @@ function createStatusStream(
   );
 
   return merge(buildStatusStream, forwardSearchStatusStream);
+}
+
+function getExecutableName(): string {
+  switch (os.platform()) {
+    case 'linux':
+      return 'texlab-x86_64-linux';
+    case 'darwin':
+      return 'texlab-x86_64-darwin';
+    case 'win32':
+      return os.arch() === 'x64'
+        ? 'texlab-x86_64-windows.exe'
+        : 'texlab-i686-windows.exe';
+    default:
+      throw new Error('Unsupported platform');
+  }
 }

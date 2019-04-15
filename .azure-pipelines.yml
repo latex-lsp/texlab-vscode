@@ -6,63 +6,63 @@ trigger:
     include:
       - v*
 jobs:
-- job: Build
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '>=10.x'
-    displayName: 'Install Node.js'
-  - task: DownloadGitHubRelease@0
-    inputs:
-      connection: latex-lsp
-      userRepository: latex-lsp/texlab
-      itemPattern: 'texlab.jar'
-      downloadPath: '$(System.DefaultWorkingDirectory)/server'
-    displayName: 'Download Server'
-  - script: |
-      yarn install
-      yarn lint
-      yarn build
-    displayName: 'Build'
-  - script: |
-      yarn dist
-    displayName: 'Bundle'
-  - script: |
-      npm install -g vsce
-      vsce package -o '$(Build.ArtifactStagingDirectory)/texlab.vsix'
-    displayName: "Package"
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: Extension
+  - job: Build
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '>=10.x'
+        displayName: 'Install Node.js'
+      - task: DownloadGitHubRelease@0
+        inputs:
+          connection: latex-lsp
+          userRepository: latex-lsp/texlab
+          itemPattern: 'texlab*'
+          downloadPath: '$(System.DefaultWorkingDirectory)/server'
+        displayName: 'Download Server'
+      - script: |
+          yarn install
+          yarn lint
+          yarn build
+        displayName: 'Build'
+      - script: |
+          yarn dist
+        displayName: 'Bundle'
+      - script: |
+          npm install -g vsce
+          vsce package -o '$(Build.ArtifactStagingDirectory)/texlab.vsix'
+        displayName: 'Package'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: Extension
+        condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'tags'))
+        displayName: 'Upload'
+  - job: Publish
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '8.x'
+        displayName: 'Install Node.js'
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          artifactName: Extension
+          downloadPath: $(System.ArtifactsDirectory)
+        displayName: 'Download extension'
+      - script: |
+          npm install -g vsce
+          vsce publish -p $VSCE_TOKEN --packagePath "$(System.ArtifactsDirectory)/Extension/texlab.vsix"
+        env:
+          VSCE_TOKEN: $(vsceToken)
+        displayName: 'Publish to marketplace'
+      - task: GitHubRelease@0
+        inputs:
+          gitHubConnection: latex-lsp
+          repositoryName: latex-lsp/texlab-vscode
+          assets: '$(System.ArtifactsDirectory)/Extension/texlab.vsix'
+        displayName: 'Publish to GitHub'
+    dependsOn: Build
     condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'tags'))
-    displayName: 'Upload'
-- job: Publish
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '8.x'
-    displayName: 'Install Node.js'
-  - task: DownloadBuildArtifacts@0
-    inputs:
-      artifactName: Extension
-      downloadPath: $(System.ArtifactsDirectory)
-    displayName: 'Download extension'
-  - script: |
-      npm install -g vsce
-      vsce publish -p $VSCE_TOKEN --packagePath "$(System.ArtifactsDirectory)/Extension/texlab.vsix"
-    env:
-      VSCE_TOKEN: $(vsceToken)
-    displayName: 'Publish to marketplace'
-  - task: GitHubRelease@0
-    inputs:
-      gitHubConnection: latex-lsp
-      repositoryName: latex-lsp/texlab-vscode
-      assets: '$(System.ArtifactsDirectory)/Extension/texlab.vsix'
-    displayName: 'Publish to GitHub'
-  dependsOn: Build
-  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'tags'))
