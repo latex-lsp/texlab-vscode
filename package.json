@@ -30,7 +30,7 @@
     "prettier": "^1.17.0",
     "ts-loader": "^5.3.3",
     "ts-node": "^8.1.0",
-    "tslint": "^5.15.0",
+    "tslint": "^5.16.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.3",
     "typescript-tslint-plugin": "^0.3.1",
