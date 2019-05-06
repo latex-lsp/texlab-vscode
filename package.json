@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/node": "^11.13.7",
-    "@types/webpack": "^4.4.27",
+    "@types/webpack": "^4.4.31",
     "clean-webpack-plugin": "^2.0.1",
     "prettier": "^1.17.0",
     "ts-loader": "^5.4.3",
