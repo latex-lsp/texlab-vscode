@@ -41,9 +41,10 @@ export function activate(context: vscode.ExtensionContext) {
         args: ['-vvvv'],
         options: {
           env: {
-            RUST_BACKTRACE: "1",
-          }
-        }
+            ...env,
+            RUST_BACKTRACE: '1',
+          },
+        },
       },
     },
     {
