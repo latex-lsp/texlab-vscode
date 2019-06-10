@@ -36,7 +36,7 @@
     "typescript-tslint-plugin": "^0.4.0",
     "vscode": "^1.1.34",
     "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.3"
   },
   "dependencies": {
     "rxjs": "^6.5.2",
