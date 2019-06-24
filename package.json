@@ -24,7 +24,7 @@
     "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{ts,json,yml,md}\" "
   },
   "devDependencies": {
-    "@types/node": "^12.0.7",
+    "@types/node": "^12.0.10",
     "@types/webpack": "^4.4.33",
     "clean-webpack-plugin": "^2.0.2",
     "prettier": "^1.17.1",
