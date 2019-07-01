@@ -125,16 +125,9 @@ function createStatusStream(
 }
 
 function getExecutableName(): string {
-  switch (os.platform()) {
-    case 'linux':
-      return 'texlab-x86_64-linux';
-    case 'darwin':
-      return 'texlab-x86_64-darwin';
-    case 'win32':
-      return os.arch() === 'x64'
-        ? 'texlab-x86_64-windows.exe'
-        : 'texlab-i686-windows.exe';
-    default:
-      throw new Error('Unsupported platform');
+  if (os.platform() === 'win32') {
+    return 'texlab.exe';
   }
+
+  return 'texlab';
 }
