@@ -7,7 +7,6 @@ import {
   TextDocumentIdentifier,
   TextDocumentPositionParams,
 } from 'vscode-languageclient';
-import { ProgressFeature } from './progress';
 
 export enum BuildStatus {
   /**
@@ -94,7 +93,7 @@ export class LatexLanguageClient extends LanguageClient {
     clientOptions: LanguageClientOptions,
   ) {
     super(name, serverOptions, clientOptions);
-    this.registerFeature(new ProgressFeature(this));
+    this.registerProposedFeatures();
   }
 
   public async build(
