@@ -1,4 +1,8 @@
+import * as fs from 'fs';
 import * as os from 'os';
+import * as request from 'request';
+import * as tar from 'tar';
+import * as unzipper from 'unzipper';
 import * as vscode from 'vscode';
 import { ServerOptions } from 'vscode-languageclient';
 import { BuildEngine } from './build';
@@ -15,8 +19,26 @@ import {
 } from './selectors';
 import { Messages, StatusIcon } from './view';
 
-export function activate(context: vscode.ExtensionContext) {
-  const serverOptions = getServerOptions(context);
+export async function activate(context: vscode.ExtensionContext) {
+  const serverPath = getServerPath(context);
+  if (!fs.existsSync(serverPath)) {
+    await vscode.window.withProgress(
+      {
+        title: Messages.DOWNLOAD_TITLE,
+        location: vscode.ProgressLocation.Window,
+        cancellable: false,
+      },
+      async () => {
+        try {
+          await downloadServer(context);
+        } catch {
+          vscode.window.showErrorMessage(Messages.DOWNLOAD_ERROR);
+        }
+      },
+    );
+  }
+
+  const serverOptions = getServerOptions(serverPath);
   const client = new LatexLanguageClient('texlab', serverOptions, {
     documentSelector: [
       LATEX_FILE,
@@ -50,19 +72,22 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-function getServerOptions(context: vscode.ExtensionContext): ServerOptions {
+function getServerPath(context: vscode.ExtensionContext): string {
   const name = os.platform() === 'win32' ? 'texlab.exe' : 'texlab';
-  const command = context.asAbsolutePath(`./server/${name}`);
+  return context.asAbsolutePath(`./server/${name}`);
+}
+
+function getServerOptions(serverPath: string): ServerOptions {
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   return {
     run: {
-      command,
+      command: serverPath,
       options: {
         env,
       },
     },
     debug: {
-      command,
+      command: serverPath,
       args: ['-vvvv'],
       options: {
         env: {
@@ -72,6 +97,25 @@ function getServerOptions(context: vscode.ExtensionContext): ServerOptions {
       },
     },
   };
+}
+
+async function downloadServer(context: vscode.ExtensionContext): Promise<void> {
+  const packageManifest = JSON.parse(
+    await fs.promises.readFile(context.asAbsolutePath('package.json'), 'utf-8'),
+  );
+  const url = packageManifest.languageServer[os.platform()];
+  const path = context.asAbsolutePath('server');
+  const extract =
+    os.platform() === 'win32'
+      ? () => unzipper.Extract({ path })
+      : () => tar.x({ C: path });
+
+  return new Promise((resolve, reject) => {
+    request(url)
+      .pipe(extract())
+      .on('close', () => resolve())
+      .on('error', () => reject());
+  });
 }
 
 async function build(

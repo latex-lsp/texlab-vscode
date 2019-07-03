@@ -14,7 +14,7 @@ export abstract class Messages {
     'An error occured while executing the configured LaTeX build tool.';
 
   public static SEARCH_ERROR =
-    'An error has occured after executing the configured previewer. \
+    'An error occured after executing the configured previewer. \
     Please see the documentation of your previewer for further information.';
 
   public static SEARCH_FAILURE =
@@ -23,6 +23,11 @@ export abstract class Messages {
 
   public static SEARCH_UNCONFIGURED =
     'The forward search feature is not configured. Please see the README for instructions.';
+
+  public static DOWNLOAD_TITLE = 'Downloading TexLab server';
+
+  public static DOWNLOAD_ERROR =
+    'An error occured while downloading the TexLab language server.';
 }
 
 abstract class Colors {
