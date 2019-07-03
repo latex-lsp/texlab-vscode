@@ -1,133 +1,122 @@
 import * as os from 'os';
-import { merge, Observable } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
 import * as vscode from 'vscode';
-import { Executable, State } from 'vscode-languageclient';
+import { ServerOptions } from 'vscode-languageclient';
 import { BuildEngine } from './build';
 import {
-  BuildResult,
-  ForwardSearchResult,
+  BuildStatus,
+  ForwardSearchStatus,
   LatexLanguageClient,
 } from './client';
-import {
-  filterDocument,
-  fromCommand,
-  fromTextEditorCommand,
-  skipNull,
-} from './observable';
 import {
   BIBTEX_FILE,
   BIBTEX_UNTITLED,
   LATEX_FILE,
   LATEX_UNTITLED,
 } from './selectors';
-import { View, ViewStatus } from './view';
+import { Messages, StatusIcon } from './view';
 
 export function activate(context: vscode.ExtensionContext) {
-  const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
-  const executable: Executable = {
-    command: context.asAbsolutePath(`./server/${getExecutableName()}`),
-    options: {
-      env,
+  const serverOptions = getServerOptions(context);
+  const client = new LatexLanguageClient('texlab', serverOptions, {
+    documentSelector: [
+      LATEX_FILE,
+      LATEX_UNTITLED,
+      BIBTEX_FILE,
+      BIBTEX_UNTITLED,
+    ],
+    outputChannelName: 'LaTeX',
+    uriConverters: {
+      code2Protocol: uri => uri.toString(true),
+      protocol2Code: value => vscode.Uri.parse(value),
     },
-  };
+  });
 
-  const client = new LatexLanguageClient(
-    'texlab',
-    {
-      run: executable,
-      debug: {
-        ...executable,
-        args: ['-vvvv'],
-        options: {
-          env: {
-            ...env,
-            RUST_BACKTRACE: '1',
-          },
+  const icon = new StatusIcon();
+  const buildEngine = new BuildEngine(client);
+
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand('latex.build', editor =>
+      build(editor, buildEngine),
+    ),
+    vscode.commands.registerTextEditorCommand('latex.forwardSearch', editor =>
+      forwardSearch(editor, client),
+    ),
+    client.onDidChangeState(({ newState }) => {
+      icon.update(newState);
+    }),
+    client.start(),
+    buildEngine,
+    icon,
+  );
+}
+
+function getServerOptions(context: vscode.ExtensionContext): ServerOptions {
+  const name = os.platform() === 'win32' ? 'texlab.exe' : 'texlab';
+  const command = context.asAbsolutePath(`./server/${name}`);
+  const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
+  return {
+    run: {
+      command,
+      options: {
+        env,
+      },
+    },
+    debug: {
+      command,
+      args: ['-vvvv'],
+      options: {
+        env: {
+          ...env,
+          RUST_BACKTRACE: '1',
         },
       },
     },
-    {
-      documentSelector: [
-        LATEX_FILE,
-        LATEX_UNTITLED,
-        BIBTEX_FILE,
-        BIBTEX_UNTITLED,
-      ],
-      outputChannelName: 'LaTeX',
-      uriConverters: {
-        code2Protocol: uri => uri.toString(true),
-        protocol2Code: value => vscode.Uri.parse(value),
-      },
-    },
-  );
-
-  const buildEngine = new BuildEngine(client);
-  const view = new View();
-
-  let subscriptions: vscode.Disposable[] = [];
-  client.onDidChangeState(({ newState }) => {
-    switch (newState) {
-      case State.Running:
-        view.subscribe(createStatusStream(client, buildEngine, subscriptions));
-        break;
-      case State.Stopped:
-        view.unsubscribe();
-        subscriptions.forEach(x => x.dispose());
-        subscriptions = [];
-        break;
-    }
-  });
-
-  context.subscriptions.push(client.start(), buildEngine, view);
+  };
 }
 
-function createStatusStream(
-  client: LatexLanguageClient,
+async function build(
+  { document }: vscode.TextEditor,
   buildEngine: BuildEngine,
-  subscriptions: vscode.Disposable[],
-): Observable<ViewStatus> {
-  const buildStatusStream = fromTextEditorCommand(
-    'latex.build',
-    subscriptions,
-  ).pipe(
-    filterDocument([LATEX_FILE, BIBTEX_FILE]),
-    flatMap(({ document }) => buildEngine.build(document)),
-    skipNull(),
-    map<BuildResult, ViewStatus>(result => ({
-      type: 'build',
-      status: result.status,
-    })),
-  );
-
-  const subscription = fromCommand(
-    'latex.build.cancel',
-    subscriptions,
-  ).subscribe(() => buildEngine.cancel());
-
-  subscriptions.push(new vscode.Disposable(() => subscription.unsubscribe()));
-
-  const forwardSearchStatusStream = fromTextEditorCommand(
-    'latex.forwardSearch',
-    subscriptions,
-  ).pipe(
-    filterDocument(LATEX_FILE),
-    flatMap(({ document, selection }) =>
-      client.forwardSearch(document, selection.start),
-    ),
-    map<ForwardSearchResult, ViewStatus>(result => ({
-      type: 'search',
-      status: result.status,
-    })),
-  );
-
-  return merge(buildStatusStream, forwardSearchStatusStream);
-}
-
-function getExecutableName(): string {
-  if (os.platform() === 'win32') {
-    return 'texlab.exe';
+): Promise<void> {
+  if (vscode.languages.match([LATEX_FILE, BIBTEX_FILE], document) <= 0) {
+    return;
   }
 
-  return 'texlab';
+  const result = await buildEngine.build(document);
+  if (result === undefined) {
+    return;
+  }
+
+  switch (result.status) {
+    case BuildStatus.Success:
+      break;
+    case BuildStatus.Error:
+      vscode.window.showErrorMessage(Messages.BUILD_ERROR);
+      break;
+    case BuildStatus.Failure:
+      vscode.window.showErrorMessage(Messages.BUILD_FAILURE);
+      break;
+  }
+}
+
+async function forwardSearch(
+  { document, selection }: vscode.TextEditor,
+  client: LatexLanguageClient,
+): Promise<void> {
+  if (vscode.languages.match(LATEX_FILE, document) <= 0) {
+    return;
+  }
+
+  const result = await client.forwardSearch(document, selection.start);
+  switch (result.status) {
+    case ForwardSearchStatus.Success:
+      break;
+    case ForwardSearchStatus.Error:
+    case ForwardSearchStatus.Failure:
+      vscode.window.showErrorMessage(Messages.SEARCH_FAILURE);
+      break;
+    case ForwardSearchStatus.Unconfigured:
+      vscode.window.showInformationMessage(Messages.SEARCH_UNCONFIGURED);
+      break;
+  }
 }

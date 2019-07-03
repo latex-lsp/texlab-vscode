@@ -39,7 +39,6 @@
     "webpack-cli": "^3.3.5"
   },
   "dependencies": {
-    "rxjs": "^6.5.2",
     "vscode-languageclient": "^5.3.0-next.6"
   },
   "engines": {
