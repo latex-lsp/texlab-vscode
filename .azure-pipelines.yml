@@ -22,12 +22,12 @@ jobs:
           downloadPath: '$(System.DefaultWorkingDirectory)/server'
         displayName: 'Download Server'
       - script: |
-          yarn install
-          yarn lint
-          yarn build
+          npm install
+          npm run lint
+          npm run build
         displayName: 'Build'
       - script: |
-          yarn dist
+          npm run dist
         displayName: 'Bundle'
       - script: |
           npm install -g vsce

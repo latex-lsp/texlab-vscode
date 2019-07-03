@@ -11,5 +11,5 @@ src/**
 tsconfig.json
 tslint.json
 webpack.config.ts
-yarn.lock
+package-lock.json
 *.vsix
