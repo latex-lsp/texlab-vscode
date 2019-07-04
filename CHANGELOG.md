@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 04.07.2019
+
+### Added
+
+- Add support citations with multiple keys ([#22](https://github.com/latex-lsp/texlab/issues/22))
+- Add support for the cleveref package ([#21](https://github.com/latex-lsp/texlab/issues/21))
+- Implement "Go to Definition" for commands ([#15](https://github.com/latex-lsp/texlab/issues/15))
+- Provide preview for user-defined commands
+- Provide completion and preview for theorem environments
+
+### Changed
+
+- Java is no longer a required dependency
+- Node.js is an optional dependency required to display citations
+- Reduce extension size
+- Download the language server on first usage instead of bundling it with the extension
+- Improve performance of completion
+- Improve startup time
+- The server no longer depends on a workspace folder
+- "Find all References" works from a reference instead
+  of just the definition ([#25](https://github.com/latex-lsp/texlab/issues/25))
+- All configuration items are now optional
+- Provide only math labels when completing \eqref
+- Preselect the matching environment name ([#29](https://github.com/latex-lsp/texlab/issues/29))
+
+### Fixed
+
+- Let the client decide whether to include the declaration
+  when finding all references ([#25](https://github.com/latex-lsp/texlab/issues/25))
+- Renaming a label with colons now works as expected ([#30](https://github.com/latex-lsp/texlab/issues/30))
+- Handle colons when completing labels and citations ([#30](https://github.com/latex-lsp/texlab/issues/30))
+- Do not crash when encountering a BibTeX entry with
+  a `crossref` field ([#16](https://github.com/latex-lsp/texlab/issues/16))
+- Hovering over uppercase BibTeX fields now shows the documentation
+  ([#17](https://github.com/latex-lsp/texlab/issues/17))
+- Do not depend on extensions when resolving included files ([#22](https://github.com/latex-lsp/texlab/issues/22))
+- Do not depend on the `workspace/configuration` request (#[22](https://github.com/latex-lsp/texlab/issues/22))
+- Prevent completion from triggering too often
+
 ## [0.4.2] - 10.04.2019
 
 ### Fixed
