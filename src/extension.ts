@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as request from 'request';
 import * as tar from 'tar';
 import * as unzipper from 'unzipper';
+import * as util from 'util';
 import * as vscode from 'vscode';
 import { ServerOptions } from 'vscode-languageclient';
 import { BuildEngine } from './build';
@@ -101,7 +102,10 @@ function getServerOptions(serverPath: string): ServerOptions {
 
 async function downloadServer(context: vscode.ExtensionContext): Promise<void> {
   const packageManifest = JSON.parse(
-    await fs.promises.readFile(context.asAbsolutePath('package.json'), 'utf-8'),
+    await util.promisify(fs.readFile)(
+      context.asAbsolutePath('package.json'),
+      'utf-8',
+    ),
   );
   const url = packageManifest.languageServer[os.platform()];
   const path = context.asAbsolutePath('server');
