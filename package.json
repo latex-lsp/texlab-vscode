@@ -124,6 +124,11 @@
             "type": "boolean",
             "default": true,
             "description": "Lint after saving a file"
+          },
+          "latex.lint.onChange": {
+            "type": "boolean",
+            "default": false,
+            "description": "Lint after changing a file"
           }
         }
       },
