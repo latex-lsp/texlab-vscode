@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 13.07.2019
+
+### Added
+
+- Add section name and caption to label completion
+- Show section name and caption when hovering over labels
+- Add some missing kernel commands with stars
+- Add support for comma-separated imports
+- Add setting to lint after a change occurs
+
+### Changed
+
+- Improve completion at the end of the file
+
+### Fixed
+
+- Fix preselect for environments with missing braces
+
 ## [1.0.0] - 04.07.2019
 
 ### Added
