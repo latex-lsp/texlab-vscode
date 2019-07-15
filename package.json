@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/request": "^2.48.1",
-    "@types/tar": "^4.0.2",
+    "@types/tar": "^4.0.3",
     "@types/unzipper": "^0.9.2",
     "@types/node": "^12.6.2",
     "@types/webpack": "^4.4.34",
