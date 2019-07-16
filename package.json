@@ -24,7 +24,7 @@
     "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{ts,json,yml,md}\" "
   },
   "devDependencies": {
-    "@types/request": "^2.48.1",
+    "@types/request": "^2.48.2",
     "@types/tar": "^4.0.3",
     "@types/unzipper": "^0.9.2",
     "@types/node": "^12.6.2",
