@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 23.07.2019
+
+### Added
+
+- Add completion support for `\RequirePackage`
+- Filter completion list based on the contents of the reference
+
+### Changed
+
+- The index mechanism has been removed. Packages are now indexed with a script beforehand.
+
 ## [1.1.0] - 13.07.2019
 
 ### Added
