@@ -163,7 +163,7 @@
       {
         "command": "latex.build.cancel",
         "title": "Cancel Build",
-        "description": "Cancels the current build.",
+        "description": "Cancel all running builds.",
         "category": "LaTeX"
       },
       {

@@ -23,6 +23,11 @@ export enum BuildStatus {
    * The build process failed to start or crashed.
    */
   Failure = 2,
+
+  /**
+   * The build process was cancelled.
+   */
+  Cancelled = 3,
 }
 
 export interface BuildResult {
@@ -96,21 +101,14 @@ export class LatexLanguageClient extends LanguageClient {
     this.registerProposedFeatures();
   }
 
-  public async build(
-    document: vscode.TextDocument,
-    cancellationToken: vscode.CancellationToken,
-  ): Promise<BuildResult> {
+  public async build(document: vscode.TextDocument): Promise<BuildResult> {
     const params: BuildTextDocumentParams = {
       textDocument: this.code2ProtocolConverter.asTextDocumentIdentifier(
         document,
       ),
     };
 
-    return this.sendRequest(
-      BuildTextDocumentRequest.type,
-      params,
-      cancellationToken,
-    );
+    return this.sendRequest(BuildTextDocumentRequest.type, params);
   }
 
   public async forwardSearch(

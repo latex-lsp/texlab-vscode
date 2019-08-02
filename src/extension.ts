@@ -5,8 +5,7 @@ import * as tar from 'tar';
 import * as unzipper from 'unzipper';
 import * as util from 'util';
 import * as vscode from 'vscode';
-import { ServerOptions } from 'vscode-languageclient';
-import { BuildEngine } from './build';
+import { Proposed, ServerOptions } from 'vscode-languageclient';
 import {
   BuildStatus,
   ForwardSearchStatus,
@@ -55,11 +54,15 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   const icon = new StatusIcon();
-  const buildEngine = new BuildEngine(client);
 
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand('latex.build', editor =>
-      build(editor, buildEngine),
+      build(editor, client),
+    ),
+    vscode.commands.registerCommand('latex.build.cancel', () =>
+      client.sendNotification(Proposed.ProgressCancelNotification.type, {
+        id: 'texlab-build-*',
+      }),
     ),
     vscode.commands.registerTextEditorCommand('latex.forwardSearch', editor =>
       forwardSearch(editor, client),
@@ -68,7 +71,6 @@ export async function activate(context: vscode.ExtensionContext) {
       icon.update(newState);
     }),
     client.start(),
-    buildEngine,
     icon,
   );
 }
@@ -124,19 +126,19 @@ async function downloadServer(context: vscode.ExtensionContext): Promise<void> {
 
 async function build(
   { document }: vscode.TextEditor,
-  buildEngine: BuildEngine,
+  client: LatexLanguageClient,
 ): Promise<void> {
-  if (vscode.languages.match([LATEX_FILE, BIBTEX_FILE], document) <= 0) {
+  if (
+    vscode.languages.match([LATEX_FILE, BIBTEX_FILE], document) <= 0 ||
+    (document.isDirty && !(await document.save()))
+  ) {
     return;
   }
 
-  const result = await buildEngine.build(document);
-  if (result === undefined) {
-    return;
-  }
-
+  const result = await client.build(document);
   switch (result.status) {
     case BuildStatus.Success:
+    case BuildStatus.Cancelled:
       break;
     case BuildStatus.Error:
       vscode.window.showErrorMessage(Messages.BUILD_ERROR);
