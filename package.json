@@ -24,6 +24,7 @@
     "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{ts,json,yml,md}\" "
   },
   "devDependencies": {
+    "@types/command-exists": "^1.2.0",
     "@types/request": "^2.48.2",
     "@types/tar": "^4.0.3",
     "@types/unzipper": "^0.9.2",
@@ -42,6 +43,7 @@
     "webpack-cli": "^3.3.7"
   },
   "dependencies": {
+    "command-exists": "^1.2.8",
     "request": "^2.88.0",
     "tar": "^4.4.10",
     "unzipper": "^0.10.1",
@@ -129,6 +131,11 @@
             "type": "boolean",
             "default": false,
             "description": "Lint after changing a file"
+          },
+          "latex.server.autoDownload": {
+            "type": "boolean",
+            "default": false,
+            "description": "Automatically download the language server if it is not installed."
           }
         }
       },

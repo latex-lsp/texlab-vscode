@@ -1,3 +1,4 @@
+import { sync as commandExists } from 'command-exists';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as request from 'request';
@@ -20,25 +21,12 @@ import {
 import { Messages, StatusIcon } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
-  const serverPath = getServerPath(context);
-  if (!fs.existsSync(serverPath)) {
-    await vscode.window.withProgress(
-      {
-        title: Messages.DOWNLOAD_TITLE,
-        location: vscode.ProgressLocation.Window,
-        cancellable: false,
-      },
-      async () => {
-        try {
-          await downloadServer(context);
-        } catch {
-          vscode.window.showErrorMessage(Messages.DOWNLOAD_ERROR);
-        }
-      },
-    );
+  const serverCommand = await findOrInstallServer(context);
+  if (serverCommand === undefined) {
+    return;
   }
 
-  const serverOptions = getServerOptions(serverPath);
+  const serverOptions = getServerOptions(serverCommand);
   const client = new LatexLanguageClient('texlab', serverOptions, {
     documentSelector: [
       LATEX_FILE,
@@ -75,22 +63,17 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 }
 
-function getServerPath(context: vscode.ExtensionContext): string {
-  const name = os.platform() === 'win32' ? 'texlab.exe' : 'texlab';
-  return context.asAbsolutePath(`./server/${name}`);
-}
-
-function getServerOptions(serverPath: string): ServerOptions {
+function getServerOptions(serverCommand: string): ServerOptions {
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   return {
     run: {
-      command: serverPath,
+      command: serverCommand,
       options: {
         env,
       },
     },
     debug: {
-      command: serverPath,
+      command: serverCommand,
       args: ['-vvvv'],
       options: {
         env: {
@@ -100,6 +83,66 @@ function getServerOptions(serverPath: string): ServerOptions {
       },
     },
   };
+}
+
+async function findOrInstallServer(
+  context: vscode.ExtensionContext,
+): Promise<string | undefined> {
+  const serverName = os.platform() === 'win32' ? 'texlab.exe' : 'texlab';
+  const localServerPath = context.asAbsolutePath(`server/${serverName}`);
+  if (fs.existsSync(localServerPath)) {
+    return localServerPath;
+  }
+
+  if (commandExists(serverName)) {
+    return serverName;
+  }
+
+  return (await installServer(context)) ? localServerPath : undefined;
+}
+
+async function installServer(
+  context: vscode.ExtensionContext,
+): Promise<boolean> {
+  const serverConfig = vscode.workspace.getConfiguration('latex.server');
+  const autoDownload = serverConfig.get<boolean>('autoDownload');
+
+  let selection: string | undefined;
+  if (!autoDownload) {
+    selection = await vscode.window.showInformationMessage(
+      Messages.SERVER_NOT_INSTALLED,
+      Messages.SERVER_NOT_INSTALLED_OK,
+      Messages.SERVER_NOT_INSTALLED_CANCEL,
+    );
+  }
+
+  if (autoDownload || selection === Messages.SERVER_NOT_INSTALLED_OK) {
+    serverConfig.update(
+      'autoDownload',
+      true,
+      vscode.ConfigurationTarget.Global,
+    );
+
+    await vscode.window.withProgress(
+      {
+        title: Messages.DOWNLOAD_TITLE,
+        location: vscode.ProgressLocation.Window,
+        cancellable: false,
+      },
+      async () => {
+        try {
+          await downloadServer(context);
+        } catch {
+          vscode.window.showErrorMessage(Messages.DOWNLOAD_ERROR);
+          return false;
+        }
+      },
+    );
+  } else {
+    return false;
+  }
+
+  return true;
 }
 
 async function downloadServer(context: vscode.ExtensionContext): Promise<void> {
