@@ -48,9 +48,12 @@ export async function activate(context: vscode.ExtensionContext) {
       build(editor, client),
     ),
     vscode.commands.registerCommand('latex.build.cancel', () =>
-      client.sendNotification(Proposed.ProgressCancelNotification.type, {
-        id: 'texlab-build-*',
-      }),
+      client.sendNotification(
+        Proposed.WorkDoneProgressCancelNotification.type,
+        {
+          token: 'texlab-build-*',
+        },
+      ),
     ),
     vscode.commands.registerTextEditorCommand('latex.forwardSearch', editor =>
       forwardSearch(editor, client),
