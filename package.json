@@ -28,7 +28,7 @@
     "@types/request": "^2.48.3",
     "@types/tar": "^4.0.3",
     "@types/unzipper": "^0.10.0",
-    "@types/node": "^12.7.4",
+    "@types/node": "^12.7.5",
     "@types/webpack": "^4.39.1",
     "clean-webpack-plugin": "^3.0.0",
     "prettier": "^1.17.1",
