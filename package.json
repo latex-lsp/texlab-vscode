@@ -40,7 +40,7 @@
     "typescript-tslint-plugin": "^0.5.4",
     "vscode": "^1.1.36",
     "webpack": "^4.40.2",
-    "webpack-cli": "^3.3.8"
+    "webpack-cli": "^3.3.9"
   },
   "dependencies": {
     "command-exists": "^1.2.8",
