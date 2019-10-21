@@ -29,7 +29,7 @@
     "@types/tar": "^4.0.3",
     "@types/unzipper": "^0.10.0",
     "@types/node": "^12.7.12",
-    "@types/webpack": "^4.39.3",
+    "@types/webpack": "^4.39.4",
     "clean-webpack-plugin": "^3.0.0",
     "prettier": "^1.17.1",
     "ts-loader": "^6.2.0",
