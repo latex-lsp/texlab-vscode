@@ -1,20 +1,32 @@
 # Changelog
 
 All notable changes to this extension will be documented in this file.
-The changelog of the TexLab language server are found [here](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md).
+The changelog of the TexLab language server can be found [here](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 30.12.2019
+
+### Changed
+
+- Update TexLab to [v1.9.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#190---30122019)
+
 ## [1.8.0] - 01.12.2019
+
+### Changed
 
 - Update TexLab to [v1.8.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#180---01122019)
 
 ## [1.7.0] - 20.11.2019
 
+### Changed
+
 - Update TexLab to [v1.7.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#170---20112019)
 
 ## [1.6.0] - 29.09.2019
+
+### Changed
 
 - Update TexLab to [v1.6.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#160---29092019)
 
