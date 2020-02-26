@@ -90,6 +90,14 @@
       {
         "title": "LaTeX configuration",
         "properties": {
+          "latex.rootDirectory": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Path to the root directory."
+          },
           "latex.build.executable": {
             "type": "string",
             "default": "latexmk",
