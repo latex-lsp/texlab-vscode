@@ -95,7 +95,7 @@
               "string",
               "null"
             ],
-            "default": null,
+            "default": ".",
             "description": "Path to the root directory."
           },
           "latex.build.executable": {
