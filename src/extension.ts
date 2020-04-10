@@ -6,7 +6,10 @@ import * as tar from 'tar';
 import * as unzipper from 'unzipper';
 import * as util from 'util';
 import * as vscode from 'vscode';
-import { Proposed, ServerOptions } from 'vscode-languageclient';
+import {
+  ServerOptions,
+  WorkDoneProgressCancelNotification,
+} from 'vscode-languageclient';
 import {
   BuildStatus,
   ForwardSearchStatus,
@@ -48,12 +51,9 @@ export async function activate(context: vscode.ExtensionContext) {
       build(editor, client),
     ),
     vscode.commands.registerCommand('latex.build.cancel', () =>
-      client.sendNotification(
-        Proposed.WorkDoneProgressCancelNotification.type,
-        {
-          token: 'texlab-build-*',
-        },
-      ),
+      client.sendNotification(WorkDoneProgressCancelNotification.type, {
+        token: 'texlab-build-*',
+      }),
     ),
     vscode.commands.registerTextEditorCommand('latex.forwardSearch', editor =>
       forwardSearch(editor, client),
