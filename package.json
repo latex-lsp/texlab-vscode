@@ -45,7 +45,7 @@
   "dependencies": {
     "command-exists": "^1.2.9",
     "request": "^2.88.2",
-    "tar": "^6.0.1",
+    "tar": "^6.0.2",
     "unzipper": "^0.10.11",
     "vscode-languageclient": "^6.1.3"
   },
