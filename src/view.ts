@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
-import { State } from 'vscode-languageclient';
 
 export abstract class Messages {
   public static SERVER_RUNNING = 'TexLab is running...';
+
+  public static SERVER_CANCEL_BUILD = 'Click to cancel the build.';
 
   public static SERVER_STOPPED = 'TexLab has stopped working!';
 
@@ -42,6 +43,12 @@ abstract class Colors {
   public static ERROR = new vscode.ThemeColor('errorForeground');
 }
 
+export enum ExtensionState {
+  Running,
+  Building,
+  Stopped,
+}
+
 export class StatusIcon {
   private statusBarItem: vscode.StatusBarItem;
 
@@ -49,7 +56,7 @@ export class StatusIcon {
     this.statusBarItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
     );
-
+    this.statusBarItem.command = 'latex.build.cancel';
     this.statusBarItem.show();
   }
 
@@ -57,11 +64,19 @@ export class StatusIcon {
     this.statusBarItem.dispose();
   }
 
-  public update(state: State) {
-    if (state === State.Running) {
-      this.drawIcon(Messages.SERVER_RUNNING, Colors.NORMAL);
-    } else {
-      this.drawIcon(Messages.SERVER_STOPPED, Colors.ERROR);
+  public update(state: ExtensionState) {
+    switch (state) {
+      case ExtensionState.Running:
+        this.drawIcon(Messages.SERVER_RUNNING, Colors.NORMAL);
+        break;
+      case ExtensionState.Building:
+        this.statusBarItem.text = `$(beaker) Building...`;
+        this.statusBarItem.tooltip = Messages.SERVER_CANCEL_BUILD;
+        this.statusBarItem.color = Colors.NORMAL;
+        break;
+      case ExtensionState.Stopped:
+        this.drawIcon(Messages.SERVER_STOPPED, Colors.ERROR);
+        break;
     }
   }
 

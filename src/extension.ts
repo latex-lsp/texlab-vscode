@@ -9,6 +9,7 @@ import * as vscode from 'vscode';
 import {
   ServerOptions,
   WorkDoneProgressCancelNotification,
+  State,
 } from 'vscode-languageclient';
 import {
   BuildStatus,
@@ -21,7 +22,7 @@ import {
   LATEX_FILE,
   LATEX_UNTITLED,
 } from './selectors';
-import { Messages, StatusIcon } from './view';
+import { Messages, StatusIcon, ExtensionState } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
   const serverCommand = await findOrInstallServer(context);
@@ -29,25 +30,30 @@ export async function activate(context: vscode.ExtensionContext) {
     return;
   }
 
-  const serverOptions = getServerOptions(serverCommand);
-  const client = new LatexLanguageClient('texlab', serverOptions, {
-    documentSelector: [
-      LATEX_FILE,
-      LATEX_UNTITLED,
-      BIBTEX_FILE,
-      BIBTEX_UNTITLED,
-    ],
-    outputChannelName: 'LaTeX',
-    uriConverters: {
-      code2Protocol: uri => uri.toString(true),
-      protocol2Code: value => vscode.Uri.parse(value),
-    },
-  });
-
   const icon = new StatusIcon();
 
+  const serverOptions = getServerOptions(serverCommand);
+  const client = new LatexLanguageClient(
+    'texlab',
+    serverOptions,
+    {
+      documentSelector: [
+        LATEX_FILE,
+        LATEX_UNTITLED,
+        BIBTEX_FILE,
+        BIBTEX_UNTITLED,
+      ],
+      outputChannelName: 'LaTeX',
+      uriConverters: {
+        code2Protocol: (uri) => uri.toString(true),
+        protocol2Code: (value) => vscode.Uri.parse(value),
+      },
+    },
+    icon,
+  );
+
   context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand('latex.build', editor =>
+    vscode.commands.registerTextEditorCommand('latex.build', (editor) =>
       build(editor, client),
     ),
     vscode.commands.registerCommand('latex.build.cancel', () =>
@@ -55,11 +61,15 @@ export async function activate(context: vscode.ExtensionContext) {
         token: 'texlab-build-*',
       }),
     ),
-    vscode.commands.registerTextEditorCommand('latex.forwardSearch', editor =>
+    vscode.commands.registerTextEditorCommand('latex.forwardSearch', (editor) =>
       forwardSearch(editor, client),
     ),
     client.onDidChangeState(({ newState }) => {
-      icon.update(newState);
+      icon.update(
+        newState === State.Running
+          ? ExtensionState.Running
+          : ExtensionState.Stopped,
+      );
     }),
     client.start(),
     icon,
