@@ -123,6 +123,11 @@
             "default": ".",
             "description": "Directory containing the build artifacts."
           },
+          "latex.build.forwardSearchAfter": {
+            "type": "boolean",
+            "default": false,
+            "description": "Execute forward search after building"
+          },
           "latex.forwardSearch.executable": {
             "type": [
               "string",
