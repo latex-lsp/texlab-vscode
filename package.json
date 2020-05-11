@@ -75,8 +75,8 @@
   "preview": true,
   "badges": [
     {
-      "url": "https://dev.azure.com/latex-lsp/texlab/_apis/build/status/latex-lsp.texlab-vscode?branchName=master",
-      "href": "https://dev.azure.com/latex-lsp/texlab/_build/latest?definitionId=9&branchName=master",
+      "url": "https://img.shields.io/github/workflow/status/latex-lsp/texlab-vscode/CI.svg?logo=github",
+      "href": "https://github.com/latex-lsp/texlab-vscode/actions",
       "description": "Continuous Integration"
     }
   ],

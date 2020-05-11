@@ -1,0 +1,26 @@
+name: Deployment
+on:
+  release:
+    types: [published]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - run: npm ci
+      - run: npm install -g vsce
+      - run: vsce package -o texlab.vsix
+      - run: vsce publish -p $VSCE_TOKEN --packagePath texlab.vsix
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+      - uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./texlab.vsix
+          asset_name: texlab.vsix
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

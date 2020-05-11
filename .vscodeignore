@@ -1,3 +1,4 @@
+.github/**
 .vscode/**
 .vscode-test/**
 dist/*.map
@@ -5,7 +6,6 @@ node_modules/**
 out/**
 scripts/**
 src/**
-.azure-pipelines.yml
 .gitignore
 .prettierrc
 tsconfig.json
