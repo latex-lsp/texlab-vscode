@@ -21,7 +21,7 @@
     "watch": "tsc -p . --watch",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars, languages}/**/*.json\" \"*.{ts,json,yml,md}\" "
+    "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars,languages}/**/*.json\" \"*.{ts,json,yml,md}\" "
   },
   "devDependencies": {
     "@types/command-exists": "^1.2.0",
