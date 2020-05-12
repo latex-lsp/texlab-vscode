@@ -77,6 +77,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 function getServerOptions(serverCommand: string): ServerOptions {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   return {
     run: {

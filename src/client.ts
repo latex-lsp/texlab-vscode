@@ -135,7 +135,7 @@ export class LatexLanguageClient extends LanguageClient {
     this.registerFeature(new CustomProgressFeature(this, icon));
   }
 
-  public registerFeature(feature: StaticFeature | DynamicFeature<any>) {
+  public registerFeature(feature: StaticFeature | DynamicFeature<unknown>) {
     if (feature.constructor.name !== 'ProgressFeature') {
       super.registerFeature(feature);
     }
