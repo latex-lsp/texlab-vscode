@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/latex-lsp/texlab-vscode"
   },
-  "homepage": "https://texlab.netlify.com/",
+  "homepage": "https://texlab.netlify.app/",
   "bugs": {
     "url": "https://github.com/latex-lsp/texlab-vscode/issues"
   },
