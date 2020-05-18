@@ -31,7 +31,7 @@
     "@types/unzipper": "^0.10.3",
     "@types/webpack": "^4.41.12",
     "@typescript-eslint/eslint-plugin": "^2.32.0",
-    "@typescript-eslint/parser": "^2.32.0",
+    "@typescript-eslint/parser": "^2.33.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.11.0",
