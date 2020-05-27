@@ -25,14 +25,14 @@ import {
 import { Messages, StatusIcon, ExtensionState } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
-  const serverCommand = await findOrInstallServer(context);
+  const serverConfig = vscode.workspace.getConfiguration('latex.server');
+  const serverCommand = await findOrInstallServer(context, serverConfig);
   if (serverCommand === undefined) {
     return;
   }
 
+  const serverOptions = getServerOptions(serverCommand, serverConfig);
   const icon = new StatusIcon();
-
-  const serverOptions = getServerOptions(serverCommand);
   const client = new LatexLanguageClient(
     'texlab',
     serverOptions,
@@ -76,19 +76,34 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 }
 
-function getServerOptions(serverCommand: string): ServerOptions {
+function getServerOptions(
+  serverCommand: string,
+  serverConfig: vscode.WorkspaceConfiguration,
+): ServerOptions {
+  const trace = serverConfig.get<boolean>('trace');
+  const logFilePath = serverConfig.get<string | undefined>('logFile');
+  const args = [];
+  if (trace) {
+    args.push('-vvvv');
+  }
+  if (logFilePath) {
+    args.push('--log-file');
+    args.push(logFilePath);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   return {
     run: {
       command: serverCommand,
+      args,
       options: {
         env,
       },
     },
     debug: {
       command: serverCommand,
-      args: ['-vvvv'],
+      args,
       options: {
         env: {
           ...env,
@@ -101,6 +116,7 @@ function getServerOptions(serverCommand: string): ServerOptions {
 
 async function findOrInstallServer(
   context: vscode.ExtensionContext,
+  serverConfig: vscode.WorkspaceConfiguration,
 ): Promise<string | undefined> {
   const serverName = os.platform() === 'win32' ? 'texlab.exe' : 'texlab';
   const localServerPath = context.asAbsolutePath(`server/${serverName}`);
@@ -112,13 +128,15 @@ async function findOrInstallServer(
     return serverName;
   }
 
-  return (await installServer(context)) ? localServerPath : undefined;
+  return (await installServer(context, serverConfig))
+    ? localServerPath
+    : undefined;
 }
 
 async function installServer(
   context: vscode.ExtensionContext,
+  serverConfig: vscode.WorkspaceConfiguration,
 ): Promise<boolean> {
-  const serverConfig = vscode.workspace.getConfiguration('latex.server');
   const autoDownload = serverConfig.get<boolean>('autoDownload');
 
   let selection: string | undefined;

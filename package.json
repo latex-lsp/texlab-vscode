@@ -156,6 +156,19 @@
             "type": "boolean",
             "default": false,
             "description": "Automatically download the language server if it is not installed."
+          },
+          "latex.server.trace": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable the trace verbosity of the server."
+          },
+          "latex.server.logFile": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Path to the server log file."
           }
         }
       },
