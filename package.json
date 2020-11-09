@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "clean-webpack-plugin": "^3.0.0",
-    "eslint": "^7.12.1",
+    "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.15.0",
     "prettier": "^2.1.2",
     "ts-loader": "^8.0.7",
