@@ -2,7 +2,7 @@
   "name": "texlab",
   "displayName": "TexLab",
   "description": "LaTeX for Visual Studio Code",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "publisher": "efoerster",
   "license": "MIT",
   "repository": {
@@ -54,9 +54,9 @@
     "vscode": "^1.44.0"
   },
   "languageServer": {
-    "win32": "https://github.com/latex-lsp/texlab/releases/download/v2.2.0/texlab-x86_64-windows.zip",
-    "linux": "https://github.com/latex-lsp/texlab/releases/download/v2.2.0/texlab-x86_64-linux.tar.gz",
-    "darwin": "https://github.com/latex-lsp/texlab/releases/download/v2.2.0/texlab-x86_64-macos.tar.gz"
+    "win32": "https://github.com/latex-lsp/texlab/releases/download/v2.2.1/texlab-x86_64-windows.zip",
+    "linux": "https://github.com/latex-lsp/texlab/releases/download/v2.2.1/texlab-x86_64-linux.tar.gz",
+    "darwin": "https://github.com/latex-lsp/texlab/releases/download/v2.2.1/texlab-x86_64-macos.tar.gz"
   },
   "categories": [
     "Programming Languages",
