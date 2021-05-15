@@ -104,9 +104,8 @@ export class LatexLanguageClient extends LanguageClient {
   public async build(document: vscode.TextDocument): Promise<BuildResult> {
     this.icon.update(ExtensionState.Building);
     const params: BuildTextDocumentParams = {
-      textDocument: this.code2ProtocolConverter.asTextDocumentIdentifier(
-        document,
-      ),
+      textDocument:
+        this.code2ProtocolConverter.asTextDocumentIdentifier(document),
     };
 
     const result = await this.sendRequest(
