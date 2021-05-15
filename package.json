@@ -19,7 +19,6 @@
     "dist": "webpack",
     "build": "tsc -p .",
     "watch": "tsc -p . --watch",
-    "postinstall": "node ./node_modules/vscode/bin/install",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars,languages}/**/*.json\" \"*.{ts,json,yml,md}\" "
   },
@@ -48,10 +47,11 @@
     "request": "^2.88.2",
     "tar": "^6.1.0",
     "unzipper": "^0.10.11",
-    "vscode-languageclient": "^6.1.3"
+    "vscode-languageclient": "^7.0.0",
+    "vscode-languageserver-protocol": "^3.16.0"
   },
   "engines": {
-    "vscode": "^1.44.0"
+    "vscode": "^1.46.0"
   },
   "languageServer": {
     "win32": "https://github.com/latex-lsp/texlab/releases/download/v2.2.1/texlab-x86_64-windows.zip",
@@ -89,9 +89,9 @@
   "contributes": {
     "configuration": [
       {
-        "title": "LaTeX configuration",
+        "title": "TeXLab configuration",
         "properties": {
-          "latex.rootDirectory": {
+          "texlab.rootDirectory": {
             "type": [
               "string",
               "null"
@@ -99,12 +99,12 @@
             "default": null,
             "description": "Path to the root directory."
           },
-          "latex.build.executable": {
+          "texlab.build.executable": {
             "type": "string",
             "default": "latexmk",
             "description": "Path to a LaTeX build tool."
           },
-          "latex.build.args": {
+          "texlab.build.args": {
             "type": "array",
             "default": [
               "-pdf",
@@ -114,22 +114,27 @@
             ],
             "description": "Additional arguments that are passed to the build tool."
           },
-          "latex.build.onSave": {
-            "type": "boolean",
-            "default": false,
-            "description": "Build after saving a file"
-          },
-          "latex.build.outputDirectory": {
-            "type": "string",
-            "default": ".",
-            "description": "Directory containing the build artifacts."
-          },
-          "latex.build.forwardSearchAfter": {
+          "texlab.build.forwardSearchAfter": {
             "type": "boolean",
             "default": false,
             "description": "Execute forward search after building"
           },
-          "latex.forwardSearch.executable": {
+          "texlab.build.isContinuous": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set this property to true if the build arguments imply a continous build (like latexmk -pvc)."
+          },
+          "texlab.build.onSave": {
+            "type": "boolean",
+            "default": false,
+            "description": "Build after saving a file"
+          },
+          "texlab.auxDirectory": {
+            "type": "string",
+            "default": ".",
+            "description": "Directory containing the build artifacts."
+          },
+          "texlab.forwardSearch.executable": {
             "type": [
               "string",
               "null"
@@ -137,50 +142,45 @@
             "default": null,
             "description": "Path to a PDF previewer that supports SyncTeX."
           },
-          "latex.forwardSearch.args": {
+          "texlab.forwardSearch.args": {
             "type": "array",
             "default": [],
             "description": "Additional arguments that are passed to the previewer."
           },
-          "latex.lint.onSave": {
+          "texlab.chktex.onOpenAndSave": {
             "type": "boolean",
             "default": true,
-            "description": "Lint after saving a file"
+            "description": "Lint using chktex after opening and saving a file."
           },
-          "latex.lint.onChange": {
+          "texlab.chktex.onEdit": {
             "type": "boolean",
             "default": false,
-            "description": "Lint after changing a file"
+            "description": "Lint using chktex after changing a file"
           },
-          "latex.server.autoDownload": {
+          "texlab.server.autoDownload": {
             "type": "boolean",
             "default": false,
             "description": "Automatically download the language server if it is not installed."
           },
-          "latex.server.trace": {
+          "texlab.server.trace": {
             "type": "boolean",
             "default": false,
             "description": "Enable the trace verbosity of the server."
           },
-          "latex.server.logFile": {
+          "texlab.server.logFile": {
             "type": [
               "string",
               "null"
             ],
             "default": null,
             "description": "Path to the server log file."
-          }
-        }
-      },
-      {
-        "title": "BibTeX configuration",
-        "properties": {
-          "bibtex.formatting.formatter": {
+          },
+          "texlab.bibtexFormatter": {
             "type": "string",
             "default": "texlab",
             "description": "BibTeX formatter to use."
           },
-          "bibtex.formatting.lineLength": {
+          "texlab.formatterLineLength": {
             "type": "integer",
             "default": 120,
             "description": "Maximum amount of characters per line (0 = disable)."
@@ -195,20 +195,15 @@
       },
       "[bibtex]": {
         "editor.wordBasedSuggestions": false,
-        "editor.suggest.snippetsPreventQuickSuggestions": false
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.semanticHighlighting.enabled": true
       }
     },
     "commands": [
       {
         "command": "latex.build",
-        "title": "Build File",
+        "title": "Build file (latexmk)",
         "description": "Builds the current file.",
-        "category": "LaTeX"
-      },
-      {
-        "command": "latex.build.cancel",
-        "title": "Cancel Build",
-        "description": "Cancel all running builds.",
         "category": "LaTeX"
       },
       {
@@ -222,10 +217,6 @@
       "commandPalette": [
         {
           "command": "latex.build",
-          "when": "editorLangId =~ /(latex|bibtex)/"
-        },
-        {
-          "command": "latex.build.cancel",
           "when": "editorLangId =~ /(latex|bibtex)/"
         },
         {
@@ -245,12 +236,6 @@
         "command": "latex.build",
         "key": "f5",
         "mac": "f5",
-        "when": "editorLangId =~ /(latex|bibtex)/"
-      },
-      {
-        "command": "latex.build.cancel",
-        "key": "ctrl+pausebreak",
-        "mac": "ctrl+pausebreak",
         "when": "editorLangId =~ /(latex|bibtex)/"
       },
       {

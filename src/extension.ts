@@ -6,11 +6,7 @@ import * as tar from 'tar';
 import * as unzipper from 'unzipper';
 import * as util from 'util';
 import * as vscode from 'vscode';
-import {
-  ServerOptions,
-  WorkDoneProgressCancelNotification,
-  State,
-} from 'vscode-languageclient';
+import { ServerOptions, State } from 'vscode-languageclient/node';
 import {
   BuildStatus,
   ForwardSearchStatus,
@@ -22,10 +18,10 @@ import {
   LATEX_FILE,
   LATEX_UNTITLED,
 } from './selectors';
-import { Messages, StatusIcon, ExtensionState } from './view';
+import { ExtensionState, Messages, StatusIcon } from './view';
 
 export async function activate(context: vscode.ExtensionContext) {
-  const serverConfig = vscode.workspace.getConfiguration('latex.server');
+  const serverConfig = vscode.workspace.getConfiguration('texlab.server');
   const serverCommand = await findOrInstallServer(context, serverConfig);
   if (serverCommand === undefined) {
     return;
@@ -56,11 +52,6 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerTextEditorCommand('latex.build', (editor) =>
       build(editor, client),
     ),
-    vscode.commands.registerCommand('latex.build.cancel', () =>
-      client.sendNotification(WorkDoneProgressCancelNotification.type, {
-        token: 'texlab-build-*',
-      }),
-    ),
     vscode.commands.registerTextEditorCommand('latex.forwardSearch', (editor) =>
       forwardSearch(editor, client),
     ),
@@ -73,6 +64,16 @@ export async function activate(context: vscode.ExtensionContext) {
     }),
     client.start(),
     icon,
+    vscode.workspace.onDidSaveTextDocument(async (document) => {
+      if (
+        vscode.workspace
+          .getConfiguration('texlab.build')
+          .get<boolean>('onSave') &&
+        vscode.window.activeTextEditor?.document == document
+      ) {
+        await build(vscode.window.activeTextEditor, client);
+      }
+    }),
   );
 }
 
@@ -200,19 +201,29 @@ async function downloadServer(context: vscode.ExtensionContext): Promise<void> {
 }
 
 async function build(
-  { document }: vscode.TextEditor,
+  editor: vscode.TextEditor,
   client: LatexLanguageClient,
 ): Promise<void> {
   if (
-    vscode.languages.match([LATEX_FILE, BIBTEX_FILE], document) <= 0 ||
-    (document.isDirty && !(await document.save()))
+    vscode.languages.match([LATEX_FILE, BIBTEX_FILE], editor.document) <= 0 ||
+    (editor.document.isDirty && !(await editor.document.save()))
   ) {
     return;
   }
 
-  const result = await client.build(document);
+  const result = await client.build(editor.document);
+
   switch (result.status) {
     case BuildStatus.Success:
+      if (
+        vscode.workspace
+          .getConfiguration('texlab.build')
+          .get<boolean>('forwardSearchAfter')
+      ) {
+        await forwardSearch(editor, client);
+      }
+      break;
+
     case BuildStatus.Cancelled:
       break;
     case BuildStatus.Error:
