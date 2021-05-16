@@ -6,11 +6,11 @@ It aims to produce high quality code completion results by indexing your used pa
 
 ![Demo](images/demo.gif)
 
-Learn more about the project on our [website](https://texlab.netlify.app).
+Learn more about the project on the [TexLab repository](https://github.com/latex-lsp/texlab).
 
 ## Getting Started
 
-A detailed guide can be found on our [documentation page](https://texlab.netlify.app/docs).
+A detailed guide can be found on our [documentation page](https://github.com/latex-lsp/texlab).
 
 ## Release Notes
 
