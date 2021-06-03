@@ -197,6 +197,11 @@
             ],
             "default": null,
             "description": "Configures the --local flag of latexindent."
+          },
+          "texlab.latexindent.modifyLineBreaks": {
+            "type": "boolean",
+            "default": false,
+            "description": "Configures the --modifylinebreaks flag of latexindent."
           }
         }
       }
