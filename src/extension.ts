@@ -64,16 +64,6 @@ export async function activate(context: vscode.ExtensionContext) {
     }),
     client.start(),
     icon,
-    vscode.workspace.onDidSaveTextDocument(async (document) => {
-      if (
-        vscode.workspace
-          .getConfiguration('texlab.build')
-          .get<boolean>('onSave') &&
-        vscode.window.activeTextEditor?.document == document
-      ) {
-        await build(vscode.window.activeTextEditor, client);
-      }
-    }),
   );
 }
 
@@ -215,13 +205,6 @@ async function build(
 
   switch (result.status) {
     case BuildStatus.Success:
-      if (
-        vscode.workspace
-          .getConfiguration('texlab.build')
-          .get<boolean>('forwardSearchAfter')
-      ) {
-        await forwardSearch(editor, client);
-      }
       break;
 
     case BuildStatus.Cancelled:

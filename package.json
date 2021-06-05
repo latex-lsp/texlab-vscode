@@ -119,11 +119,6 @@
             "default": false,
             "description": "Execute forward search after building"
           },
-          "texlab.build.isContinuous": {
-            "type": "boolean",
-            "default": false,
-            "description": "Set this property to true if the build arguments imply a continous build (like latexmk -pvc)."
-          },
           "texlab.build.onSave": {
             "type": "boolean",
             "default": false,

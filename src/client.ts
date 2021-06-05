@@ -1,11 +1,17 @@
 import * as vscode from 'vscode';
 import {
+  BaseLanguageClient,
+  ClientCapabilities,
+  DynamicFeature,
   LanguageClient,
   LanguageClientOptions,
   RequestType,
   ServerOptions,
+  StaticFeature,
   TextDocumentIdentifier,
   TextDocumentPositionParams,
+  WorkDoneProgress,
+  WorkDoneProgressCreateRequest,
 } from 'vscode-languageclient/node';
 import { ExtensionState, StatusIcon } from './view';
 
@@ -90,19 +96,54 @@ abstract class ForwardSearchRequest {
   >('textDocument/forwardSearch');
 }
 
+export class CustomProgressFeature implements StaticFeature {
+  public fillClientCapabilities(capabilities: ClientCapabilities): void {
+    if (!capabilities.window) {
+      capabilities.window = {};
+    }
+    capabilities.window.workDoneProgress = true;
+  }
+
+  constructor(
+    private readonly client: BaseLanguageClient,
+    private readonly icon: StatusIcon,
+  ) {}
+
+  public dispose() {
+    // nothing to dispose here
+  }
+
+  public initialize(): void {
+    this.client.onRequest(WorkDoneProgressCreateRequest.type, ({ token }) => {
+      this.icon.update(ExtensionState.Building);
+      this.client.onProgress(WorkDoneProgress.type, token, (progress) => {
+        if (progress.kind === 'end') {
+          this.icon.update(ExtensionState.Running);
+        }
+      });
+    });
+  }
+}
+
 export class LatexLanguageClient extends LanguageClient {
   constructor(
     name: string,
     serverOptions: ServerOptions,
     clientOptions: LanguageClientOptions,
-    private readonly icon: StatusIcon,
+    icon: StatusIcon,
   ) {
     super(name, serverOptions, clientOptions);
     this.registerProposedFeatures();
+    this.registerFeature(new CustomProgressFeature(this, icon));
+  }
+
+  public registerFeature(feature: StaticFeature | DynamicFeature<unknown>) {
+    if (feature.constructor.name !== 'ProgressFeature') {
+      super.registerFeature(feature);
+    }
   }
 
   public async build(document: vscode.TextDocument): Promise<BuildResult> {
-    this.icon.update(ExtensionState.Building);
     const params: BuildTextDocumentParams = {
       textDocument:
         this.code2ProtocolConverter.asTextDocumentIdentifier(document),
@@ -112,7 +153,6 @@ export class LatexLanguageClient extends LanguageClient {
       BuildTextDocumentRequest.type,
       params,
     );
-    this.icon.update(ExtensionState.Running);
     return result;
   }
 
