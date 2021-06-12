@@ -56,7 +56,6 @@ export class StatusIcon {
     this.statusBarItem = vscode.window.createStatusBarItem(
       vscode.StatusBarAlignment.Left,
     );
-    this.statusBarItem.command = 'latex.build.cancel';
     this.statusBarItem.show();
   }
 
@@ -71,7 +70,6 @@ export class StatusIcon {
         break;
       case ExtensionState.Building:
         this.statusBarItem.text = `$(beaker) Building...`;
-        this.statusBarItem.tooltip = Messages.SERVER_CANCEL_BUILD;
         this.statusBarItem.color = Colors.NORMAL;
         break;
       case ExtensionState.Stopped:
