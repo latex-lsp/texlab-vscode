@@ -59,11 +59,11 @@ export class StatusIcon {
     this.statusBarItem.show();
   }
 
-  public dispose() {
+  public dispose(): void {
     this.statusBarItem.dispose();
   }
 
-  public update(state: ExtensionState) {
+  public update(state: ExtensionState): void {
     switch (state) {
       case ExtensionState.Running:
         this.drawIcon(Messages.SERVER_RUNNING, Colors.NORMAL);
@@ -78,7 +78,7 @@ export class StatusIcon {
     }
   }
 
-  private drawIcon(tooltip: string, color: vscode.ThemeColor) {
+  private drawIcon(tooltip: string, color: vscode.ThemeColor): void {
     this.statusBarItem.text = `$(beaker)`;
     this.statusBarItem.tooltip = tooltip;
     this.statusBarItem.color = color;

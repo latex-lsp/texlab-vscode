@@ -20,7 +20,9 @@ import {
 } from './selectors';
 import { ExtensionState, Messages, StatusIcon } from './view';
 
-export async function activate(context: vscode.ExtensionContext) {
+export async function activate(
+  context: vscode.ExtensionContext,
+): Promise<void> {
   const serverConfig = vscode.workspace.getConfiguration('texlab.server');
   const serverCommand = await findOrInstallServer(context, serverConfig);
   if (serverCommand === undefined) {

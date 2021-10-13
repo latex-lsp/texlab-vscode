@@ -109,7 +109,7 @@ export class CustomProgressFeature implements StaticFeature {
     private readonly icon: StatusIcon,
   ) {}
 
-  public dispose() {
+  public dispose(): void {
     // nothing to dispose here
   }
 
@@ -137,7 +137,9 @@ export class LatexLanguageClient extends LanguageClient {
     this.registerFeature(new CustomProgressFeature(this, icon));
   }
 
-  public registerFeature(feature: StaticFeature | DynamicFeature<unknown>) {
+  public registerFeature(
+    feature: StaticFeature | DynamicFeature<unknown>,
+  ): void {
     if (feature.constructor.name !== 'ProgressFeature') {
       super.registerFeature(feature);
     }
