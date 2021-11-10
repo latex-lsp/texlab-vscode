@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.3.1] - 10.11.2021
 
+### Added
+
+- Add more auto closing pairs for LaTeX ([#478](https://github.com/latex-lsp/texlab-vscode/issues/478))
+
 ### Changed
 
 - Update TexLab to [v3.3.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#331---10112021)
