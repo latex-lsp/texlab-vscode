@@ -6,7 +6,11 @@ import * as tar from 'tar';
 import * as unzipper from 'unzipper';
 import * as util from 'util';
 import * as vscode from 'vscode';
-import { ServerOptions, State } from 'vscode-languageclient/node';
+import {
+  DidChangeConfigurationNotification,
+  ServerOptions,
+  State,
+} from 'vscode-languageclient/node';
 import {
   BuildStatus,
   ForwardSearchStatus,
@@ -65,6 +69,13 @@ export async function activate(
       );
     }),
     client.start(),
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration('texlab')) {
+        client.sendNotification(DidChangeConfigurationNotification.type, {
+          settings: {},
+        });
+      }
+    }),
     icon,
   );
 }
