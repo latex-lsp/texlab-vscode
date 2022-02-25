@@ -83,8 +83,7 @@
   ],
   "activationEvents": [
     "onLanguage:latex",
-    "onLanguage:bibtex",
-    "workspaceContains:**/*.{bib,tex}"
+    "onLanguage:bibtex"
   ],
   "contributes": {
     "configuration": [
