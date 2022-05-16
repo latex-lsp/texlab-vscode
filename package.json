@@ -48,7 +48,7 @@
     "tar": "^6.1.11",
     "unzipper": "^0.10.11",
     "vscode-languageclient": "^7.0.0",
-    "vscode-languageserver-protocol": "^3.16.0"
+    "vscode-languageserver-protocol": "^3.17.1"
   },
   "engines": {
     "vscode": "^1.46.0"
