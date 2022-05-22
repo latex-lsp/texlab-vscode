@@ -1,10 +1,7 @@
-import { sync as commandExists } from 'command-exists';
+import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as request from 'request';
-import * as tar from 'tar';
-import * as unzipper from 'unzipper';
-import * as util from 'util';
+import { promisify } from 'util';
 import * as vscode from 'vscode';
 import {
   DidChangeConfigurationNotification,
@@ -27,12 +24,18 @@ import { ExtensionState, Messages, StatusIcon } from './view';
 export async function activate(
   context: vscode.ExtensionContext,
 ): Promise<void> {
-  const serverConfig = vscode.workspace.getConfiguration('texlab.server');
-  const serverCommand = await findOrInstallServer(context, serverConfig);
+  const serverCommand = await findServer(context);
   if (serverCommand === undefined) {
+    vscode.window.showErrorMessage(
+      'No pre-built binaries available for your platform. ' +
+        'Please install the server manually. ' +
+        'For more information, see https://github.com/latex-lsp/texlab.',
+    );
+
     return;
   }
 
+  const serverConfig = vscode.workspace.getConfiguration('texlab.server');
   const serverOptions = getServerOptions(serverCommand, serverConfig);
   const icon = new StatusIcon();
   const client = new LatexLanguageClient(
@@ -45,7 +48,7 @@ export async function activate(
         BIBTEX_FILE,
         BIBTEX_UNTITLED,
       ],
-      outputChannelName: 'LaTeX',
+      outputChannelName: 'TexLab Language Server',
       uriConverters: {
         code2Protocol: (uri) => uri.toString(true),
         protocol2Code: (value) => vscode.Uri.parse(value),
@@ -68,7 +71,6 @@ export async function activate(
           : ExtensionState.Stopped,
       );
     }),
-    client.start(),
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration('texlab')) {
         client.sendNotification(DidChangeConfigurationNotification.type, {
@@ -78,6 +80,21 @@ export async function activate(
     }),
     icon,
   );
+
+  client.start();
+}
+
+async function findServer(
+  context: vscode.ExtensionContext,
+): Promise<string | undefined> {
+  try {
+    await promisify(cp.execFile)('texlab', ['--version']);
+    return 'texlab';
+  } catch {
+    const serverName = os.platform() === 'win32' ? 'texlab.exe' : 'texlab';
+    const serverPath = context.asAbsolutePath(`server/${serverName}`);
+    return (await promisify(fs.exists)(serverPath)) ? serverPath : undefined;
+  }
 }
 
 function getServerOptions(
@@ -95,7 +112,6 @@ function getServerOptions(
     args.push(logFilePath);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   return {
     run: {
@@ -118,108 +134,21 @@ function getServerOptions(
   };
 }
 
-async function findOrInstallServer(
-  context: vscode.ExtensionContext,
-  serverConfig: vscode.WorkspaceConfiguration,
-): Promise<string | undefined> {
-  const serverName = os.platform() === 'win32' ? 'texlab.exe' : 'texlab';
-  const localServerPath = context.asAbsolutePath(`server/${serverName}`);
-  if (fs.existsSync(localServerPath)) {
-    return localServerPath;
-  }
-
-  if (commandExists(serverName)) {
-    return serverName;
-  }
-
-  return (await installServer(context, serverConfig))
-    ? localServerPath
-    : undefined;
-}
-
-async function installServer(
-  context: vscode.ExtensionContext,
-  serverConfig: vscode.WorkspaceConfiguration,
-): Promise<boolean> {
-  const autoDownload = serverConfig.get<boolean>('autoDownload');
-
-  let selection: string | undefined;
-  if (!autoDownload) {
-    selection = await vscode.window.showInformationMessage(
-      Messages.SERVER_NOT_INSTALLED,
-      Messages.SERVER_NOT_INSTALLED_OK,
-      Messages.SERVER_NOT_INSTALLED_CANCEL,
-    );
-  }
-
-  if (autoDownload || selection === Messages.SERVER_NOT_INSTALLED_OK) {
-    serverConfig.update(
-      'autoDownload',
-      true,
-      vscode.ConfigurationTarget.Global,
-    );
-
-    await vscode.window.withProgress(
-      {
-        title: Messages.DOWNLOAD_TITLE,
-        location: vscode.ProgressLocation.Window,
-        cancellable: false,
-      },
-      async () => {
-        try {
-          await downloadServer(context);
-        } catch {
-          vscode.window.showErrorMessage(Messages.DOWNLOAD_ERROR);
-          return false;
-        }
-      },
-    );
-  } else {
-    return false;
-  }
-
-  return true;
-}
-
-async function downloadServer(context: vscode.ExtensionContext): Promise<void> {
-  const packageManifest = JSON.parse(
-    await util.promisify(fs.readFile)(
-      context.asAbsolutePath('package.json'),
-      'utf-8',
-    ),
-  );
-  const url = packageManifest.languageServer[os.platform()];
-  const path = context.asAbsolutePath('server');
-  const extract =
-    os.platform() === 'win32'
-      ? () => unzipper.Extract({ path })
-      : () => tar.x({ C: path });
-
-  return new Promise((resolve, reject) => {
-    request(url)
-      .pipe(extract())
-      .on('close', () => resolve())
-      .on('error', () => reject());
-  });
-}
-
 async function build(
-  editor: vscode.TextEditor,
+  { document }: vscode.TextEditor,
   client: LatexLanguageClient,
 ): Promise<void> {
   if (
-    vscode.languages.match([LATEX_FILE, BIBTEX_FILE], editor.document) <= 0 ||
-    (editor.document.isDirty && !(await editor.document.save()))
+    vscode.languages.match([LATEX_FILE, BIBTEX_FILE], document) <= 0 ||
+    (document.isDirty && !(await document.save()))
   ) {
     return;
   }
 
-  const result = await client.build(editor.document);
-
-  switch (result.status) {
+  const { status } = await client.build(document);
+  switch (status) {
     case BuildStatus.Success:
       break;
-
     case BuildStatus.Cancelled:
       break;
     case BuildStatus.Error:
@@ -239,8 +168,8 @@ async function forwardSearch(
     return;
   }
 
-  const result = await client.forwardSearch(document, selection.start);
-  switch (result.status) {
+  const { status } = await client.forwardSearch(document, selection.start);
+  switch (status) {
     case ForwardSearchStatus.Success:
       break;
     case ForwardSearchStatus.Error:

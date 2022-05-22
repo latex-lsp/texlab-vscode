@@ -1,16 +1,14 @@
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import * as path from 'path';
-import { Configuration } from 'webpack';
 
-const config: Configuration = {
+const extensionConfig = {
   target: 'node',
+  mode: 'none',
+
   entry: './src/extension.ts',
-  mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'extension.js',
     libraryTarget: 'commonjs2',
-    devtoolModuleFilenameTemplate: '../[resource-path]',
   },
   externals: {
     vscode: 'commonjs vscode',
@@ -18,7 +16,6 @@ const config: Configuration = {
   resolve: {
     extensions: ['.ts', '.js'],
   },
-  plugins: [new CleanWebpackPlugin()],
   module: {
     rules: [
       {
@@ -32,6 +29,10 @@ const config: Configuration = {
       },
     ],
   },
+  devtool: 'nosources-source-map',
+  infrastructureLogging: {
+    level: 'log',
+  },
 };
 
-export default config;
+module.exports = [extensionConfig];

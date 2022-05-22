@@ -3,6 +3,7 @@ import {
   BaseLanguageClient,
   ClientCapabilities,
   DynamicFeature,
+  FeatureState,
   LanguageClient,
   LanguageClientOptions,
   RequestType,
@@ -109,6 +110,10 @@ export class CustomProgressFeature implements StaticFeature {
     private readonly icon: StatusIcon,
   ) {}
 
+  public getState(): FeatureState {
+    return { kind: 'static' };
+  }
+
   public dispose(): void {
     // nothing to dispose here
   }
@@ -146,16 +151,10 @@ export class LatexLanguageClient extends LanguageClient {
   }
 
   public async build(document: vscode.TextDocument): Promise<BuildResult> {
-    const params: BuildTextDocumentParams = {
+    return await this.sendRequest(BuildTextDocumentRequest.type, {
       textDocument:
         this.code2ProtocolConverter.asTextDocumentIdentifier(document),
-    };
-
-    const result = await this.sendRequest(
-      BuildTextDocumentRequest.type,
-      params,
-    );
-    return result;
+    });
   }
 
   public async forwardSearch(

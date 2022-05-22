@@ -7,13 +7,6 @@ export abstract class Messages {
 
   public static SERVER_STOPPED = 'TexLab has stopped working!';
 
-  public static SERVER_NOT_INSTALLED =
-    'The TexLab language server is not installed. Do you want to install it?';
-
-  public static SERVER_NOT_INSTALLED_OK = 'Download';
-
-  public static SERVER_NOT_INSTALLED_CANCEL = 'Cancel';
-
   public static BUILD_ERROR =
     'A build error occured. Please check the problems tab \
     and the build log for further information.';
