@@ -259,18 +259,6 @@
         ],
         "configuration": "./languages/bibtex.json"
       }
-    ],
-    "grammars": [
-      {
-        "language": "latex",
-        "scopeName": "source.latex",
-        "path": "./grammars/latex.tmLanguage.json"
-      },
-      {
-        "language": "bibtex",
-        "scopeName": "source.bibtex",
-        "path": "./grammars/bibtex.tmLanguage.json"
-      }
     ]
   }
 }
