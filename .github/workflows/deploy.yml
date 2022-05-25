@@ -81,7 +81,7 @@ jobs:
       - name: Build VSIX package
         run: npx vsce package --target ${{ matrix.target }}
       - name: Upload VSIX package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.target }}
           path: '*.vsix'
