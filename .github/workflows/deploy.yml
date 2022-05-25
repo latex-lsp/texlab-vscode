@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
       - name: Publish to marketplace
         run: npx vsce publish --packagePath $(find . -iname *.vsix)
         env:
