@@ -4,7 +4,7 @@ on:
     types: [published]
 jobs:
   build:
-    name: Build (${{ matrix.arch }})
+    name: Build (${{ matrix.target }})
     strategy:
       matrix:
         include:
