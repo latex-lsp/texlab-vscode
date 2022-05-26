@@ -74,7 +74,7 @@ jobs:
       - name: Download pre-built server
         run: |
           gh release download --repo latex-lsp/texlab --pattern ${{ matrix.server.asset }}
-          ${{ format(matrix.server.extract, ${{ matrix.server.asset }}) }}
+          ${{ format(matrix.server.extract, matrix.server.asset) }}
         if: ${{ matrix.server != null }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
