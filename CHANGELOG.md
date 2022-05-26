@@ -6,6 +6,14 @@ The changelog of the TexLab language server can be found [here](https://github.c
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 26.05.2022
+
+### Changed
+
+- _BREAKING_: Bundle platform-specific server with the extension instead of downloading the server.
+- _BREAKING_: Update TexLab to [v4.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#400---25052022)
+- _BREAKING_: Remove bundled highlighting rules in favor of the standard grammars bundled with Visual Studio Code
+
 ## [3.3.2] - 26.02.2022
 
 ### Changed
