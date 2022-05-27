@@ -36,12 +36,12 @@ jobs:
               asset: texlab-aarch64-macos.tar.gz
               extract: tar -xvf {0} -C server
 
-          - os: window-latest
+          - os: windows-2019
             target: win32-ia32
             arch: ia32
             server: null
 
-          - os: window-latest
+          - os: windows-2019
             target: win32-arm64
             arch: arm
             server: null
