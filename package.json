@@ -200,6 +200,18 @@
         "title": "Forward Search",
         "description": "Performs a forward search from the current file.",
         "category": "LaTeX"
+      },
+      {
+        "command": "latex.cleanAuxiliary",
+        "title": "Clean auxiliary files (latexmk)",
+        "description": "Removes all auxiliary files produced by the current document.",
+        "category": "LaTeX"
+      },
+      {
+        "command": "latex.cleanArtifacts",
+        "title": "Clean artifacts (latexmk)",
+        "description": "Removes all artifacts produced by the current document.",
+        "category": "LaTeX"
       }
     ],
     "menus": {
@@ -211,6 +223,14 @@
         {
           "command": "latex.forwardSearch",
           "when": "editorLangId == latex"
+        },
+        {
+          "command": "latex.cleanAuxiliary",
+          "when": "editorLangId =~ /(latex|bibtex)/"
+        },
+        {
+          "command": "latex.cleanArtifacts",
+          "when": "editorLangId =~ /(latex|bibtex)/"
         }
       ],
       "editor/context": [

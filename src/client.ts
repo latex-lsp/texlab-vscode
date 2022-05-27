@@ -3,6 +3,8 @@ import {
   BaseLanguageClient,
   ClientCapabilities,
   DynamicFeature,
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
   FeatureState,
   LanguageClient,
   LanguageClientOptions,
@@ -148,6 +150,24 @@ export class LatexLanguageClient extends LanguageClient {
     if (feature.constructor.name !== 'ProgressFeature') {
       super.registerFeature(feature);
     }
+  }
+
+  public async cleanAuxiliary(document: vscode.TextDocument): Promise<void> {
+    return await this.sendRequest(ExecuteCommandRequest.type, {
+      command: 'texlab.cleanAuxiliary',
+      arguments: [
+        this.code2ProtocolConverter.asTextDocumentIdentifier(document),
+      ],
+    });
+  }
+
+  public async cleanArtifacts(document: vscode.TextDocument): Promise<void> {
+    return await this.sendRequest(ExecuteCommandRequest.type, {
+      command: 'texlab.cleanArtifacts',
+      arguments: [
+        this.code2ProtocolConverter.asTextDocumentIdentifier(document),
+      ],
+    });
   }
 
   public async build(document: vscode.TextDocument): Promise<BuildResult> {

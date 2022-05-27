@@ -64,6 +64,14 @@ export async function activate(
     vscode.commands.registerTextEditorCommand('latex.forwardSearch', (editor) =>
       forwardSearch(editor, client),
     ),
+    vscode.commands.registerTextEditorCommand(
+      'latex.cleanAuxiliary',
+      (editor) => client.cleanAuxiliary(editor.document),
+    ),
+    vscode.commands.registerTextEditorCommand(
+      'latex.cleanArtifacts',
+      (editor) => client.cleanArtifacts(editor.document),
+    ),
     client.onDidChangeState(({ newState }) => {
       icon.update(
         newState === State.Running
