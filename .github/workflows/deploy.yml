@@ -13,28 +13,28 @@ jobs:
             arch: x64
             server:
               asset: texlab-x86_64-windows.zip
-              extract: Expand-Archive -Path {0} -DestinationPath server
+              extract: Expand-Archive -Path {0} -DestinationPath server; Remove-Item {0}
 
           - os: ubuntu-latest
             target: linux-x64
             arch: x64
             server:
               asset: texlab-x86_64-linux.tar.gz
-              extract: tar -xvf {0} -C server
+              extract: tar -xvf {0} -C server; rm {0}
 
           - os: macos-latest
             target: darwin-x64
             arch: x64
             server:
               asset: texlab-x86_64-macos.tar.gz
-              extract: tar -xvf {0} -C server
+              extract: tar -xvf {0} -C server; rm {0}
 
           - os: macos-latest
             target: darwin-arm64
             arch: arm64
             server:
               asset: texlab-aarch64-macos.tar.gz
-              extract: tar -xvf {0} -C server
+              extract: tar -xvf {0} -C server; rm {0}
 
           - os: windows-2019
             target: win32-ia32
