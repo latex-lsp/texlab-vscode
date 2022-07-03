@@ -6,6 +6,16 @@ The changelog of the TexLab language server can be found [here](https://github.c
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0] - 03.07.2022
+
+### Added
+
+- Bundle pre-built server for all supported platforms by VSCode marketplace
+
+### Changed
+
+- Update TexLab to [v4.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#420---03072022)
+
 ## [4.1.0] - 12.06.2022
 
 ### Changed
