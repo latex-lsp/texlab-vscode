@@ -1,4 +1,4 @@
-name: Deployment
+name: Publish
 on:
   release:
     types: [published]
@@ -11,55 +11,47 @@ jobs:
           - os: windows-latest
             target: win32-x64
             arch: x64
-            server:
-              asset: texlab-x86_64-windows.zip
-              extract: Expand-Archive -Path {0} -DestinationPath server; Remove-Item {0}
-
-          - os: ubuntu-latest
-            target: linux-x64
-            arch: x64
-            server:
-              asset: texlab-x86_64-linux.tar.gz
-              extract: tar -xvf {0} -C server; rm {0}
-
-          - os: macos-latest
-            target: darwin-x64
-            arch: x64
-            server:
-              asset: texlab-x86_64-macos.tar.gz
-              extract: tar -xvf {0} -C server; rm {0}
-
-          - os: macos-latest
-            target: darwin-arm64
-            arch: arm64
-            server:
-              asset: texlab-aarch64-macos.tar.gz
-              extract: tar -xvf {0} -C server; rm {0}
+            server: texlab-x86_64-windows.zip
 
           - os: windows-2019
             target: win32-ia32
             arch: ia32
-            server: null
+            server: texlab-i686-windows.zip
 
           - os: windows-2019
             target: win32-arm64
             arch: arm
-            server: null
+            server: texlab-aarch64-windows.zip
+
+          - os: macos-latest
+            target: darwin-x64
+            arch: x64
+            server: texlab-x86_64-macos.tar.gz
+
+          - os: macos-latest
+            target: darwin-arm64
+            arch: arm64
+            server: texlab-aarch64-macos.tar.gz
+
+          - os: ubuntu-latest
+            target: linux-x64
+            arch: x64
+            server: texlab-x86_64-linux.tar.gz
 
           - os: ubuntu-latest
             target: linux-arm64
             arch: arm64
-            server: null
+            server: texlab-aarch64-linux.tar.gz
 
           - os: ubuntu-latest
             target: linux-armhf
             arch: arm
-            server: null
+            server: texlab-armv7hf-linux.tar.gz
 
           - os: ubuntu-latest
             target: alpine-x64
             arch: x64
-            server: null
+            server: texlab-x86_64-alpine.tar.gz
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -71,13 +63,21 @@ jobs:
         run: npm ci
         env:
           npm_config_arch: ${{ matrix.arch }}
-      - name: Download pre-built server
-        run: |
-          gh release download --repo latex-lsp/texlab --pattern ${{ matrix.server.asset }}
-          ${{ format(matrix.server.extract, matrix.server.asset) }}
-        if: ${{ matrix.server != null }}
+      - name: Download server
+        run: gh release download --repo latex-lsp/texlab --pattern ${{ matrix.server }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Decompress server (Windows)
+        if: ${{ contains(matrix.os, 'windows') }}
+        run: ${{ format('Expand-Archive -Path {0} -DestinationPath server; Remove-Item {0}', matrix.server) }}
+      - name: Decompress server (macOS)
+        if: ${{ contains(matrix.os, 'macos') }}
+        run: ${{ format('brew install gnu-tar; gtar -xvf {0} -C server; rm {0}', matrix.server) }}
+      - name: Decompress server (Linux)
+        if: ${{ contains(matrix.os, 'macos') }}
+        run: ${{ format('tar -xvf {0} -C server; rm {0}', matrix.server) }}
+
       - name: Build VSIX package
         run: npx vsce package --target ${{ matrix.target }}
       - name: Upload VSIX package
