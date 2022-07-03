@@ -75,7 +75,7 @@ jobs:
         if: ${{ contains(matrix.os, 'macos') }}
         run: ${{ format('brew install gnu-tar; gtar -xvf {0} -C server; rm {0}', matrix.server) }}
       - name: Decompress server (Linux)
-        if: ${{ contains(matrix.os, 'macos') }}
+        if: ${{ contains(matrix.os, 'ubuntu') }}
         run: ${{ format('tar -xvf {0} -C server; rm {0}', matrix.server) }}
 
       - name: Build VSIX package
