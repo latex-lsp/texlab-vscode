@@ -55,7 +55,7 @@
     "color": "#F5F5F5",
     "theme": "light"
   },
-  "preview": true,
+  "preview": false,
   "badges": [
     {
       "url": "https://img.shields.io/github/workflow/status/latex-lsp/texlab-vscode/CI.svg?logo=github",
