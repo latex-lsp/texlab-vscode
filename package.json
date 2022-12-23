@@ -146,6 +146,14 @@
             "default": null,
             "description": "Path to the server log file."
           },
+          "texlab.server.path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Full path to the server executable."
+          },
           "texlab.bibtexFormatter": {
             "type": "string",
             "default": "texlab",

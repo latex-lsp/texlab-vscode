@@ -24,8 +24,9 @@ import { ExtensionState, Messages, StatusIcon } from './view';
 export async function activate(
   context: vscode.ExtensionContext,
 ): Promise<void> {
-  const serverCommand = await findServer(context);
-  if (serverCommand === undefined) {
+  const serverConfig = vscode.workspace.getConfiguration('texlab.server');
+  const serverCommand = await findServer(context, serverConfig);
+  if (!serverCommand) {
     vscode.window.showErrorMessage(
       'No pre-built binaries available for your platform. ' +
         'Please install the server manually. ' +
@@ -35,7 +36,6 @@ export async function activate(
     return;
   }
 
-  const serverConfig = vscode.workspace.getConfiguration('texlab.server');
   const serverOptions = getServerOptions(serverCommand, serverConfig);
   const icon = new StatusIcon();
   const client = new LatexLanguageClient(
@@ -94,7 +94,13 @@ export async function activate(
 
 async function findServer(
   context: vscode.ExtensionContext,
+  serverConfig: vscode.WorkspaceConfiguration,
 ): Promise<string | undefined> {
+  let path = serverConfig.get<string | undefined>('path');
+  if (path) {
+    return path;
+  }
+
   try {
     await promisify(cp.execFile)('texlab', ['--version']);
     return 'texlab';
