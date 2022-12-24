@@ -6,38 +6,44 @@ The changelog of the TexLab language server can be found [here](https://github.c
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.3.2] - 20.11.2022
+## [Unreleased]
+
+### Added
+
+- Add `texlab.server.path` setting ([#820](https://github.com/latex-lsp/texlab-vscode/issues/820))
+
+## [4.3.2] - 2022-11-20
 
 ### Changed
 
-- Update TexLab to [v4.3.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#432---20112022)
+- Update TexLab to [v4.3.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#432---2022-11-20)
 
-## [4.3.1] - 22.10.2022
-
-### Changed
-
-- Update TexLab to [v4.3.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#431---22102022)
-
-## [4.3.0] - 25.09.2022
+## [4.3.1] - 2022-10-22
 
 ### Changed
 
-- Update TexLab to [v4.3.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#430---25092022)
+- Update TexLab to [v4.3.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#431---2022-10-22)
 
-## [4.2.2] - 28.08.2022
-
-### Changed
-
-- Update TexLab to [v4.2.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#422---28082022)
-
-## [4.2.1] - 05.08.2022
+## [4.3.0] - 2022-09-25
 
 ### Changed
 
-- Update TexLab to [v4.2.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#421---05082022)
+- Update TexLab to [v4.3.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#430---2022-09-25)
+
+## [4.2.2] - 2022-08-28
+
+### Changed
+
+- Update TexLab to [v4.2.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#422---2022-08-28)
+
+## [4.2.1] - 2022-08-05
+
+### Changed
+
+- Update TexLab to [v4.2.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#421---2022-08-05)
 - Do not mark extension as `preview` anymore
 
-## [4.2.0] - 03.07.2022
+## [4.2.0] - 2022-07-03
 
 ### Added
 
@@ -45,33 +51,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update TexLab to [v4.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#420---03072022)
+- Update TexLab to [v4.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#420---2022-07-03)
 
-## [4.1.0] - 12.06.2022
+## [4.1.0] - 2022-06-12
 
 ### Changed
 
-- Update TexLab to [v4.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#410---12062022)
+- Update TexLab to [v4.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#410---2022-06-12)
 
-## [4.0.0] - 27.05.2022
+## [4.0.0] - 2022-05-27
 
 ### Changed
 
 - _BREAKING_: Bundle platform-specific server with the extension instead of downloading the server.
-- _BREAKING_: Update TexLab to [v4.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#400---25052022)
+- _BREAKING_: Update TexLab to [v4.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#400---2022-05-27)
 - _BREAKING_: Remove bundled highlighting rules in favor of the standard grammars bundled with Visual Studio Code
 
-## [3.3.2] - 26.02.2022
+## [3.3.2] - 2022-02-26
 
 ### Changed
 
-- Update TexLab to [v3.3.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#332---26022022)
+- Update TexLab to [v3.3.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#332---2022-02-26)
 
 ### Fixed
 
 - Only activate extension after opening a TeX file ([#523](https://github.com/latex-lsp/texlab-vscode/issues/523))
 
-## [3.3.1] - 10.11.2021
+## [3.3.1] - 2021-11-10
 
 ### Added
 
@@ -79,39 +85,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update TexLab to [v3.3.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#331---10112021)
+- Update TexLab to [v3.3.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#331---2021-11-10)
 
-## [3.2.0] - 12.06.2021
-
-### Changed
-
-- Update TexLab to [v3.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#320---12062021)
-
-## [3.1.0] - 03.06.2021
+## [3.2.0] - 2021-06-12
 
 ### Changed
 
-- Update TexLab to [v3.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#310---03062021)
+- Update TexLab to [v3.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#320---2021-06-12)
 
-## [3.0.1] - 22.05.2021
-
-### Changed
-
-- Update TexLab to [v3.0.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#301---22052021)
-
-## [3.0.0] - 17.05.2021
+## [3.1.0] - 2021-06-03
 
 ### Changed
 
-- BREAKING: Update TexLab to [v3.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#300---16052021)
+- Update TexLab to [v3.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#310---2021-06-03)
 
-## [2.2.1] - 06.01.2021
+## [3.0.1] - 2021-05-22
 
 ### Changed
 
-- Update TexLab to [v2.2.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#221---06012021)
+- Update TexLab to [v3.0.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#301---2021-05-22)
 
-## [2.2.0] - 27.05.2020
+## [3.0.0] - 2021-05-17
+
+### Changed
+
+- BREAKING: Update TexLab to [v3.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#300---2021-05-17)
+
+## [2.2.1] - 2021-01-06
+
+### Changed
+
+- Update TexLab to [v2.2.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#221---2021-01-06)
+
+## [2.2.0] - 2020-05-27
 
 ### Added
 
@@ -119,143 +125,143 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update TexLab to [v2.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#220---27052020)
+- Update TexLab to [v2.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#220---2020-05-27)
 
-## [2.1.0] - 10.05.2020
+## [2.1.0] - 2020-05-10
 
 ### Changed
 
-- Update TexLab to [v2.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#210---10052020)
+- Update TexLab to [v2.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#210---2020-05-10)
 - Build status is now shown in the status bar (clicking on the icon cancels the build) ([#238](https://github.com/latex-lsp/texlab-vscode/issues/238))
 
-## [2.0.0] - 20.04.2020
+## [2.0.0] - 2020-04-20
 
 ### Changed
 
-- Update TexLab to [v2.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#200---20042020)
+- Update TexLab to [v2.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#200---2020-04-20)
 
-## [1.10.0] - 11.02.2020
-
-### Changed
-
-- Update TexLab to [v1.10.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#1100---11022020)
-
-## [1.9.0] - 30.12.2019
+## [1.10.0] - 2020-02-11
 
 ### Changed
 
-- Update TexLab to [v1.9.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#190---30122019)
+- Update TexLab to [v1.10.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#1100---2020-02-11)
 
-## [1.8.0] - 01.12.2019
-
-### Changed
-
-- Update TexLab to [v1.8.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#180---01122019)
-
-## [1.7.0] - 20.11.2019
+## [1.9.0] - 2019-12-30
 
 ### Changed
 
-- Update TexLab to [v1.7.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#170---20112019)
+- Update TexLab to [v1.9.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#190---2019-12-30)
 
-## [1.6.0] - 29.09.2019
-
-### Changed
-
-- Update TexLab to [v1.6.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#160---29092019)
-
-## [1.5.0] - 27.08.2019
+## [1.8.0] - 2019-12-01
 
 ### Changed
 
-- Update TexLab to [v1.5.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#150---27082019)
+- Update TexLab to [v1.8.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#180---2019-12-01)
 
-## [1.4.1] - 22.08.2019
-
-### Changed
-
-- Update TexLab to [v1.4.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#141---22082019)
-
-## [1.4.0] - 20.08.2019
+## [1.7.0] - 2019-11-20
 
 ### Changed
 
-- Update TexLab to [v1.4.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#140---20082019)
+- Update TexLab to [v1.7.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#170---2019-11-20)
 
-## [1.3.0] - 06.08.2019
-
-### Changed
-
-- Update TexLab to [v1.3.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#130---06082019)
-
-## [1.2.0] - 23.07.2019
+## [1.6.0] - 2019-09-29
 
 ### Changed
 
-- Update TexLab to [v1.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#120---23072019)
+- Update TexLab to [v1.6.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#160---2019-09-29)
 
-## [1.1.0] - 13.07.2019
-
-### Changed
-
-- Update TexLab to [v1.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#110---13072019)
-
-## [1.0.0] - 04.07.2019
+## [1.5.0] - 2019-08-27
 
 ### Changed
 
-- Update TexLab to [v1.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#100---04072019)
+- Update TexLab to [v1.5.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#150---2019-08-27)
+
+## [1.4.1] - 2019-08-22
+
+### Changed
+
+- Update TexLab to [v1.4.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#141---2019-08-22)
+
+## [1.4.0] - 2019-08-20
+
+### Changed
+
+- Update TexLab to [v1.4.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#140---2019-08-20)
+
+## [1.3.0] - 2019-08-06
+
+### Changed
+
+- Update TexLab to [v1.3.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#130---2019-08-06)
+
+## [1.2.0] - 2019-07-23
+
+### Changed
+
+- Update TexLab to [v1.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#120---2019-07-23)
+
+## [1.1.0] - 2019-07-13
+
+### Changed
+
+- Update TexLab to [v1.1.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#110---2019-07-13)
+
+## [1.0.0] - 2019-07-04
+
+### Changed
+
+- Update TexLab to [v1.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#100---2019-07-04)
 - Reduce extension size
 - Download TexLab on first usage instead of bundling it with the extension
 
-## [0.4.2] - 10.04.2019
+## [0.4.2] - 2019-04-10
 
 ### Changed
 
-- Update TexLab to [v0.4.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#042---10042019)
+- Update TexLab to [v0.4.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#042---2019-04-10)
 
-## [0.4.1] - 30.03.2019
-
-### Changed
-
-- Update TexLab to [v0.4.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#041---30032019)
-
-## [0.4.0] - 09.03.2019
+## [0.4.1] - 2019-03-30
 
 ### Changed
 
-- Update TexLab to [v0.4.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#040---09032019)
+- Update TexLab to [v0.4.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#041---2019-03-30)
 
-## [0.3.1] - 05.03.2019
+## [0.4.0] - 2019-03-09
+
+### Changed
+
+- Update TexLab to [v0.4.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#040---2019-03-09)
+
+## [0.3.1] - 2019-03-05
 
 ### Fixed
 
 - Fix extension bundle
 
-## [0.3.0] - 05.03.2019
+## [0.3.0] - 2019-03-05
 
 ### Changed
 
-- Update TexLab to [v0.3.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#030---05032019)
+- Update TexLab to [v0.3.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#030---2019-03-05)
 
-## [0.2.0] - 01.03.2019
-
-### Changed
-
-- Update TexLab to [v0.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#020---01032019)
-
-## [0.1.2] - 16.02.2019
+## [0.2.0] - 2019-03-01
 
 ### Changed
 
-- Update TexLab to [v0.1.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#012---16022019)
+- Update TexLab to [v0.2.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#020---2019-03-01)
 
-## [0.1.1] - 15.02.2019
+## [0.1.2] - 2019-02-16
 
 ### Changed
 
-- Update TexLab to [v0.1.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#011---15022019)
+- Update TexLab to [v0.1.2](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#012---2019-02-16)
 
-## [0.1.0] - 15.02.2019
+## [0.1.1] - 2019-02-15
+
+### Changed
+
+- Update TexLab to [v0.1.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#011---2019-02-15)
+
+## [0.1.0] - 2019-02-15
 
 - Initial release
