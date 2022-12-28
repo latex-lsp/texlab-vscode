@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `texlab.server.path` setting ([#820](https://github.com/latex-lsp/texlab-vscode/issues/820))
 
+### Changed
+
+- Change license to `GPL-3.0-only`
+
 ## [4.3.2] - 2022-11-20
 
 ### Changed
