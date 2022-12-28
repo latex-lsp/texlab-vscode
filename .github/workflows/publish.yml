@@ -87,12 +87,16 @@ jobs:
           path: '*.vsix'
 
   publish:
-    name: Publish to marketplace
+    name: Publish
     runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/download-artifact@v3
-      - name: Publish to marketplace
+      - name: Publish to VSCode Marketplace
         run: npx vsce publish --packagePath $(find . -iname *.vsix)
         env:
           VSCE_PAT: ${{ secrets.VSCE_TOKEN }}
+      - name: Publish to Open VSX Registry
+        run: npx ovsx publish --packagePath $(find . -iname *.vsix)
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_TOKEN }}
