@@ -79,7 +79,7 @@ jobs:
         run: ${{ format('tar -xvf {0} -C server; rm {0}', matrix.server) }}
 
       - name: Build VSIX package
-        run: npx vsce package --target ${{ matrix.target }}
+        run: npx @vscode/vsce package --target ${{ matrix.target }}
       - name: Upload VSIX package
         uses: actions/upload-artifact@v3
         with:
@@ -93,7 +93,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
       - name: Publish to VSCode Marketplace
-        run: npx vsce publish --packagePath $(find . -iname *.vsix)
+        run: npx @vscode/vsce publish --packagePath $(find . -iname *.vsix)
         env:
           VSCE_PAT: ${{ secrets.VSCE_TOKEN }}
       - name: Publish to Open VSX Registry
