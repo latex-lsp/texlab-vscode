@@ -2,7 +2,7 @@
   "name": "texlab",
   "displayName": "TexLab",
   "description": "LaTeX and BibTeX language support for Visual Studio Code",
-  "version": "4.3.2",
+  "version": "5.0.0",
   "publisher": "efoerster",
   "license": "GPL-3.0-only",
   "repository": {

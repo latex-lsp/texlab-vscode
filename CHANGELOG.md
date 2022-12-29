@@ -6,15 +6,17 @@ The changelog of the TexLab language server can be found [here](https://github.c
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.0.0] - 2022-12-29
 
 ### Added
 
 - Add `texlab.server.path` setting ([#820](https://github.com/latex-lsp/texlab-vscode/issues/820))
+- Publish extension on `Open VSX` registry too
 
 ### Changed
 
 - Change license to `GPL-3.0-only`
+- Update TexLab to [v5.0.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#432---2022-12-29)
 
 ## [4.3.2] - 2022-11-20
 
