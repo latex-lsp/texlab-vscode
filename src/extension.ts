@@ -117,7 +117,7 @@ function getServerOptions(
 ): ServerOptions {
   const trace = serverConfig.get<boolean>('trace');
   const logFilePath = serverConfig.get<string | undefined>('logFile');
-  const args = [];
+  const args: string[] = [];
   if (trace) {
     args.push('-vvvv');
   }
