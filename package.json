@@ -191,6 +191,16 @@
             "type": "array",
             "default": [],
             "description": "If specified, only diagnostics that match none of the specified patterns are displayed."
+          },
+          "texlab.symbols.allowedPatterns": {
+            "type": "array",
+            "default": [],
+            "description": "If specified, only symbols that match at least one of the specified patterns are displayed."
+          },
+          "texlab.symbols.ignoredPatterns": {
+            "type": "array",
+            "default": [],
+            "description": "If specified, only symbols that match none of the specified patterns are displayed."
           }
         }
       }
