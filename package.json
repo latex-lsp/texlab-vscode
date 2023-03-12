@@ -201,6 +201,21 @@
             "type": "array",
             "default": [],
             "description": "If specified, only symbols that match none of the specified patterns are displayed."
+          },
+          "texlab.experimental.mathEnvironments": {
+            "type": "array",
+            "default": [],
+            "description": "Extends the list of environments considered as math environments."
+          },
+          "texlab.experimental.enumEnvironments": {
+            "type": "array",
+            "default": [],
+            "description": "Extends the list of environments considered as enumeration environments."
+          },
+          "texlab.experimental.verbatimEnvironments": {
+            "type": "array",
+            "default": [],
+            "description": "Do not report diagnostics from these environments."
           }
         }
       }
