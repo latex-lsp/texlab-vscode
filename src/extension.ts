@@ -72,6 +72,18 @@ export async function activate(
       'latex.cleanArtifacts',
       (editor) => client.cleanArtifacts(editor.document),
     ),
+    vscode.commands.registerCommand('latex.showDependencyGraph', async () => {
+      const content = await client.dependencyGraph();
+      let options = {
+        content,
+        title: 'LaTeX Dependency Graph',
+      };
+
+      vscode.commands.executeCommand(
+        'graphviz-interactive-preview.preview.beside',
+        options,
+      );
+    }),
     client.onDidChangeState(({ newState }) => {
       icon.update(
         newState === State.Running

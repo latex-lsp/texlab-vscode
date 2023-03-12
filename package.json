@@ -254,6 +254,12 @@
         "title": "Clean artifacts (latexmk)",
         "description": "Removes all artifacts produced by the current document.",
         "category": "LaTeX"
+      },
+      {
+        "command": "latex.showDependencyGraph",
+        "title": "Show dependency graph",
+        "description": "Visualizes the dependencies of all files currently loaded.",
+        "category": "LaTeX"
       }
     ],
     "menus": {
@@ -272,6 +278,10 @@
         },
         {
           "command": "latex.cleanArtifacts",
+          "when": "editorLangId =~ /(latex|bibtex)/"
+        },
+        {
+          "command": "latex.showDependencyGraph",
           "when": "editorLangId =~ /(latex|bibtex)/"
         }
       ],

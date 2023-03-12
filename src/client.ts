@@ -170,6 +170,12 @@ export class LatexLanguageClient extends LanguageClient {
     });
   }
 
+  public async dependencyGraph(): Promise<string> {
+    return await this.sendRequest(ExecuteCommandRequest.type, {
+      command: 'texlab.showDependencyGraph',
+    });
+  }
+
   public async build(document: vscode.TextDocument): Promise<BuildResult> {
     return await this.sendRequest(BuildTextDocumentRequest.type, {
       textDocument:
