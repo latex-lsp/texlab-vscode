@@ -233,8 +233,8 @@
     "commands": [
       {
         "command": "latex.build",
-        "title": "Build file (latexmk)",
-        "description": "Builds the current file.",
+        "title": "Build file",
+        "description": "Builds the current file using the configured build tool.",
         "category": "LaTeX"
       },
       {
@@ -253,6 +253,12 @@
         "command": "latex.cleanArtifacts",
         "title": "Clean artifacts (latexmk)",
         "description": "Removes all artifacts produced by the current document.",
+        "category": "LaTeX"
+      },
+      {
+        "command": "latex.changeEnvironment",
+        "title": "Change environment",
+        "description": "Change the name of the inner-most environment that contains the cursor position.",
         "category": "LaTeX"
       },
       {
@@ -278,6 +284,10 @@
         },
         {
           "command": "latex.cleanArtifacts",
+          "when": "editorLangId =~ /(latex|bibtex)/"
+        },
+        {
+          "command": "latex.changeEnvironment",
           "when": "editorLangId =~ /(latex|bibtex)/"
         },
         {

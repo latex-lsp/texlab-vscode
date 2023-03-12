@@ -72,6 +72,10 @@ export async function activate(
       'latex.cleanArtifacts',
       (editor) => client.cleanArtifacts(editor.document),
     ),
+    vscode.commands.registerTextEditorCommand(
+      'latex.changeEnvironment',
+      (editor) => changeEnvironment(editor, client),
+    ),
     vscode.commands.registerCommand('latex.showDependencyGraph', async () => {
       const content = await client.dependencyGraph();
       let options = {
@@ -206,4 +210,24 @@ async function forwardSearch(
       vscode.window.showInformationMessage(Messages.SEARCH_UNCONFIGURED);
       break;
   }
+}
+
+async function changeEnvironment(
+  { document, selection }: vscode.TextEditor,
+  client: LatexLanguageClient,
+): Promise<void> {
+  if (vscode.languages.match(LATEX_FILE, document) <= 0) {
+    return;
+  }
+
+  const newName = await vscode.window.showInputBox({
+    title: 'Change Environment',
+    placeHolder: 'New name',
+  });
+
+  if (!newName) {
+    return;
+  }
+
+  await client.changeEnvironment(document, selection.start, newName);
 }

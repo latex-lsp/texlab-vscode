@@ -170,6 +170,24 @@ export class LatexLanguageClient extends LanguageClient {
     });
   }
 
+  public async changeEnvironment(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+    newName: string,
+  ): Promise<void> {
+    return await this.sendRequest(ExecuteCommandRequest.type, {
+      command: 'texlab.changeEnvironment',
+      arguments: [
+        {
+          textDocument:
+            this.code2ProtocolConverter.asTextDocumentIdentifier(document),
+          position,
+          newName,
+        },
+      ],
+    });
+  }
+
   public async dependencyGraph(): Promise<string> {
     return await this.sendRequest(ExecuteCommandRequest.type, {
       command: 'texlab.showDependencyGraph',
