@@ -216,6 +216,11 @@
             "type": "array",
             "default": [],
             "description": "Do not report diagnostics from these environments."
+          },
+          "texlab.experimental.citationCommands": {
+            "type": "array",
+            "default": [],
+            "description": "Customize the list of commands that reference BibTeX entries."
           }
         }
       }
