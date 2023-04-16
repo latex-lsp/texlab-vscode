@@ -165,7 +165,7 @@ function getServerOptions(
 }
 
 async function build(
-  { document }: vscode.TextEditor,
+  { document, selection }: vscode.TextEditor,
   client: LatexLanguageClient,
 ): Promise<void> {
   if (
@@ -175,7 +175,7 @@ async function build(
     return;
   }
 
-  const { status } = await client.build(document);
+  const { status } = await client.build(document, selection.start);
   switch (status) {
     case BuildStatus.Success:
       break;

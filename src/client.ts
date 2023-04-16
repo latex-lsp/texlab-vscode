@@ -76,16 +76,9 @@ export interface ForwardSearchResult {
   status: ForwardSearchStatus;
 }
 
-interface BuildTextDocumentParams {
-  /**
-   * The text document to build.
-   */
-  textDocument: TextDocumentIdentifier;
-}
-
 abstract class BuildTextDocumentRequest {
   public static type = new RequestType<
-    BuildTextDocumentParams,
+    TextDocumentPositionParams,
     BuildResult,
     void
   >('textDocument/build');
@@ -194,11 +187,16 @@ export class LatexLanguageClient extends LanguageClient {
     });
   }
 
-  public async build(document: vscode.TextDocument): Promise<BuildResult> {
-    return await this.sendRequest(BuildTextDocumentRequest.type, {
-      textDocument:
-        this.code2ProtocolConverter.asTextDocumentIdentifier(document),
-    });
+  public async build(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+  ): Promise<BuildResult> {
+    const params = this.code2ProtocolConverter.asTextDocumentPositionParams(
+      document,
+      position,
+    );
+
+    return await this.sendRequest(BuildTextDocumentRequest.type, params);
   }
 
   public async forwardSearch(
