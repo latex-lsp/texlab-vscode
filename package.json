@@ -156,6 +156,11 @@
           },
           "texlab.bibtexFormatter": {
             "type": "string",
+            "enum": [
+              "none",
+              "texlab",
+              "latexindent"
+            ],
             "default": "texlab",
             "description": "BibTeX formatter to use."
           },
@@ -166,6 +171,11 @@
           },
           "texlab.latexFormatter": {
             "type": "string",
+            "enum": [
+              "none",
+              "texlab",
+              "latexindent"
+            ],
             "default": "latexindent",
             "description": "LaTeX formatter to use."
           },
@@ -201,6 +211,17 @@
             "type": "array",
             "default": [],
             "description": "If specified, only symbols that match none of the specified patterns are displayed."
+          },
+          "texlab.completion.matcher": {
+            "type": "string",
+            "enum": [
+              "fuzzy",
+              "fuzzy-ignore-case",
+              "prefix",
+              "prefix-ignore-case"
+            ],
+            "default": "fuzzy-ignore-case",
+            "description": "Matching algorithm used to filter the completion items."
           },
           "texlab.experimental.mathEnvironments": {
             "type": "array",
