@@ -264,6 +264,12 @@
         "category": "LaTeX"
       },
       {
+        "command": "latex.build.cancel",
+        "title": "Cancel build",
+        "description": "Builds the current file using the configured build tool.",
+        "category": "LaTeX"
+      },
+      {
         "command": "latex.forwardSearch",
         "title": "Forward Search",
         "description": "Performs a forward search from the current file.",

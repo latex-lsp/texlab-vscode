@@ -61,6 +61,9 @@ export async function activate(
     vscode.commands.registerTextEditorCommand('latex.build', (editor) =>
       build(editor, client),
     ),
+    vscode.commands.registerCommand('latex.build.cancel', () =>
+      client.cancelBuild(),
+    ),
     vscode.commands.registerTextEditorCommand('latex.forwardSearch', (editor) =>
       forwardSearch(editor, client),
     ),

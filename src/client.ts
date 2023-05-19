@@ -145,6 +145,13 @@ export class LatexLanguageClient extends LanguageClient {
     }
   }
 
+  public async cancelBuild(): Promise<void> {
+    return await this.sendRequest(ExecuteCommandRequest.type, {
+      command: 'texlab.cancelBuild',
+      arguments: [],
+    });
+  }
+
   public async cleanAuxiliary(document: vscode.TextDocument): Promise<void> {
     return await this.sendRequest(ExecuteCommandRequest.type, {
       command: 'texlab.cleanAuxiliary',
