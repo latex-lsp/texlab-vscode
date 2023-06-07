@@ -2,7 +2,7 @@
   "name": "texlab",
   "displayName": "TexLab",
   "description": "LaTeX and BibTeX language support for Visual Studio Code",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "publisher": "efoerster",
   "license": "GPL-3.0-only",
   "repository": {
@@ -28,17 +28,17 @@
   "devDependencies": {
     "@types/node": "18.x",
     "@types/vscode": "~1.67.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.6",
-    "@typescript-eslint/parser": "^5.59.6",
-    "eslint": "^8.41.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
+    "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
     "prettier": "^2.8.8",
-    "ts-loader": "^9.4.2",
+    "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
     "vscode-languageclient": "^8.1.0",
-    "webpack": "^5.83.1",
-    "webpack-cli": "^5.1.1"
+    "webpack": "^5.86.0",
+    "webpack-cli": "^5.1.4"
   },
   "categories": [
     "Programming Languages",
