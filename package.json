@@ -105,10 +105,15 @@
             "default": false,
             "description": "Build after saving a file"
           },
-          "texlab.auxDirectory": {
+          "texlab.build.auxDirectory": {
             "type": "string",
             "default": ".",
-            "description": "Directory containing the build artifacts."
+            "description": "Directory containing the aux files."
+          },
+          "texlab.build.logDirectory": {
+            "type": "string",
+            "default": ".",
+            "description": "Directory containing the build log files."
           },
           "texlab.forwardSearch.executable": {
             "type": [
