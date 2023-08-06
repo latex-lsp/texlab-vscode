@@ -115,6 +115,11 @@
             "default": ".",
             "description": "Directory containing the build log files."
           },
+          "texlab.build.pdfDirectory": {
+            "type": "string",
+            "default": ".",
+            "description": "Directory containing the build log files."
+          },
           "texlab.forwardSearch.executable": {
             "type": [
               "string",
