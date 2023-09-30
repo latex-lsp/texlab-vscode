@@ -143,6 +143,11 @@
             "default": false,
             "description": "Lint using chktex after changing a file"
           },
+          "texlab.chktex.additionalArgs": {
+            "type": "array",
+            "default": [],
+            "description": "Additional arguments that are passed to ChkTeX"
+          },
           "texlab.server.trace": {
             "type": "boolean",
             "default": false,
