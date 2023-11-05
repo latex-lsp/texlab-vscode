@@ -238,6 +238,16 @@
             "default": "fuzzy-ignore-case",
             "description": "Matching algorithm used to filter the completion items."
           },
+          "texlab.inlayHints.labelDefinitions": {
+            "type": "boolean",
+            "default": true,
+            "description": "If specified, inlay hints are shown for \\label commands."
+          },
+          "texlab.inlayHints.labelReferences": {
+            "type": "boolean",
+            "default": true,
+            "description": "If specified, inlay hints are shown for label references (e. g. \\ref)."
+          },
           "texlab.experimental.mathEnvironments": {
             "type": "array",
             "default": [],
