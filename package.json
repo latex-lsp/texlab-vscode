@@ -248,6 +248,11 @@
             "default": true,
             "description": "If specified, inlay hints are shown for label references (e. g. \\ref)."
           },
+          "texlab.experimental.followPackageLinks": {
+            "type": "boolean",
+            "default": true,
+            "description": "If specified, dependencies of packages are resolved and included in the dependency graph."
+          },
           "texlab.experimental.mathEnvironments": {
             "type": "array",
             "default": [],
