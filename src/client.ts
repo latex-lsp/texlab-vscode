@@ -3,7 +3,6 @@ import {
   BaseLanguageClient,
   ClientCapabilities,
   DynamicFeature,
-  ExecuteCommandParams,
   ExecuteCommandRequest,
   FeatureState,
   LanguageClient,
@@ -11,7 +10,6 @@ import {
   RequestType,
   ServerOptions,
   StaticFeature,
-  TextDocumentIdentifier,
   TextDocumentPositionParams,
   WorkDoneProgress,
   WorkDoneProgressCreateRequest,
@@ -93,35 +91,41 @@ abstract class ForwardSearchRequest {
 }
 
 export class CustomProgressFeature implements StaticFeature {
-  public fillClientCapabilities(capabilities: ClientCapabilities): void {
-    if (!capabilities.window) {
-      capabilities.window = {};
-    }
-    capabilities.window.workDoneProgress = true;
-  }
+  private subscription: vscode.Disposable | undefined;
 
   constructor(
     private readonly client: BaseLanguageClient,
     private readonly icon: StatusIcon,
   ) {}
 
+  public fillClientCapabilities(capabilities: ClientCapabilities) {
+    if (!capabilities.window) {
+      capabilities.window = {};
+    }
+
+    capabilities.window.workDoneProgress = true;
+  }
+
+  public initialize() {
+    this.subscription = this.client.onRequest(
+      WorkDoneProgressCreateRequest.type,
+      ({ token }) => {
+        this.icon.update(ExtensionState.Building);
+        this.client.onProgress(WorkDoneProgress.type, token, (progress) => {
+          if (progress.kind === 'end') {
+            this.icon.update(ExtensionState.Running);
+          }
+        });
+      },
+    );
+  }
+
   public getState(): FeatureState {
     return { kind: 'static' };
   }
 
-  public dispose(): void {
-    // nothing to dispose here
-  }
-
-  public initialize(): void {
-    this.client.onRequest(WorkDoneProgressCreateRequest.type, ({ token }) => {
-      this.icon.update(ExtensionState.Building);
-      this.client.onProgress(WorkDoneProgress.type, token, (progress) => {
-        if (progress.kind === 'end') {
-          this.icon.update(ExtensionState.Running);
-        }
-      });
-    });
+  public clear(): void {
+    this.subscription?.dispose();
   }
 }
 
