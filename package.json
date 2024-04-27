@@ -273,6 +273,11 @@
             "default": [],
             "description": "Customize the list of commands that reference BibTeX entries."
           },
+          "texlab.experimental.labelDefinitionCommands": {
+            "type": "array",
+            "default": [],
+            "description": "Customize the list of commands that define LaTeX labels."
+          },
           "texlab.experimental.labelReferenceCommands": {
             "type": "array",
             "default": [],
