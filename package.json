@@ -30,7 +30,7 @@
     "@types/vscode": "~1.67.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.1.1",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
     "ts-loader": "^9.5.1",
