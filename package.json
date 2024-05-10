@@ -72,14 +72,6 @@
       {
         "title": "TeXLab configuration",
         "properties": {
-          "texlab.rootDirectory": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "default": null,
-            "description": "Path to the root directory."
-          },
           "texlab.build.executable": {
             "type": "string",
             "default": "latexmk",
