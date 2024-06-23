@@ -274,6 +274,16 @@
             "type": "array",
             "default": [],
             "description": "Customize the list of commands that reference LaTeX labels."
+          },
+          "texlab.experimental.labelDefinitionPrefixes": {
+            "type": "array",
+            "default": [],
+            "description": "Customize the list of commands that define LaTeX labels with a prefix."
+          },
+          "texlab.experimental.labelReferencePrefixes": {
+            "type": "array",
+            "default": [],
+            "description": "Customize the list of commands that reference LaTeX labels with a prefix."
           }
         }
       }
