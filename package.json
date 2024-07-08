@@ -97,6 +97,11 @@
             "default": false,
             "description": "Build after saving a file"
           },
+          "texlab.build.useFileList": {
+            "type": "boolean",
+            "default": false,
+            "description": "Use the .fls files as an additional input for project detection"
+          },
           "texlab.build.auxDirectory": {
             "type": "string",
             "default": ".",
