@@ -245,6 +245,14 @@
             "default": true,
             "description": "If specified, inlay hints are shown for label references (e. g. \\ref)."
           },
+          "texlab.inlayHints.maxLength": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "default": null,
+            "description": "If specified, inlay hints are truncated to the specified length."
+          },
           "texlab.experimental.followPackageLinks": {
             "type": "boolean",
             "default": true,
