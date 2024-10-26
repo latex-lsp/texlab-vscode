@@ -204,6 +204,14 @@
             "default": false,
             "description": "Configures the --modifylinebreaks flag of latexindent."
           },
+          "texlab.latexindent.replacement": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Adds the specified replacement flag to latexindent."
+          },
           "texlab.diagnostics.allowedPatterns": {
             "type": "array",
             "default": [],
