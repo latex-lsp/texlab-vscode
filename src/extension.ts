@@ -81,7 +81,7 @@ export async function activate(
     ),
     vscode.commands.registerCommand('latex.showDependencyGraph', async () => {
       const content = await client.dependencyGraph();
-      let options = {
+      const options = {
         content,
         title: 'LaTeX Dependency Graph',
       };
@@ -115,7 +115,7 @@ async function findServer(
   context: vscode.ExtensionContext,
   serverConfig: vscode.WorkspaceConfiguration,
 ): Promise<string | undefined> {
-  let path = serverConfig.get<string | undefined>('path');
+  const path = serverConfig.get<string | undefined>('path');
   if (path) {
     return path;
   }
@@ -145,6 +145,7 @@ function getServerOptions(
     args.push(logFilePath);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ELECTRON_RUN_AS_NODE, ...env } = process.env;
   return {
     run: {
