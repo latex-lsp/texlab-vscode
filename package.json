@@ -357,6 +357,12 @@
         "category": "LaTeX"
       },
       {
+        "command": "latex.findEnvironments",
+        "title": "Find environments",
+        "description": "Returns a list of all environments that contain the cursor position.",
+        "category": "LaTeX"
+      },
+      {
         "command": "latex.showDependencyGraph",
         "title": "Show dependency graph",
         "description": "Visualizes the dependencies of all files currently loaded.",
@@ -383,6 +389,10 @@
         },
         {
           "command": "latex.changeEnvironment",
+          "when": "editorLangId =~ /(latex|bibtex)/"
+        },
+        {
+          "command": "latex.findEnvironments",
           "when": "editorLangId =~ /(latex|bibtex)/"
         },
         {

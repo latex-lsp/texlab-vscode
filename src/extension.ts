@@ -10,6 +10,7 @@ import {
 } from 'vscode-languageclient/node';
 import {
   BuildStatus,
+  Environment,
   ForwardSearchStatus,
   LatexLanguageClient,
 } from './client';
@@ -78,6 +79,35 @@ export async function activate(
     vscode.commands.registerTextEditorCommand(
       'latex.changeEnvironment',
       (editor) => changeEnvironment(editor, client),
+    ),
+    vscode.commands.registerTextEditorCommand(
+      'latex.findEnvironments',
+      (editor) => {
+        findEnvironments(editor, client).then((environments) => {
+          const editor = vscode.window.activeTextEditor;
+          if (!editor) {
+            return;
+          }
+
+          const environmentItems = environments.map((value) => ({
+            label: value.name.text,
+            position: value.name.range.end,
+            detail: editor.document.lineAt(value.fullRange.start.line).text,
+          }));
+
+          vscode.window
+            .showQuickPick(environmentItems, {
+              placeHolder: 'Select an environment',
+            })
+            .then((environment) => {
+              if (environment) {
+                const position = environment.position;
+                editor.selection = new vscode.Selection(position, position);
+                editor.revealRange(new vscode.Range(position, position));
+              }
+            });
+        });
+      },
     ),
     vscode.commands.registerCommand('latex.showDependencyGraph', async () => {
       const content = await client.dependencyGraph();
@@ -234,4 +264,15 @@ async function changeEnvironment(
   }
 
   await client.changeEnvironment(document, selection.start, newName);
+}
+
+async function findEnvironments(
+  { document, selection }: vscode.TextEditor,
+  client: LatexLanguageClient,
+): Promise<Environment[]> {
+  if (vscode.languages.match(LATEX_FILE, document) <= 0) {
+    return [];
+  }
+
+  return await client.findEnvironments(document, selection.start);
 }
