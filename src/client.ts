@@ -129,6 +129,26 @@ export class CustomProgressFeature implements StaticFeature {
   }
 }
 
+class EnvironmentName {
+  text: string;
+  range: vscode.Range;
+
+  constructor(text: string, range: vscode.Range) {
+    this.text = text;
+    this.range = range;
+  }
+}
+
+export class Environment {
+  name: EnvironmentName;
+  fullRange: vscode.Range;
+
+  constructor(name: EnvironmentName, fullRange: vscode.Range) {
+    this.name = name;
+    this.fullRange = fullRange;
+  }
+}
+
 export class LatexLanguageClient extends LanguageClient {
   constructor(
     name: string,
@@ -187,6 +207,22 @@ export class LatexLanguageClient extends LanguageClient {
             this.code2ProtocolConverter.asTextDocumentIdentifier(document),
           position,
           newName,
+        },
+      ],
+    });
+  }
+
+  public async findEnvironments(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+  ): Promise<Environment[]> {
+    return await this.sendRequest(ExecuteCommandRequest.type, {
+      command: 'texlab.findEnvironments',
+      arguments: [
+        {
+          textDocument:
+            this.code2ProtocolConverter.asTextDocumentIdentifier(document),
+          position,
         },
       ],
     });
