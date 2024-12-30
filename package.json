@@ -35,7 +35,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.13.0",
+    "typescript-eslint": "^8.18.2",
     "vscode-languageclient": "^9.0.1",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4"
