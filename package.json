@@ -237,6 +237,11 @@
             "default": [],
             "description": "If specified, only symbols that match none of the specified patterns are displayed."
           },
+          "texlab.symbols.customEnvironments": {
+            "type": "array",
+            "default": [],
+            "description": "Customize the list of environments that are considered as symbols."
+          },
           "texlab.completion.matcher": {
             "type": "string",
             "enum": [
@@ -300,6 +305,11 @@
             "type": "array",
             "default": [],
             "description": "Customize the list of commands that reference LaTeX labels."
+          },
+          "texlab.experimental.labelReferenceRangeCommands": {
+            "type": "array",
+            "default": [],
+            "description": "Customize the list of \\crefrange-like commands."
           },
           "texlab.experimental.labelDefinitionPrefixes": {
             "type": "array",
