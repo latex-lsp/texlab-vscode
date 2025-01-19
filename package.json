@@ -176,7 +176,8 @@
             "enum": [
               "none",
               "texlab",
-              "latexindent"
+              "latexindent",
+              "tex-fmt"
             ],
             "default": "texlab",
             "description": "BibTeX formatter to use."
@@ -191,7 +192,8 @@
             "enum": [
               "none",
               "texlab",
-              "latexindent"
+              "latexindent",
+              "tex-fmt"
             ],
             "default": "latexindent",
             "description": "LaTeX formatter to use."
