@@ -7,6 +7,14 @@ updates:
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: '@types/vscode'
+    groups:
+      webpack:
+        patterns:
+          - '*webpack*'
+          - 'ts-loader'
+      eslint:
+        patterns:
+          - '*eslint*'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
