@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.22.1] - 2025-01-29
 
+### Fixed
+
+- Retry due to issue with VSCode extension validation
+
+## [5.22.1] - 2025-01-29
+
 ### Changed
 
 - Update TexLab to [v5.22.1](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#5221---2025-01-29)
