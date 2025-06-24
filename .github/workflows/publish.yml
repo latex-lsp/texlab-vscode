@@ -13,7 +13,7 @@ jobs:
             arch: x64
             server: texlab-x86_64-windows.zip
 
-          - os: windows-2019
+          - os: windows-latest
             target: win32-arm64
             arch: arm
             server: texlab-aarch64-windows.zip
