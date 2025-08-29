@@ -244,6 +244,16 @@
             "default": [],
             "description": "Customize the list of environments that are considered as symbols."
           },
+          "texlab.hover.symbols": {
+            "type": "string",
+            "enum": [
+              "none",
+              "glyph",
+              "image"
+            ],
+            "default": "image",
+            "description": "Describe how to render symbol-like commands when hovering."
+          },
           "texlab.completion.matcher": {
             "type": "string",
             "enum": [
