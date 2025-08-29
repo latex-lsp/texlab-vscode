@@ -14,7 +14,7 @@
     "url": "https://github.com/latex-lsp/texlab-vscode/issues"
   },
   "engines": {
-    "vscode": "^1.67.0"
+    "vscode": "^1.75.1"
   },
   "main": "./dist/extension.js",
   "scripts": {
@@ -29,7 +29,7 @@
     "@eslint/js": "^9.29.0",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "22.x",
-    "@types/vscode": "~1.67.0",
+    "@types/vscode": "1.75.1",
     "eslint": "^9.29.0",
     "prettier": "^3.5.3",
     "ts-loader": "^9.5.2",
@@ -62,10 +62,6 @@
       "href": "https://github.com/latex-lsp/texlab-vscode/actions",
       "description": "Continuous Integration"
     }
-  ],
-  "activationEvents": [
-    "onLanguage:latex",
-    "onLanguage:bibtex"
   ],
   "contributes": {
     "configuration": [
@@ -338,11 +334,11 @@
     ],
     "configurationDefaults": {
       "[latex]": {
-        "editor.wordBasedSuggestions": false,
+        "editor.wordBasedSuggestions": "off",
         "editor.suggest.snippetsPreventQuickSuggestions": false
       },
       "[bibtex]": {
-        "editor.wordBasedSuggestions": false,
+        "editor.wordBasedSuggestions": "off",
         "editor.suggest.snippetsPreventQuickSuggestions": false
       }
     },
