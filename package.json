@@ -328,6 +328,11 @@
             "type": "array",
             "default": [],
             "description": "Customize the list of commands that reference LaTeX labels with a prefix."
+          },
+          "texlab.experimental.glossaryReferenceCommands": {
+            "type": "array",
+            "default": [],
+            "description": "Customize the list of commands that reference glossary entries."
           }
         }
       }
