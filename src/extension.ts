@@ -51,7 +51,7 @@ export async function activate(
       ],
       outputChannelName: 'TexLab Language Server',
       uriConverters: {
-        code2Protocol: (uri) => uri.toString(true),
+        code2Protocol: (uri) => uri.toString(),
         protocol2Code: (value) => vscode.Uri.parse(value),
       },
     },
