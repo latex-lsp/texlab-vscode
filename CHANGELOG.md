@@ -6,6 +6,12 @@ The changelog of the TexLab language server can be found [here](https://github.c
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.24.1] - 2025-11-13
+
+### Fixed
+
+- Fix opening workspace folders or files with spaces in the path ([#1012](https://github.com/latex-lsp/texlab-vscode/issues/1012))
+
 ## [5.24.0] - 2025-11-03
 
 ### Changed
