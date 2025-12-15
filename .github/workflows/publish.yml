@@ -89,7 +89,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '20'
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
       - name: Publish to VSCode Marketplace
         run: npx @vscode/vsce publish --packagePath $(find . -iname *.vsix)
         env:
