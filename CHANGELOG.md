@@ -6,6 +6,12 @@ The changelog of the TexLab language server can be found [here](https://github.c
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.25.0] - 2025-12-28
+
+### Changed
+
+- Update TexLab to [v5.25.0](https://github.com/latex-lsp/texlab/blob/master/CHANGELOG.md#5250---2025-12-28)
+
 ## [5.24.1] - 2025-11-13
 
 ### Fixed
