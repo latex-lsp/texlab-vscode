@@ -26,16 +26,16 @@
     "format": "prettier --write \"src/**/*.{ts,json}\" \"{grammars,languages}/**/*.json\" \"*.{ts,json,yml,md}\" "
   },
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
-    "@types/eslint__js": "^8.42.3",
+    "@eslint/js": "^10.0.1",
+    "@types/eslint__js": "^9.14.0",
     "@types/node": "25.x",
     "@types/vscode": "1.75.1",
-    "eslint": "^9.29.0",
+    "eslint": "^10.8.0",
     "prettier": "^3.8.1",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.34.0",
+    "typescript-eslint": "^8.65.0",
     "vscode-languageclient": "^9.0.1",
     "webpack": "^5.105.4",
     "webpack-cli": "^7.0.0"
